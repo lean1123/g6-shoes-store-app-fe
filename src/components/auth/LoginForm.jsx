@@ -1,13 +1,16 @@
+import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import PropTypes from "prop-types";
+import { login } from "../../hooks/auth/authSlice";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
 
-LoginForm.propTypes = {
-  onSubmit: PropTypes.func,
-};
+LoginForm.propTypes = {};
 
-function LoginForm({ onSubmit }) {
+function LoginForm() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const schema = yup.object().shape({
     email: yup.string().email().required(),
     password: yup.string().required(),
@@ -22,9 +25,13 @@ function LoginForm({ onSubmit }) {
   });
 
   const handleOnSubmit = (values) => {
-    if (onSubmit) {
-      onSubmit(values);
-      form.reset();
+    try {
+      const action = login(values);
+      const result = dispatch(action);
+      console.log("result: ", result);
+      navigate("/");
+    } catch (error) {
+      console.log("Error: ", error);
     }
   };
 
