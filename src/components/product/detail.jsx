@@ -2,11 +2,12 @@ import { Link } from "@mui/material";
 import { Outlet } from "react-router";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import "./Style.css";
 function ProductDetail() {
   return (
     <div className="grid grid-cols-2 my-6">
       <div className="flex flex-row justify-center">
-        <div className="flex-col h-96 overflow-y-scroll scroll-smooth p-2 mr-2">
+        <div className="flex-col h-96 overflow-auto scrollbar-hidden p-2 mr-2">
           {Array.from({ length: 10 }).map((_, index) => (
             <img
               key={index + 1}
