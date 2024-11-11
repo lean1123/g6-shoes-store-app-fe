@@ -72,20 +72,20 @@ function Header() {
 
           <div className="flex mt-24 ml-40">
             <div className="mr-20">
-              <p className="text-sl font-calibri tracking-tight tracking-wide font-bold">GIAO HÀNG MIỄN PHÍ CHO THÀNH VIÊN CỦA LENDOM</p>
+              <p className="text-xl font-calibri tracking-tight tracking-wide font-bold">GIAO HÀNG MIỄN PHÍ CHO THÀNH VIÊN CỦA LENDOM</p>
               <div className="flex flex-col mt-2 text-sm">
-                <div className="font-calibri text-sl" >Đăng ký thành viên LENDOM để hưởng thụ dịch vụ giao hàng</div>
-                <div className="font-calibri">miễn phí! Hoặc bạn chỉ được nhận ưu đãi miễn phí giao hàng với</div>
-                <div className="font-calibri">hóa đơn có trị giá ít nhất 1.6 triệu đồng</div>
+                <div className="font-calibri text-base" >Đăng ký thành viên LENDOM để hưởng thụ dịch vụ giao hàng</div>
+                <div className="font-calibri text-base">miễn phí! Hoặc bạn chỉ được nhận ưu đãi miễn phí giao hàng với</div>
+                <div className="font-calibri text-base">hóa đơn có trị giá ít nhất 1.6 triệu đồng</div>
                 <Link class="text-base font-calibri font-bold text-black hover:underline mt-5">THAM GIA NGAY</Link>
               </div>
             </div>
             <div className="">
-              <p className="text-sl font-calibri tracking-tight tracking-wide font-bold">TRẢ HÀNG DỄ DÀNG</p>
+              <p className="text-lg font-calibri tracking-tight tracking-wide font-bold">TRẢ HÀNG DỄ DÀNG</p>
               <div className="flex flex-col mt-2 text-sm">
-                <div className="font-calibri text-sl">Nếu bạn không hài lòng với đơn hàng của mình, bạn có thể</div>
-                <div className="font-calibri text-sl">được hoàn lại tiền. Vui lòng xem Chính Sách Trả Hàng của chúng</div>
-                <div className="font-calibri text-sl">tôi để biết thêm chi tiết.</div>
+                <div className="font-calibri text-base">Nếu bạn không hài lòng với đơn hàng của mình, bạn có thể</div>
+                <div className="font-calibri text-base">được hoàn lại tiền. Vui lòng xem Chính Sách Trả Hàng của chúng</div>
+                <div className="font-calibri text-base">tôi để biết thêm chi tiết.</div>
                 <Link class="text-base font-calibri font-bold text-black hover:underline mt-5">TRẢ HÀNG DỄ DÀNG</Link>
               </div>
             </div>

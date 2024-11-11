@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        'calibri': ['"Calibri"', 'sans-serif'],
+        'calibri': ['Calibri', 'sans-serif'],
       },
     },
   },
