@@ -28,12 +28,13 @@ function Header() {
     navigate("/");
   };
 
-
   //set time
   useEffect(() => {
     const interval = setInterval(() => {
       setName((prevName) =>
-        prevName === "TRẢ HÀNG DỄ DÀNG" ? "GIAO HÀNG MIỄN PHÍ CHO THÀNH VIÊN CỦA LENDOM" : "TRẢ HÀNG DỄ DÀNG"
+        prevName === "TRẢ HÀNG DỄ DÀNG"
+          ? "GIAO HÀNG MIỄN PHÍ CHO THÀNH VIÊN CỦA LENDOM"
+          : "TRẢ HÀNG DỄ DÀNG"
       );
     }, 3000); // Đổi tên mỗi 3 giây
 
@@ -45,11 +46,12 @@ function Header() {
     setIsOpenDiv(!isOpendDiv);
   };
 
-
-
   return (
     <>
-      <div className="bg-black h-10 text-white flex justify-center items-center cursor-pointer" onClick={toggleDropdown}>
+      <div
+        className="bg-black h-10 text-white flex justify-center items-center cursor-pointer"
+        onClick={toggleDropdown}
+      >
         <p className="text-xs font-medium leading-loose">{name}</p>
         <button className="bg-black text-white font-bold py-1 px-2 rounded">
           <i className="fas fa-chevron-down"></i>
@@ -72,24 +74,43 @@ function Header() {
 
           <div className="flex mt-24 ml-40">
             <div className="mr-20">
-              <p className="text-sl font-calibri tracking-tight tracking-wide font-bold">GIAO HÀNG MIỄN PHÍ CHO THÀNH VIÊN CỦA LENDOM</p>
+              <p className="text-sl font-calibri tracking-tight font-bold">
+                GIAO HÀNG MIỄN PHÍ CHO THÀNH VIÊN CỦA LENDOM
+              </p>
               <div className="flex flex-col mt-2 text-sm">
-                <div className="font-calibri text-sl" >Đăng ký thành viên LENDOM để hưởng thụ dịch vụ giao hàng</div>
-                <div className="font-calibri">miễn phí! Hoặc bạn chỉ được nhận ưu đãi miễn phí giao hàng với</div>
-                <div className="font-calibri">hóa đơn có trị giá ít nhất 1.6 triệu đồng</div>
-                <Link class="text-base font-calibri font-bold text-black hover:underline mt-5">THAM GIA NGAY</Link>
+                <div className="font-calibri text-sl">
+                  Đăng ký thành viên LENDOM để hưởng thụ dịch vụ giao hàng
+                </div>
+                <div className="font-calibri">
+                  miễn phí! Hoặc bạn chỉ được nhận ưu đãi miễn phí giao hàng với
+                </div>
+                <div className="font-calibri">
+                  hóa đơn có trị giá ít nhất 1.6 triệu đồng
+                </div>
+                <Link class="text-base font-calibri font-bold text-black hover:underline mt-5">
+                  THAM GIA NGAY
+                </Link>
               </div>
             </div>
             <div className="">
-              <p className="text-sl font-calibri tracking-tight tracking-wide font-bold">TRẢ HÀNG DỄ DÀNG</p>
+              <p className="text-sl font-calibri tracking-tight font-bold">
+                TRẢ HÀNG DỄ DÀNG
+              </p>
               <div className="flex flex-col mt-2 text-sm">
-                <div className="font-calibri text-sl">Nếu bạn không hài lòng với đơn hàng của mình, bạn có thể</div>
-                <div className="font-calibri text-sl">được hoàn lại tiền. Vui lòng xem Chính Sách Trả Hàng của chúng</div>
-                <div className="font-calibri text-sl">tôi để biết thêm chi tiết.</div>
-                <Link class="text-base font-calibri font-bold text-black hover:underline mt-5">TRẢ HÀNG DỄ DÀNG</Link>
+                <div className="font-calibri text-sl">
+                  Nếu bạn không hài lòng với đơn hàng của mình, bạn có thể
+                </div>
+                <div className="font-calibri text-sl">
+                  được hoàn lại tiền. Vui lòng xem Chính Sách Trả Hàng của chúng
+                </div>
+                <div className="font-calibri text-sl">
+                  tôi để biết thêm chi tiết.
+                </div>
+                <Link class="text-base font-calibri font-bold text-black hover:underline mt-5">
+                  TRẢ HÀNG DỄ DÀNG
+                </Link>
               </div>
             </div>
-
           </div>
         </div>
       )}
@@ -228,6 +249,5 @@ function Header() {
     </>
   );
 }
-
 
 export default Header;

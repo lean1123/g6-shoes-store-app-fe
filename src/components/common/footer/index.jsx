@@ -1,17 +1,15 @@
-import { Link } from "react-router-dom";
 import {
   ArrowRightOutlined,
   FacebookOutlined,
   InstagramOutlined,
   MenuOutlined,
   PinterestOutlined,
-  RightOutlined,
-  SwapRightOutlined,
   TikTokOutlined,
   TwitterOutlined,
   YoutubeOutlined,
 } from "@ant-design/icons";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 function Footer() {
   const [isShow, setIsShow] = useState(true);
   const handleShow = () => {
