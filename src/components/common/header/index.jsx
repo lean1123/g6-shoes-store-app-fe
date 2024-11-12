@@ -11,6 +11,7 @@ function Header() {
   const navigate = useNavigate();
   const [isOpendDiv, setIsOpenDiv] = useState(false);
   const [name, setName] = useState("TRẢ HÀNG DỄ DÀNG");
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
   const token = useSelector(
     (state) => state.persistedReducer?.user?.accessToken
@@ -28,16 +29,17 @@ function Header() {
     navigate("/");
   };
 
-
   //set time
   useEffect(() => {
     const interval = setInterval(() => {
       setName((prevName) =>
-        prevName === "TRẢ HÀNG DỄ DÀNG" ? "GIAO HÀNG MIỄN PHÍ CHO THÀNH VIÊN CỦA LENDOM" : "TRẢ HÀNG DỄ DÀNG"
+        prevName === "TRẢ HÀNG DỄ DÀNG"
+          ? "GIAO HÀNG MIỄN PHÍ CHO THÀNH VIÊN CỦA LENDOM"
+          : "TRẢ HÀNG DỄ DÀNG"
       );
     }, 3000); // Đổi tên mỗi 3 giây
 
-    // Clear interval khi component unmount để tránh lỗi rò rỉ bộ nhớ
+
     return () => clearInterval(interval);
   }, []);
 
@@ -45,11 +47,17 @@ function Header() {
     setIsOpenDiv(!isOpendDiv);
   };
 
-
+  // tìm kiếm
+  const handleButtonClick = () => {
+    setIsDropdownVisible(!isDropdownVisible);
+  };
 
   return (
     <>
-      <div className="bg-black h-10 text-white flex justify-center items-center cursor-pointer" onClick={toggleDropdown}>
+      <div
+        className="bg-black h-10 text-white flex justify-center items-center cursor-pointer"
+        onClick={toggleDropdown}
+      >
         <p className="text-xs font-medium leading-loose">{name}</p>
         <button className="bg-black text-white font-bold py-1 px-2 rounded">
           <i className="fas fa-chevron-down"></i>
@@ -57,11 +65,8 @@ function Header() {
       </div>
       {isOpendDiv && (
         <div
-          className="bg-white h-3/5 w-full fixed top-0 left-0 z-50 transition-transform transform duration-3000 ease-out"
-          style={{
-            overflow: "hidden",
-            transform: isOpendDiv ? "translateY(0)" : "translateY(-100%)",
-          }}
+          className={`fixed top-0 left-0 right-0 h-3/5 bg-white z-10 transition-transform duration-500 ease-in-out ${isOpendDiv ? 'translate-y-0' : '-translate-y-full'
+            }`}
         >
           <button
             className="text-2xl font-serif text-black border border-black w-10 h-10 flex items-center justify-center fixed right-4 top-4"
@@ -72,82 +77,81 @@ function Header() {
 
           <div className="flex mt-24 ml-40">
             <div className="mr-20">
-              <p className="text-xl font-calibri tracking-tight tracking-wide font-bold">GIAO HÀNG MIỄN PHÍ CHO THÀNH VIÊN CỦA LENDOM</p>
+              <p className="text-sl font-calibri tracking-tight tracking-wide font-bold">GIAO HÀNG MIỄN PHÍ CHO THÀNH VIÊN CỦA LENDOM</p>
               <div className="flex flex-col mt-2 text-sm">
-                <div className="font-calibri text-base" >Đăng ký thành viên LENDOM để hưởng thụ dịch vụ giao hàng</div>
-                <div className="font-calibri text-base">miễn phí! Hoặc bạn chỉ được nhận ưu đãi miễn phí giao hàng với</div>
-                <div className="font-calibri text-base">hóa đơn có trị giá ít nhất 1.6 triệu đồng</div>
+                <div className="font-calibri text-sl" >Đăng ký thành viên LENDOM để hưởng thụ dịch vụ giao hàng</div>
+                <div className="font-calibri">miễn phí! Hoặc bạn chỉ được nhận ưu đãi miễn phí giao hàng với</div>
+                <div className="font-calibri">hóa đơn có trị giá ít nhất 1.6 triệu đồng</div>
                 <Link class="text-base font-calibri font-bold text-black hover:underline mt-5">THAM GIA NGAY</Link>
               </div>
             </div>
             <div className="">
-              <p className="text-lg font-calibri tracking-tight tracking-wide font-bold">TRẢ HÀNG DỄ DÀNG</p>
+              <p className="text-sl font-calibri tracking-tight tracking-wide font-bold">TRẢ HÀNG DỄ DÀNG</p>
               <div className="flex flex-col mt-2 text-sm">
-                <div className="font-calibri text-base">Nếu bạn không hài lòng với đơn hàng của mình, bạn có thể</div>
-                <div className="font-calibri text-base">được hoàn lại tiền. Vui lòng xem Chính Sách Trả Hàng của chúng</div>
-                <div className="font-calibri text-base">tôi để biết thêm chi tiết.</div>
+                <div className="font-calibri text-sl">Nếu bạn không hài lòng với đơn hàng của mình, bạn có thể</div>
+                <div className="font-calibri text-sl">được hoàn lại tiền. Vui lòng xem Chính Sách Trả Hàng của chúng</div>
+                <div className="font-calibri text-sl">tôi để biết thêm chi tiết.</div>
                 <Link class="text-base font-calibri font-bold text-black hover:underline mt-5">TRẢ HÀNG DỄ DÀNG</Link>
               </div>
             </div>
-
           </div>
         </div>
       )}
 
-      <nav className="bg-slate-100">
+      <nav className="bg-white">
         <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
           <div className="relative flex h-16 items-center justify-between">
             <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
               <div className="flex-shrink-0">
                 <img
-                  className="block h-11 w-auto"
+                  className="block h-16 w-auto"
                   src="/logo.png"
                   alt="Logo"
-                  width={32}
-                  height={32}
+                  width={40}
+                  height={40}
                 />
               </div>
-              <div className="hidden sm:ml-6 sm:block">
+              <div className="hidden sm:flex justify-center items-center mx-auto">
                 <div className="flex space-x-4">
-                  <Link
-                    href="/"
-                    className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                  <button
+                    onClick={() => navigate("/")}
+                    className="text-black hover:text-red-500 px-3 py-2 rounded-md text-ml font-medium"
                   >
-                    Trang Chủ
-                  </Link>
-                  <Link
-                    href="/about"
-                    className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                    TRANG CHỦ
+                  </button>
+                  <button
+                    onClick={() => navigate("/about")}
+                    className="text-black hover:text-red-500 px-3 py-2 rounded-md text-ml font-medium"
                   >
-                    Về Chúng Tôi
-                  </Link>
-                  <Link
-                    href="/products"
-                    className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                    VỀ CHÚNG TÔI
+                  </button>
+                  <button
+                    onClick={() => navigate("/products")}
+                    className="text-black hover:text-red-500 px-3 py-2 rounded-md text-ml font-medium"
                   >
-                    Sản Phẩm
-                  </Link>
-                  <Link
-                    href="/categories"
-                    className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                    SẢN PHẨM
+                  </button>
+                  <button
+                    onClick={() => navigate("/categories")}
+                    className="text-black  hover:text-red-500 px-3 py-2 rounded-md text-ml font-medium"
                   >
-                    Danh Mục
-                  </Link>
-                  <Link
-                    href="/categoryforBoy"
-                    className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                    DANH MỤC
+                  </button>
+                  <button
+                    onClick={() => navigate("/categoryforBoy")}
+                    className="text-black  hover:text-red-500 px-3 py-2 rounded-md text-ml font-medium"
                   >
-                    Nam
-                  </Link>
-                  <Link
-                    href="/categoryforGirl"
-                    className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                    NAM
+                  </button>
+                  <button
+                    onClick={() => navigate("/categoryforGirl")}
+                    className="text-black  hover:text-red-500 px-3 py-2 rounded-md text-ml font-medium"
                   >
-                    Nữ
-                  </Link>
+                    NỮ
+                  </button>
+
                 </div>
-              </div>
-            </div>
+              </div></div>
             <div className="relative ml-3">
               <div>
                 {token ? (
@@ -169,18 +173,69 @@ function Header() {
                   </button>
                 ) : (
                   <>
-                    <Link
-                      href="/login"
-                      className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                    <button
+                      className="px-3 py-2 rounded-md text-sm font-medium"
+                      onClick={handleButtonClick}
                     >
-                      Đăng Nhập
-                    </Link>
-                    <Link
-                      href="/signup"
-                      className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                      <img
+                        className="block h-5 w-auto"
+                        src="/search.png"
+                        width={17}
+                        height={17}
+                      />
+                    </button>
+                    <div
+                      className={`fixed top-0 left-0 right-0 h-2/5 bg-white z-10 transition-transform duration-500 ease-in-out ${isDropdownVisible ? 'translate-y-0' : '-translate-y-full'
+                        }`}
                     >
-                      Đăng Ký
-                    </Link>
+                      <button className="absolute top-4 right-4 text-4xl" onClick={handleButtonClick}>
+                        &times;
+                      </button>
+                      {/* Nội dung của div khi được hiển thị */}
+                      <p className="font-bold text-xl mt-16 ml-28">Bạn đang tìm kiếm gì?</p>
+                      <div className="search-container mt-10 ml-36 flex justify-between w-4/5 mx-auto p-2">
+                        <input type="text" placeholder="Tìm kiếm sản phẩm, thương hiệu, và hơn thế nữa" className="w-full border-none no-border" />
+                        <button className="search-button">
+                          <img
+                            className="block h-5 w-auto"
+                            src="/search.png"
+                            width={17}
+                            height={17}
+                          />
+                        </button>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => navigate("/login")}
+                      className="px-3 py-2 rounded-md text-sm font-medium"
+                    >
+                      <img
+                        className="block h-5 w-auto"
+                        src="/people.png"
+                        width={17}
+                        height={17}
+                      />
+                    </button>
+                    <button
+                      className="px-3 py-2 rounded-md text-sm font-medium"
+                    >
+                      <img
+                        className="block h-5 w-auto"
+                        src="/heart.png"
+                        width={17}
+                        height={17}
+                      />
+                    </button>
+                    <button
+                      className="px-3 py-2 rounded-md text-sm font-medium"
+                    >
+                      <img
+                        className="block h-5 w-auto"
+                        src="/market.png"
+                        width={17}
+                        height={17}
+                      />
+                    </button>
                   </>
                 )}
               </div>
@@ -228,6 +283,5 @@ function Header() {
     </>
   );
 }
-
 
 export default Header;
