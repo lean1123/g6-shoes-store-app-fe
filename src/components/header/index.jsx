@@ -1,7 +1,7 @@
 import { Link } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../../../hooks/auth/authSlice";
+import { logout } from "../../hooks/auth/authSlice";
 import { useNavigate } from "react-router";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
@@ -133,36 +133,54 @@ function Header() {
                   <Link
                     href="/"
                     className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                    underline="none"
+                    color="textPrimary"
+                    variant="overline"
                   >
                     Trang Chủ
                   </Link>
                   <Link
                     href="/about"
                     className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                    underline="none"
+                    color="textPrimary"
+                    variant="overline"
                   >
                     Về Chúng Tôi
                   </Link>
                   <Link
                     href="/products"
                     className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                    underline="none"
+                    color="textPrimary"
+                    variant="overline"
                   >
                     Sản Phẩm
                   </Link>
                   <Link
                     href="/categories"
                     className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                    underline="none"
+                    color="textPrimary"
+                    variant="overline"
                   >
                     Danh Mục
                   </Link>
                   <Link
                     href="/categoryforBoy"
                     className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                    underline="none"
+                    color="textPrimary"
+                    variant="overline"
                   >
                     Nam
                   </Link>
                   <Link
                     href="/categoryforGirl"
                     className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                    underline="none"
+                    color="textPrimary"
+                    variant="overline"
                   >
                     Nữ
                   </Link>
