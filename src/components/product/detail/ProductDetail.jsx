@@ -1,9 +1,11 @@
-import { Link } from "@mui/material";
-import { Outlet } from "react-router";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import { Link } from "@mui/material";
+import { Outlet, useParams } from "react-router";
 import "./Style.css";
+import SubProductDetail from "./SubProductDetail";
 function ProductDetail() {
+  const params = useParams();
+
   return (
     <div className="grid grid-cols-2 my-6">
       <div className="flex flex-row justify-center">
@@ -24,7 +26,9 @@ function ProductDetail() {
       <div className="mb-10">
         <h2 className="text-2xl font-bold mb-4">Tên Sản Phẩm ABC0009</h2>
         <div className="w-full flex justify-start mb-4">
-          <p className="text-lg mr-10">1.000.000 VND</p>
+          <p className="text-lg mr-10 font-semibold text-orange-600">
+            1.000.000 VND
+          </p>
           <p className="text-lg text-orange-600">Tình trạng còn hàng: (29)</p>
         </div>
         <div className="flex justify-start mb-4">
@@ -69,38 +73,35 @@ function ProductDetail() {
 
         <div className="w-full flex flex-col">
           <div className="w-3/4 flex justify-between items-center border-t border-gray-800 py-2">
-            <p className="text-base text-slate-900 font-bold mr-40">
-              Mô tả sản phẩm
-            </p>
-            <span>
-              <KeyboardArrowDownIcon />
-            </span>
+            <SubProductDetail
+              title="Mô tả sản phẩm"
+              path={`/products/${params.id}/description`}
+            />
           </div>
           <div className="w-3/4 flex justify-between items-center border-t border-gray-800 py-2">
-            <p className="text-base text-slate-900 font-bold mr-40">
-              Thông tin bảo hành
-            </p>
-            <span>
-              <KeyboardArrowDownIcon />
-            </span>
+            <SubProductDetail
+              title="Thông tin bảo hành"
+              path={`/products/${params.id}/warrantyPolicy`}
+            />
           </div>
           <div className="w-3/4 flex justify-between items-center border-t border-gray-800 py-2">
-            <p className="text-base text-slate-900 font-bold mr-40">
-              Chính sách đổi trả
-            </p>
-            <span>
-              <KeyboardArrowDownIcon />
-            </span>
+            <SubProductDetail
+              title="Chính sách đổi trả"
+              path={`/products/${params.id}/returnPolicy`}
+            />
           </div>
           <div className="w-3/4 flex justify-between items-center border-t border-gray-800 py-2">
-            <p className="text-base text-slate-900 font-bold mr-40">Reviews</p>
-            <span>
-              <KeyboardArrowDownIcon />
-            </span>
+            <SubProductDetail
+              title="Reviews"
+              path={`/products/${params.id}/reviews`}
+            />
           </div>
         </div>
       </div>
       <Outlet />
+      <div className="w-full">
+        <p>Danh sách sản phẩm cùng dòng</p>
+      </div>
     </div>
   );
 }

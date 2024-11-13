@@ -1,6 +1,4 @@
-
 function SignUpForm() {
-
   return (
     <>
       <div className="flex justify-center pt-5">
@@ -80,12 +78,24 @@ function SignUpForm() {
               </select>
             </div>
           </div>
-          <div class="flex items-center pt-6 ml-6">
-            <input type="checkbox" id="subscribe-checkbox" class="mr-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"></input>
-            <label for="subscribe-checkbox" class="text-sm font-medium text-gray-700">Bạn sẽ luôn được cập nhật các sản phẩm và ưu đãi mới nhất.</label>
+          <div className="flex items-center pt-6 ml-6">
+            <input
+              type="checkbox"
+              id="subscribe-checkbox"
+              className="mr-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+            ></input>
+            <label
+              htmlFor="subscribe-checkbox"
+              className="text-sm font-medium text-gray-700"
+            >
+              Bạn sẽ luôn được cập nhật các sản phẩm và ưu đãi mới nhất.
+            </label>
           </div>
           <div className="flex justify-center pt-6">
-            <button type="submit" className="bg-red py-2 px-4 text-white hover:bg-black">
+            <button
+              type="submit"
+              className="bg-red py-2 px-4 text-white hover:bg-black"
+            >
               Đăng Ký
             </button>
           </div>

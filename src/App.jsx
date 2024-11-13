@@ -1,14 +1,19 @@
 import { Route, Routes } from "react-router";
 import "./App.css";
 import LoginForm from "./components/auth/LoginForm";
-import Footer from "./components/common/footer";
-import Header from "./components/common/header";
-import Home from "./components/common/home";
-import ProductDetail from "./components/product/detail";
-import ListProduct from "./components/product/ListProduct";
 import SignUpForm from "./components/auth/SignUpForm";
-import NewProduct from "./components/product/new";
-import ListReview from "./components/review/ListReview";
+import Footer from "./components/footer";
+import Header from "./components/header";
+import HomePage from "./components/home";
+import DescriptionInfo from "./components/product/detail/DescriptionInfo";
+import ProductDetail from "./components/product/detail/ProductDetail";
+import ReturnPolicy from "./components/product/detail/ReturnPolicy";
+import WarrantyPolicy from "./components/product/detail/WarrantyPolicy";
+import ListAllProducts from "./components/product/ListAllProducts";
+import ListNewProducts from "./components/product/new/ListNewProducts";
+import ListRecentProducts from "./components/product/recent/ListRecentProducts";
+import ListReview from "./components/product/review/ListReview";
+import ListTopSaleProducts from "./components/product/topSale/ListTopSaleProducts";
 
 function App() {
   const role = "customer";
@@ -21,14 +26,24 @@ function App() {
         <Route path="/signup" element={<SignUpForm />} />
         {role !== "admin" ? (
           <Route path="/">
-            <Route index element={<Home />} />
+            <Route index element={<HomePage />} />
+            <Route path="listNewProducts" element={<ListNewProducts />} />
+            <Route path="listRecentProducts" element={<ListRecentProducts />} />
+            <Route
+              path="listTopSaleProducts"
+              element={<ListTopSaleProducts />}
+            />
             <Route path="products">
-              <Route index element={<ListProduct />} />
-              <Route path="new" element={<NewProduct />} />
+              <Route index element={<ListAllProducts />} />
               <Route path=":id" element={<ProductDetail />}>
+                <Route path="description" element={<DescriptionInfo />} />
                 <Route path="reviews" element={<ListReview />} />
+                <Route path="warrantyPolicy" element={<WarrantyPolicy />} />
+                <Route path="returnPolicy" element={<ReturnPolicy />} />
               </Route>
             </Route>
+            <Route path="post" element={<h1>Post</h1>} />
+
             <Route path="*" element={<h1>404 Not Found</h1>} />
           </Route>
         ) : (

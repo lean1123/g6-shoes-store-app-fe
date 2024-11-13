@@ -1,7 +1,7 @@
-import { Link } from "@mui/material";
+import { Badge, Link } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../../../hooks/auth/authSlice";
+import { logout } from "../../hooks/auth/authSlice";
 import { useNavigate } from "react-router";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
@@ -39,7 +39,6 @@ function Header() {
       );
     }, 3000); // Đổi tên mỗi 3 giây
 
-
     return () => clearInterval(interval);
   }, []);
 
@@ -65,8 +64,9 @@ function Header() {
       </div>
       {isOpendDiv && (
         <div
-          className={`fixed top-0 left-0 right-0 h-3/5 bg-white z-10 transition-transform duration-500 ease-in-out ${isOpendDiv ? 'translate-y-0' : '-translate-y-full'
-            }`}
+          className={`fixed top-0 left-0 right-0 h-3/5 bg-white z-10 transition-transform duration-500 ease-in-out ${
+            isOpendDiv ? "translate-y-0" : "-translate-y-full"
+          }`}
         >
           <button
             className="text-2xl font-serif text-black border border-black w-10 h-10 flex items-center justify-center fixed right-4 top-4"
@@ -77,21 +77,41 @@ function Header() {
 
           <div className="flex mt-24 ml-40">
             <div className="mr-20">
-              <p className="text-sl font-calibri tracking-tight tracking-wide font-bold">GIAO HÀNG MIỄN PHÍ CHO THÀNH VIÊN CỦA LENDOM</p>
+              <p className="text-sl font-calibri tracking-tight font-bold">
+                GIAO HÀNG MIỄN PHÍ CHO THÀNH VIÊN CỦA LENDOM
+              </p>
               <div className="flex flex-col mt-2 text-sm">
-                <div className="font-calibri text-sl" >Đăng ký thành viên LENDOM để hưởng thụ dịch vụ giao hàng</div>
-                <div className="font-calibri">miễn phí! Hoặc bạn chỉ được nhận ưu đãi miễn phí giao hàng với</div>
-                <div className="font-calibri">hóa đơn có trị giá ít nhất 1.6 triệu đồng</div>
-                <Link class="text-base font-calibri font-bold text-black hover:underline mt-5">THAM GIA NGAY</Link>
+                <div className="font-calibri text-sl">
+                  Đăng ký thành viên LENDOM để hưởng thụ dịch vụ giao hàng
+                </div>
+                <div className="font-calibri">
+                  miễn phí! Hoặc bạn chỉ được nhận ưu đãi miễn phí giao hàng với
+                </div>
+                <div className="font-calibri">
+                  hóa đơn có trị giá ít nhất 1.6 triệu đồng
+                </div>
+                <Link class="text-base font-calibri font-bold text-black hover:underline mt-5">
+                  THAM GIA NGAY
+                </Link>
               </div>
             </div>
             <div className="">
-              <p className="text-sl font-calibri tracking-tight tracking-wide font-bold">TRẢ HÀNG DỄ DÀNG</p>
+              <p className="text-sl font-calibri tracking-tight font-bold">
+                TRẢ HÀNG DỄ DÀNG
+              </p>
               <div className="flex flex-col mt-2 text-sm">
-                <div className="font-calibri text-sl">Nếu bạn không hài lòng với đơn hàng của mình, bạn có thể</div>
-                <div className="font-calibri text-sl">được hoàn lại tiền. Vui lòng xem Chính Sách Trả Hàng của chúng</div>
-                <div className="font-calibri text-sl">tôi để biết thêm chi tiết.</div>
-                <Link class="text-base font-calibri font-bold text-black hover:underline mt-5">TRẢ HÀNG DỄ DÀNG</Link>
+                <div className="font-calibri text-sl">
+                  Nếu bạn không hài lòng với đơn hàng của mình, bạn có thể
+                </div>
+                <div className="font-calibri text-sl">
+                  được hoàn lại tiền. Vui lòng xem Chính Sách Trả Hàng của chúng
+                </div>
+                <div className="font-calibri text-sl">
+                  tôi để biết thêm chi tiết.
+                </div>
+                <Link class="text-base font-calibri font-bold text-black hover:underline mt-5">
+                  TRẢ HÀNG DỄ DÀNG
+                </Link>
               </div>
             </div>
           </div>
@@ -112,7 +132,7 @@ function Header() {
                 />
               </div>
               <div className="hidden sm:flex justify-center items-center mx-auto">
-                <div className="flex space-x-4">
+                <div className="flex space-x-4 ">
                   <button
                     onClick={() => navigate("/")}
                     className="text-black hover:text-red-500 px-3 py-2 rounded-md text-ml font-medium"
@@ -149,95 +169,91 @@ function Header() {
                   >
                     NỮ
                   </button>
-
                 </div>
-              </div></div>
+              </div>
+            </div>
             <div className="relative ml-3">
               <div>
-                {token ? (
+                <div className="flex items-center">
                   <button
-                    type="button"
-                    className="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                    className="px-3 py-2 rounded-md text-sm font-medium"
+                    onClick={handleButtonClick}
+                  >
+                    <img
+                      className="block h-5 w-auto"
+                      src="/search.png"
+                      width={17}
+                      height={17}
+                    />
+                  </button>
+                  <div
+                    className={`fixed top-0 left-0 right-0 h-2/5 bg-white z-10 transition-transform duration-500 ease-in-out ${
+                      isDropdownVisible ? "translate-y-0" : "-translate-y-full"
+                    }`}
+                  >
+                    <button
+                      className="absolute top-4 right-4 text-4xl"
+                      onClick={handleButtonClick}
+                    >
+                      &times;
+                    </button>
+                    {/* Nội dung của div khi được hiển thị */}
+                    <p className="font-bold text-xl mt-16 ml-28">
+                      Bạn đang tìm kiếm gì?
+                    </p>
+                    <div className="search-container mt-10 ml-36 flex justify-between w-4/5 mx-auto p-2">
+                      <input
+                        type="text"
+                        placeholder="Tìm kiếm sản phẩm, thương hiệu, và hơn thế nữa"
+                        className="w-full border-none no-border py-2 mr-2"
+                      />
+                      <button className="search-button bg-white rounded-md p-2">
+                        <img
+                          className="block h-5 w-auto"
+                          src="/search.png"
+                          width={17}
+                          height={17}
+                        />
+                      </button>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      token ? setIsOpen(!isOpen) : navigate("/login");
+                    }}
+                    className="px-3 py-2 rounded-md text-sm font-medium"
                     id="user-menu-button"
                     aria-expanded={isOpen}
                     aria-haspopup="true"
-                    onClick={() => setIsOpen(!isOpen)}
                   >
                     <img
-                      className="h-8 w-8 rounded-full"
-                      src="/defaultAvatar.jpg"
-                      alt="user"
-                      width={32}
-                      height={32}
+                      className="block h-5 w-auto"
+                      src="/people.png"
+                      width={17}
+                      height={17}
                     />
                   </button>
-                ) : (
-                  <>
-                    <button
-                      className="px-3 py-2 rounded-md text-sm font-medium"
-                      onClick={handleButtonClick}
-                    >
-                      <img
-                        className="block h-5 w-auto"
-                        src="/search.png"
-                        width={17}
-                        height={17}
-                      />
-                    </button>
-                    <div
-                      className={`fixed top-0 left-0 right-0 h-2/5 bg-white z-10 transition-transform duration-500 ease-in-out ${isDropdownVisible ? 'translate-y-0' : '-translate-y-full'
-                        }`}
-                    >
-                      <button className="absolute top-4 right-4 text-4xl" onClick={handleButtonClick}>
-                        &times;
-                      </button>
-                      {/* Nội dung của div khi được hiển thị */}
-                      <p className="font-bold text-xl mt-16 ml-28">Bạn đang tìm kiếm gì?</p>
-                      <div className="search-container mt-10 ml-36 flex justify-between w-4/5 mx-auto p-2">
-                        <input type="text" placeholder="Tìm kiếm sản phẩm, thương hiệu, và hơn thế nữa" className="w-full border-none no-border" />
-                        <button className="search-button">
-                          <img
-                            className="block h-5 w-auto"
-                            src="/search.png"
-                            width={17}
-                            height={17}
-                          />
-                        </button>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => navigate("/login")}
-                      className="px-3 py-2 rounded-md text-sm font-medium"
-                    >
-                      <img
-                        className="block h-5 w-auto"
-                        src="/people.png"
-                        width={17}
-                        height={17}
-                      />
-                    </button>
-                    <button
-                      className="px-3 py-2 rounded-md text-sm font-medium"
-                    >
+                  <button className="px-3 py-2 rounded-md text-sm font-medium">
+                    <Badge badgeContent={3} color="warning">
                       <img
                         className="block h-5 w-auto"
                         src="/heart.png"
                         width={17}
                         height={17}
                       />
-                    </button>
-                    <button
-                      className="px-3 py-2 rounded-md text-sm font-medium"
-                    >
+                    </Badge>
+                  </button>
+                  <button className="px-3 py-2 rounded-md text-sm font-medium">
+                    <Badge badgeContent={3} color="warning">
                       <img
                         className="block h-5 w-auto"
                         src="/market.png"
                         width={17}
                         height={17}
                       />
-                    </button>
-                  </>
-                )}
+                    </Badge>
+                  </button>
+                </div>
               </div>
               {isOpen && token && (
                 <div
@@ -248,22 +264,13 @@ function Header() {
                   tabIndex={-1}
                 >
                   <a
-                    href="#"
                     className="block px-4 py-2 text-sm text-gray-700 hover:cursor-pointer hover:bg-gray-300"
                     role="menuitem"
                     tabIndex={-1}
                     id="user-menu-item-0"
+                    onClick={() => navigate("/profile")}
                   >
                     Thông Tin Của Tôi
-                  </a>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:cursor-pointer hover:bg-gray-300"
-                    role="menuitem"
-                    tabIndex={-1}
-                    id="user-menu-item-1"
-                  >
-                    Chỉnh Sửa
                   </a>
                   <a
                     className="block px-4 py-2 text-sm text-gray-700 hover:cursor-pointer hover:bg-gray-300"

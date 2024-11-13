@@ -4,6 +4,7 @@ import * as yup from "yup";
 import { login } from "../../hooks/auth/authSlice";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 
 LoginForm.propTypes = {};
 
@@ -37,8 +38,8 @@ function LoginForm() {
 
   return (
     <>
-      <div className="flex justify-center p-7">
-        <h2 className="font-bold text-xl">Tài Khoản</h2>
+      <div className="flex justify-center p-3 text-black">
+        <h1 className="font-bold text-2xl">Tài Khoản</h1>
       </div>
       <div className="flex justify-center">
         <div className="boder-login mr-10 p-5">
@@ -47,7 +48,9 @@ function LoginForm() {
             onSubmit={form.handleSubmit(handleOnSubmit)}
           >
             <p className="pt-4 pb-5 text-sl font-bold">ĐĂNG NHẬP</p>
-            <p className="pb-5 text-sl font-calibri">Nếu bạn có tài khoản, vui lòng đăng nhập.</p>
+            <p className="pb-5 text-sl font-calibri">
+              Nếu bạn có tài khoản, vui lòng đăng nhập.
+            </p>
             <div className="w-full mb-4 search-container">
               <input
                 className="w-full boder no-border py-1 px-20 input-field"
@@ -69,14 +72,15 @@ function LoginForm() {
               />
             </div>
             <div className="flex justify-center">
-              <button type="submit" className="bg-red py-2 px-4 text-white hover:bg-black">
+              <button
+                type="submit"
+                className="bg-red py-2 px-4 text-white hover:bg-black"
+              >
                 Đăng Nhập
               </button>
             </div>
             <div className="flex justify-center text-sl mt-3 hover:text-red-500">
-              <button>
-                Bạn quên mật khẩu?
-              </button>
+              <button>Bạn quên mật khẩu?</button>
             </div>
           </form>
         </div>
@@ -85,16 +89,31 @@ function LoginForm() {
             className="flex-col items-start"
             onSubmit={form.handleSubmit(handleOnSubmit)}
           >
-            <p className="pt-4 pb-5 text-sl font-bold">BẠN LÀ KHÁCH HÀNG MỚI?</p>
+            <p className="pt-4 pb-5 text-sl font-bold">
+              BẠN LÀ KHÁCH HÀNG MỚI?
+            </p>
             <div className="flex flex-col mt-2 text-sm">
-              <div className="font-calibri text-sl" >Đăng ký tài khoản trên trang web này giúp bạn theo dõi tình</div>
-              <div className="font-calibri"> trạng và lịch sử đơn hàng của mình.Chúng tôi sẽ nhanh chóng</div>
-              <div className="font-calibri">tạo một tài khoản mới cho bạn.Để làm điều này,chúng tôi chỉ</div>
-              <div className="font-calibri">yêu cầu thông tin cần thiết để giúp quá trình mua hàng nhanh</div>
-              <div className="font-calibri">chóng và dễ dàng hơn.</div>
+              <div className="font-calibri text-sl">
+                Đăng ký tài khoản trên trang web này giúp bạn theo
+              </div>
+              <div className="font-calibri">
+                dõi tình trạng và lịch sử đơn hàng của mình. Chúng
+              </div>
+              <div className="font-calibri">
+                tôi sẽ  nhanh chóng tạo một tài khoản mới cho bạn.
+              </div>
+              <div className="font-calibri">
+                Để làm điều này,chúng tôi chỉ yêu cầu thông tin cần
+              </div>
+              <div className="font-calibri">thiết để giúp quá trình mua hàng nhanh chóng và dễ</div>
+              <div className="font-calibri">dàng hơn.</div>
             </div>
-            <div className="flex justify-center pt-8">
-              <button onClick={() => navigate("/signup")} type="submit" className="bg-red py-2 px-4 text-white hover:bg-black">         
+            <div className="flex justify-center pt-14">
+              <button
+                onClick={() => navigate("/signup")}
+                type="submit"
+                className="bg-red py-2 px-4 text-white hover:bg-black"
+              >
                 Tạo Một Tài Khoản
               </button>
             </div>
