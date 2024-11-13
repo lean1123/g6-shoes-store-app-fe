@@ -14,6 +14,7 @@ import ListTopSaleProducts from "./components/product/topSale/ListTopSaleProduct
 import ListReview from "./components/product/review/ListReview";
 import WarrantyPolicy from "./components/product/detail/WarrantyPolicy";
 import ReturnPolicy from "./components/product/detail/ReturnPolicy";
+import Profile from "./components/profile/Profile";
 
 function App() {
   const role = "customer";
@@ -24,6 +25,8 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginForm />} />
         <Route path="/signup" element={<SignUpForm />} />
+        <Route path="/profile" element={<Profile />} />
+
         {role !== "admin" ? (
           <Route path="/">
             <Route index element={<HomePage />} />
