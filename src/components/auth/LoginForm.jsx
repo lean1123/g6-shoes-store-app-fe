@@ -74,7 +74,7 @@ function LoginForm() {
             <div className="flex justify-center">
               <button
                 type="submit"
-                className="bg-orange-600 py-2 px-4 text-white hover:bg-black"
+                className="bg-red py-2 px-4 text-white hover:bg-black"
               >
                 Đăng Nhập
               </button>
@@ -112,7 +112,7 @@ function LoginForm() {
               <button
                 onClick={() => navigate("/signup")}
                 type="submit"
-                className="bg-orange-600 py-2 px-4 text-white hover:bg-black"
+                className="bg-red py-2 px-4 text-white hover:bg-black"
               >
                 Tạo Một Tài Khoản
               </button>
