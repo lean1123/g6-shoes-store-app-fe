@@ -132,7 +132,7 @@ function Header() {
                 />
               </div>
               <div className="hidden sm:flex justify-center items-center mx-auto">
-                <div className="flex space-x-4">
+                <div className="flex space-x-4 ">
                   <button
                     onClick={() => navigate("/")}
                     className="text-black hover:text-red-500 px-3 py-2 rounded-md text-ml font-medium"
@@ -207,7 +207,7 @@ function Header() {
                         placeholder="Tìm kiếm sản phẩm, thương hiệu, và hơn thế nữa"
                         className="w-full border-none no-border py-2 mr-2"
                       />
-                      <button className="search-button bg-slate-200 rounded-md p-2">
+                      <button className="search-button bg-white rounded-md p-2">
                         <img
                           className="block h-5 w-auto"
                           src="/search.png"

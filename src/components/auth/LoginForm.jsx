@@ -38,8 +38,8 @@ function LoginForm() {
 
   return (
     <>
-      <div className="flex justify-center p-7 text-black">
-        <h2 className="font-bold text-xl">Tài Khoản</h2>
+      <div className="flex justify-center p-3 text-black">
+        <h1 className="font-bold text-2xl">Tài Khoản</h1>
       </div>
       <div className="flex justify-center">
         <div className="boder-login mr-10 p-5">
@@ -94,21 +94,21 @@ function LoginForm() {
             </p>
             <div className="flex flex-col mt-2 text-sm">
               <div className="font-calibri text-sl">
-                Đăng ký tài khoản trên trang web này giúp bạn theo dõi tình
+                Đăng ký tài khoản trên trang web này giúp bạn theo
               </div>
               <div className="font-calibri">
-                {" "}
-                trạng và lịch sử đơn hàng của mình.Chúng tôi sẽ nhanh chóng
+                dõi tình trạng và lịch sử đơn hàng của mình. Chúng
               </div>
               <div className="font-calibri">
-                tạo một tài khoản mới cho bạn.Để làm điều này,chúng tôi chỉ
+                tôi sẽ  nhanh chóng tạo một tài khoản mới cho bạn.
               </div>
               <div className="font-calibri">
-                yêu cầu thông tin cần thiết để giúp quá trình mua hàng nhanh
+                Để làm điều này,chúng tôi chỉ yêu cầu thông tin cần
               </div>
-              <div className="font-calibri">chóng và dễ dàng hơn.</div>
+              <div className="font-calibri">thiết để giúp quá trình mua hàng nhanh chóng và dễ</div>
+              <div className="font-calibri">dàng hơn.</div>
             </div>
-            <div className="flex justify-center pt-8">
+            <div className="flex justify-center pt-14">
               <button
                 onClick={() => navigate("/signup")}
                 type="submit"
