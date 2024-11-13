@@ -15,7 +15,7 @@ import ListReview from "./components/product/review/ListReview";
 import WarrantyPolicy from "./components/product/detail/WarrantyPolicy";
 import ReturnPolicy from "./components/product/detail/ReturnPolicy";
 import Profile from "./components/profile/Profile";
-
+import Cart from "./components/cart/Cart";
 function App() {
   const role = "customer";
 
@@ -26,6 +26,7 @@ function App() {
         <Route path="/login" element={<LoginForm />} />
         <Route path="/signup" element={<SignUpForm />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/cart" element={<Cart />} />
 
         {role !== "admin" ? (
           <Route path="/">
