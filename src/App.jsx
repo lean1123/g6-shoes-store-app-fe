@@ -7,9 +7,12 @@ import Header from "./components/header";
 import HomePage from "./components/home";
 import DescriptionInfo from "./components/product/detail/DescriptionInfo";
 import ProductDetail from "./components/product/detail/ProductDetail";
-import ListProduct from "./components/product/ListProduct";
+import ReturnPolicy from "./components/product/detail/ReturnPolicy";
+import WarrantyPolicy from "./components/product/detail/WarrantyPolicy";
+import ListAllProducts from "./components/product/ListAllProducts";
 import ListNewProducts from "./components/product/new/ListNewProducts";
 import ListRecentProducts from "./components/product/recent/ListRecentProducts";
+import ListReview from "./components/product/review/ListReview";
 import ListTopSaleProducts from "./components/product/topSale/ListTopSaleProducts";
 import ListReview from "./components/product/review/ListReview";
 import WarrantyPolicy from "./components/product/detail/WarrantyPolicy";
@@ -38,7 +41,7 @@ function App() {
               element={<ListTopSaleProducts />}
             />
             <Route path="products">
-              <Route index element={<ListProduct />} />
+              <Route index element={<ListAllProducts />} />
               <Route path=":id" element={<ProductDetail />}>
                 <Route path="description" element={<DescriptionInfo />} />
                 <Route path="reviews" element={<ListReview />} />
