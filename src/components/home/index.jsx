@@ -185,11 +185,8 @@ function HomePage() {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="relative bg-white p-0 m-0 rounded-lg shadow-lg max-w-lg w-full">
               <button
-                className="absolute top-2 right-2 text-gray-600 hover:text-gray-800 z-20"
-                onClick={(e) => {
-                  e.preventDefault();
-                  closePopup();
-                }}
+                className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
+                onClick={() => closePopup()}
               >
                 ✖
               </button>

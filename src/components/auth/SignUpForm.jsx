@@ -6,9 +6,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { Link } from "@mui/material";
 
-LoginForm.propTypes = {};
-
-function LoginForm() {
+function SignUpForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -35,10 +33,11 @@ function LoginForm() {
       console.log("Error: ", error);
     }
   };
-
   return (
     <div className="p-10 my-20">
-      <h2 className="text-2xl font-bold text-center mb-10">Đăng Nhập</h2>
+      <h2 className="text-2xl font-bold text-center mb-10">
+        Đăng Ký Tài Khoản
+      </h2>
       <form
         className=" flex flex-col items-center"
         onSubmit={form.handleSubmit(handleOnSubmit)}
@@ -82,19 +81,19 @@ function LoginForm() {
             type="submit"
             className="py-2 px-8 bg-orange-600 rounded-md text-base font-semibold hover:bg-gray-950 hover:text-sky-50"
           >
-            Đăng Nhập
+            Đăng Ký Tài Khoản
           </button>
         </div>
         <div className="mt-10">
           <p>
-            Bạn chưa có tài khoản?{" "}
+            Bạn đã có tài khoản?
             <Link
-              href="/signup"
+              href="/login"
               className="hover:cursor-pointer hover:text-orange-600"
               color="textPrimary"
               underline="none"
             >
-              Đăng ký ngay
+              Đăng nhập
             </Link>
           </p>
         </div>
@@ -103,4 +102,4 @@ function LoginForm() {
   );
 }
 
-export default LoginForm;
+export default SignUpForm;

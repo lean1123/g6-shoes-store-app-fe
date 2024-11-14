@@ -14,7 +14,7 @@ function ListProduct({ items }) {
             <div key={item.id} className="relative h-full w-full border-1">
               <Link
                 className="w-full h-fit p-0 m-0 flex flex-col items-start relative "
-                to="/ListProduct/productItem"
+                to="/ListProduct/productItem" // Thêm đường dẫn
               >
                 <div className="relative z-20">
                   <button
