@@ -6,8 +6,6 @@ import SubProductDetail from "./SubProductDetail";
 function ProductDetail() {
   const params = useParams();
 
-  console.log(params);
-
   return (
     <div className="grid grid-cols-2 my-6">
       <div className="flex flex-row justify-center">
@@ -75,16 +73,28 @@ function ProductDetail() {
 
         <div className="w-full flex flex-col">
           <div className="w-3/4 flex justify-between items-center border-t border-gray-800 py-2">
-            <SubProductDetail title="Mô tả sản phẩm" path="/products" />
+            <SubProductDetail
+              title="Mô tả sản phẩm"
+              path={`/products/${params.id}/description`}
+            />
           </div>
           <div className="w-3/4 flex justify-between items-center border-t border-gray-800 py-2">
-            <SubProductDetail title="Thông tin bảo hành" path="/products" />
+            <SubProductDetail
+              title="Thông tin bảo hành"
+              path={`/products/${params.id}/warrantyPolicy`}
+            />
           </div>
           <div className="w-3/4 flex justify-between items-center border-t border-gray-800 py-2">
-            <SubProductDetail title="Chính sách đổi trả" path="/products" />
+            <SubProductDetail
+              title="Chính sách đổi trả"
+              path={`/products/${params.id}/returnPolicy`}
+            />
           </div>
           <div className="w-3/4 flex justify-between items-center border-t border-gray-800 py-2">
-            <SubProductDetail title="Reviews" path="/products" />
+            <SubProductDetail
+              title="Reviews"
+              path={`/products/${params.id}/reviews`}
+            />
           </div>
         </div>
       </div>

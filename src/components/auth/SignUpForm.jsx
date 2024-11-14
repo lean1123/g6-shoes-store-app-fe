@@ -1,104 +1,107 @@
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm } from "react-hook-form";
-import * as yup from "yup";
-import { login } from "../../hooks/auth/authSlice";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router";
-import { Link } from "@mui/material";
-
 function SignUpForm() {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const schema = yup.object().shape({
-    email: yup.string().email().required(),
-    password: yup.string().required(),
-  });
-
-  const form = useForm({
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-    resolver: yupResolver(schema),
-  });
-
-  const handleOnSubmit = (values) => {
-    try {
-      const action = login(values);
-      const result = dispatch(action);
-      console.log("result: ", result);
-      navigate("/");
-    } catch (error) {
-      console.log("Error: ", error);
-    }
-  };
   return (
-    <div className="p-10 my-20">
-      <h2 className="text-2xl font-bold text-center mb-10">
-        Đăng Ký Tài Khoản
-      </h2>
-      <form
-        className=" flex flex-col items-center"
-        onSubmit={form.handleSubmit(handleOnSubmit)}
-      >
-        <div>
-          <div className="mb-2">
-            <label
-              htmlFor="email"
-              className="block text-sm/6 font-medium text-gray-900"
-            >
-              Email
-            </label>
-            <input
-              className="border rounded-md py-2 px-10"
-              type="email"
-              id="email"
-              name="email"
-              placeholder="Vui lòng nhập email của bạn"
-              {...form.register("email")}
-            />
+    <>
+      <div className="flex justify-center pt-5">
+        <div className="boder-createAccount pt-3">
+          <div className="flex justify-center">
+            <h1 className="font-bold text-xl justify-center">Thêm Tài Khoản</h1>
           </div>
-          <div className="mb-4">
-            <label
-              htmlFor="password"
-              className="block text-sm/6 font-medium text-gray-900"
-            >
-              Mật khẩu
-            </label>
+          <div className="flex items-center pt-3">
+            <text className="ml-5 font-bold">Tên đầu:</text>
+            <div className="ml-8 mb-4 search-container w-3/5">
+              <input
+                className="w-full boder no-border py-1  input-field"
+                type="firstName"
+                id="firstName"
+                name="firstName"
+              />
+            </div>
+          </div>
+          <div className="flex items-center pt-3">
+            <text className="ml-5 font-bold">Tên cuối:</text>
+            <div className="ml-8 mb-4 search-container w-3/5">
+              <input
+                className="w-full boder no-border py-1  input-field"
+                type="lastName"
+                id="lastName"
+                name="lastName"
+              />
+            </div>
+          </div>
+          <div className="flex items-center pt-3">
+            <text className="ml-5 font-bold ">SDT:</text>
+            <div className="ml-16 mb-4 search-container w-3/5">
+              <input
+                className="w-full boder no-border py-1  input-field"
+                type="sdt"
+                id="sdt"
+                name="sdt"
+              />
+            </div>
+          </div>
+          <div className="flex items-center pt-3">
+            <text className="ml-5 font-bold ">Địa chỉ:</text>
+            <div className="ml-10 mb-4 search-container w-3/5">
+              <input
+                className="w-full boder no-border py-1  input-field"
+                type="diaChi"
+                id="diaChi"
+                name="diaChi"
+              />
+            </div>
+          </div>
+          <div className="flex items-center pt-5">
+            <text className="ml-5 font-bold">Hình ảnh:</text>
+            <div className="ml-10 ">
+              <input type="file" className="w-full" />
+            </div>
+          </div>
+          <div className="flex items-center pt-8">
+            <text className="ml-5 font-bold">Giới tính:</text>
+            <div className="ml-10 flex justify">
+              <div className="flex items-center mr-4">
+                <input type="radio" name="gender" value="male" />
+                <label htmlFor="male">Nam</label>
+              </div>
+              <div className="flex items-center">
+                <input type="radio" name="gender" value="female" />
+                <label htmlFor="female">Nữ</label>
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center pt-8">
+            <text className="ml-5 font-bold">Vai trò:</text>
+            <div className="ml-14 search-container">
+              <select className="w-full border no-border py-1 px-10 input-field">
+                <option value="user">Người dùng</option>
+                <option value="admin">Quản lý</option>
+              </select>
+            </div>
+          </div>
+          <div className="flex items-center pt-6 ml-6">
             <input
-              type="password"
-              id="password"
-              name="password"
-              placeholder="Vui lòng nhập mật khẩu của bạn"
-              className="border rounded-md py-2 px-10"
-              {...form.register("password")}
-            />
+              type="checkbox"
+              id="subscribe-checkbox"
+              className="mr-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+            ></input>
+            <label
+              htmlFor="subscribe-checkbox"
+              className="text-sm font-medium text-gray-700"
+            >
+              Bạn sẽ luôn được cập nhật các sản phẩm và ưu đãi mới nhất.
+            </label>
+          </div>
+          <div className="flex justify-center pt-6">
+            <button
+              type="submit"
+              className="bg-red py-2 px-4 text-white hover:bg-black"
+            >
+              Đăng Ký
+            </button>
           </div>
         </div>
-        <div>
-          <button
-            type="submit"
-            className="py-2 px-8 bg-orange-600 rounded-md text-base font-semibold hover:bg-gray-950 hover:text-sky-50"
-          >
-            Đăng Ký Tài Khoản
-          </button>
-        </div>
-        <div className="mt-10">
-          <p>
-            Bạn đã có tài khoản?
-            <Link
-              href="/login"
-              className="hover:cursor-pointer hover:text-orange-600"
-              color="textPrimary"
-              underline="none"
-            >
-              Đăng nhập
-            </Link>
-          </p>
-        </div>
-      </form>
-    </div>
+      </div>
+    </>
   );
 }
 

@@ -1,4 +1,4 @@
-import { Link } from "@mui/material";
+import { Badge, Link } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../hooks/auth/authSlice";
@@ -11,6 +11,7 @@ function Header() {
   const navigate = useNavigate();
   const [isOpendDiv, setIsOpenDiv] = useState(false);
   const [name, setName] = useState("TRẢ HÀNG DỄ DÀNG");
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
   const token = useSelector(
     (state) => state.persistedReducer?.user?.accessToken
@@ -38,12 +39,16 @@ function Header() {
       );
     }, 3000); // Đổi tên mỗi 3 giây
 
-    // Clear interval khi component unmount để tránh lỗi rò rỉ bộ nhớ
     return () => clearInterval(interval);
   }, []);
 
   const toggleDropdown = () => {
     setIsOpenDiv(!isOpendDiv);
+  };
+
+  // tìm kiếm
+  const handleButtonClick = () => {
+    setIsDropdownVisible(!isDropdownVisible);
   };
 
   return (
@@ -59,11 +64,9 @@ function Header() {
       </div>
       {isOpendDiv && (
         <div
-          className="bg-white h-3/5 w-full fixed top-0 left-0 z-50 transition-transform transform duration-3000 ease-out"
-          style={{
-            overflow: "hidden",
-            transform: isOpendDiv ? "translateY(0)" : "translateY(-100%)",
-          }}
+          className={`fixed top-0 left-0 right-0 h-3/5 bg-white z-10 transition-transform duration-500 ease-in-out ${
+            isOpendDiv ? "translate-y-0" : "-translate-y-full"
+          }`}
         >
           <button
             className="text-2xl font-serif text-black border border-black w-10 h-10 flex items-center justify-center fixed right-4 top-4"
@@ -115,113 +118,142 @@ function Header() {
         </div>
       )}
 
-      <nav className="bg-slate-100">
+      <nav className="bg-white">
         <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
           <div className="relative flex h-16 items-center justify-between">
             <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
               <div className="flex-shrink-0">
                 <img
-                  className="block h-11 w-auto"
+                  className="block h-16 w-auto"
                   src="/logo.png"
                   alt="Logo"
-                  width={32}
-                  height={32}
+                  width={40}
+                  height={40}
                 />
               </div>
-              <div className="hidden sm:ml-6 sm:block">
-                <div className="flex space-x-4">
-                  <Link
-                    href="/"
-                    className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                    underline="none"
-                    color="textPrimary"
-                    variant="overline"
+              <div className="hidden sm:flex justify-center items-center mx-auto">
+                <div className="flex space-x-4 ">
+                  <button
+                    onClick={() => navigate("/")}
+                    className="text-black hover:text-red-500 px-3 py-2 rounded-md text-ml font-medium"
                   >
-                    Trang Chủ
-                  </Link>
-                  <Link
-                    href="/about"
-                    className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                    underline="none"
-                    color="textPrimary"
-                    variant="overline"
+                    TRANG CHỦ
+                  </button>
+                  <button
+                    onClick={() => navigate("/about")}
+                    className="text-black hover:text-red-500 px-3 py-2 rounded-md text-ml font-medium"
                   >
-                    Về Chúng Tôi
-                  </Link>
-                  <Link
-                    href="/products"
-                    className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                    underline="none"
-                    color="textPrimary"
-                    variant="overline"
+                    VỀ CHÚNG TÔI
+                  </button>
+                  <button
+                    onClick={() => navigate("/products")}
+                    className="text-black hover:text-red-500 px-3 py-2 rounded-md text-ml font-medium"
                   >
-                    Sản Phẩm
-                  </Link>
-                  <Link
-                    href="/categories"
-                    className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                    underline="none"
-                    color="textPrimary"
-                    variant="overline"
+                    SẢN PHẨM
+                  </button>
+                  <button
+                    onClick={() => navigate("/categories")}
+                    className="text-black  hover:text-red-500 px-3 py-2 rounded-md text-ml font-medium"
                   >
-                    Danh Mục
-                  </Link>
-                  <Link
-                    href="/categoryforBoy"
-                    className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                    underline="none"
-                    color="textPrimary"
-                    variant="overline"
+                    DANH MỤC
+                  </button>
+                  <button
+                    onClick={() => navigate("/categoryforBoy")}
+                    className="text-black  hover:text-red-500 px-3 py-2 rounded-md text-ml font-medium"
                   >
-                    Nam
-                  </Link>
-                  <Link
-                    href="/categoryforGirl"
-                    className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                    underline="none"
-                    color="textPrimary"
-                    variant="overline"
+                    NAM
+                  </button>
+                  <button
+                    onClick={() => navigate("/categoryforGirl")}
+                    className="text-black  hover:text-red-500 px-3 py-2 rounded-md text-ml font-medium"
                   >
-                    Nữ
-                  </Link>
+                    NỮ
+                  </button>
                 </div>
               </div>
             </div>
             <div className="relative ml-3">
               <div>
-                {token ? (
+                <div className="flex items-center">
                   <button
-                    type="button"
-                    className="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                    className="px-3 py-2 rounded-md text-sm font-medium"
+                    onClick={handleButtonClick}
+                  >
+                    <img
+                      className="block h-5 w-auto"
+                      src="/search.png"
+                      width={17}
+                      height={17}
+                    />
+                  </button>
+                  <div
+                    className={`fixed top-0 left-0 right-0 h-2/5 bg-white z-10 transition-transform duration-500 ease-in-out ${
+                      isDropdownVisible ? "translate-y-0" : "-translate-y-full"
+                    }`}
+                  >
+                    <button
+                      className="absolute top-4 right-4 text-4xl"
+                      onClick={handleButtonClick}
+                    >
+                      &times;
+                    </button>
+                    {/* Nội dung của div khi được hiển thị */}
+                    <p className="font-bold text-xl mt-16 ml-28">
+                      Bạn đang tìm kiếm gì?
+                    </p>
+                    <div className="search-container mt-10 ml-36 flex justify-between w-4/5 mx-auto p-2">
+                      <input
+                        type="text"
+                        placeholder="Tìm kiếm sản phẩm, thương hiệu, và hơn thế nữa"
+                        className="w-full border-none no-border py-2 mr-2"
+                      />
+                      <button className="search-button bg-white rounded-md p-2">
+                        <img
+                          className="block h-5 w-auto"
+                          src="/search.png"
+                          width={17}
+                          height={17}
+                        />
+                      </button>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      token ? setIsOpen(!isOpen) : navigate("/login");
+                    }}
+                    className="px-3 py-2 rounded-md text-sm font-medium"
                     id="user-menu-button"
                     aria-expanded={isOpen}
                     aria-haspopup="true"
-                    onClick={() => setIsOpen(!isOpen)}
                   >
                     <img
-                      className="h-8 w-8 rounded-full"
-                      src="/defaultAvatar.jpg"
-                      alt="user"
-                      width={32}
-                      height={32}
+                      className="block h-5 w-auto"
+                      src="/people.png"
+                      width={17}
+                      height={17}
                     />
                   </button>
-                ) : (
-                  <>
-                    <Link
-                      href="/login"
-                      className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                    >
-                      Đăng Nhập
-                    </Link>
-                    <Link
-                      href="/signup"
-                      className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                    >
-                      Đăng Ký
-                    </Link>
-                  </>
-                )}
+                  <button className="px-3 py-2 rounded-md text-sm font-medium">
+                    <Badge badgeContent={3} color="warning">
+                      <img
+                        className="block h-5 w-auto"
+                        src="/heart.png"
+                        width={17}
+                        height={17}
+                      />
+                    </Badge>
+                  </button>
+                  <button className="px-3 py-2 rounded-md text-sm font-medium">
+                    <Badge badgeContent={3} color="warning">
+                      <img
+                        className="block h-5 w-auto"
+                        src="/market.png"
+                        width={17}
+                        height={17}
+                      />
+                    </Badge>
+                  </button>
+                </div>
               </div>
               {isOpen && token && (
                 <div
@@ -232,22 +264,13 @@ function Header() {
                   tabIndex={-1}
                 >
                   <a
-                    href="#"
                     className="block px-4 py-2 text-sm text-gray-700 hover:cursor-pointer hover:bg-gray-300"
                     role="menuitem"
                     tabIndex={-1}
                     id="user-menu-item-0"
+                    onClick={() => navigate("/profile")}
                   >
                     Thông Tin Của Tôi
-                  </a>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:cursor-pointer hover:bg-gray-300"
-                    role="menuitem"
-                    tabIndex={-1}
-                    id="user-menu-item-1"
-                  >
-                    Chỉnh Sửa
                   </a>
                   <a
                     className="block px-4 py-2 text-sm text-gray-700 hover:cursor-pointer hover:bg-gray-300"
