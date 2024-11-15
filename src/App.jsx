@@ -14,9 +14,10 @@ import ListNewProducts from "./components/product/new/ListNewProducts";
 import ListRecentProducts from "./components/product/recent/ListRecentProducts";
 import ListReview from "./components/product/review/ListReview";
 import ListTopSaleProducts from "./components/product/topSale/ListTopSaleProducts";
-import ListReview from "./components/product/review/ListReview";
-import WarrantyPolicy from "./components/product/detail/WarrantyPolicy";
-import ReturnPolicy from "./components/product/detail/ReturnPolicy";
+import UpdateProfile from "./components/profile/UpdateProfile";
+// import ListReview from "./components/product/review/ListReview";
+// import WarrantyPolicy from "./components/product/detail/WarrantyPolicy";
+// import ReturnPolicy from "./components/product/detail/ReturnPolicy";
 import Profile from "./components/profile/Profile";
 import Cart from "./components/cart/Cart";
 function App() {
@@ -30,7 +31,7 @@ function App() {
         <Route path="/signup" element={<SignUpForm />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/cart" element={<Cart />} />
-
+        <Route path="/updateProfile" element={<UpdateProfile />} />
         {role !== "admin" ? (
           <Route path="/">
             <Route index element={<HomePage />} />

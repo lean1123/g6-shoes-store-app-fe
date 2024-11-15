@@ -1,7 +1,13 @@
 import React from "react";
 import "font-awesome/css/font-awesome.min.css";
+import { useNavigate } from "react-router-dom";
 
 function Profile() {
+  const navigate = useNavigate();
+
+  const handleUpdateProfile = () => {
+    navigate("/updateProfile");
+  };
   return (
     <div className="flex p-5 font-sans">
       {/* Sidebar */}
@@ -58,7 +64,9 @@ function Profile() {
             <span>Điện thoại: </span>
             0987835247
           </p>
-          <button className="bg-blue-500 text-white py-2 px-4 rounded mt-3 font-semibold hover:bg-blue-600">
+          <button
+           onClick={handleUpdateProfile} 
+          className="bg-blue-500 text-white py-2 px-4 rounded mt-3 font-semibold hover:bg-blue-600">
             <a href="">CẬP NHẬT THÔNG TIN TÀI KHOẢN</a>
           </button>
         </div>
