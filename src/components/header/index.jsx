@@ -243,7 +243,12 @@ function Header() {
                       />
                     </Badge>
                   </button>
-                  <button className="px-3 py-2 rounded-md text-sm font-medium">
+                  <button
+                    className="px-3 py-2 rounded-md text-sm font-medium"
+                    onClick={() => {
+                      navigate("/cart");
+                    }}
+                  >
                     <Badge badgeContent={3} color="warning">
                       <img
                         className="block h-5 w-auto"
