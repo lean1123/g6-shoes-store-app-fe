@@ -42,7 +42,7 @@ function App() {
               element={<ListTopSaleProducts />}
             />
             <Route path="products">
-              <Route index element={<ListAllProducts />} />
+              <Route index element={<ListTopSaleProducts />} />
               <Route path=":id" element={<ProductDetail />}>
                 <Route path="description" element={<DescriptionInfo />} />
                 <Route path="reviews" element={<ListReview />} />
