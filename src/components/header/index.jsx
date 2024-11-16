@@ -64,9 +64,8 @@ function Header() {
       </div>
       {isOpendDiv && (
         <div
-          className={`fixed top-0 left-0 right-0 h-3/5 bg-white z-10 transition-transform duration-500 ease-in-out ${
-            isOpendDiv ? "translate-y-0" : "-translate-y-full"
-          }`}
+          className={`fixed top-0 left-0 right-0 h-3/5 bg-white z-10 transition-transform duration-500 ease-in-out ${isOpendDiv ? "translate-y-0" : "-translate-y-full"
+            }`}
         >
           <button
             className="text-2xl font-serif text-black border border-black w-10 h-10 flex items-center justify-center fixed right-4 top-4"
@@ -140,16 +139,16 @@ function Header() {
                     TRANG CHỦ
                   </button>
                   <button
+                    onClick={() => navigate("/products")}
+                    className="text-black hover:text-red-500 px-3 py-2 rounded-md text-ml font-medium"
+                  >
+                    BÁN CHẠY
+                  </button>
+                  <button
                     onClick={() => navigate("/about")}
                     className="text-black hover:text-red-500 px-3 py-2 rounded-md text-ml font-medium"
                   >
                     VỀ CHÚNG TÔI
-                  </button>
-                  <button
-                    onClick={() => navigate("/products")}
-                    className="text-black hover:text-red-500 px-3 py-2 rounded-md text-ml font-medium"
-                  >
-                    SẢN PHẨM
                   </button>
                   <button
                     onClick={() => navigate("/categories")}
@@ -187,9 +186,8 @@ function Header() {
                     />
                   </button>
                   <div
-                    className={`fixed top-0 left-0 right-0 h-2/5 bg-white z-10 transition-transform duration-500 ease-in-out ${
-                      isDropdownVisible ? "translate-y-0" : "-translate-y-full"
-                    }`}
+                    className={`fixed top-0 left-0 right-0 h-2/5 bg-white z-10 transition-transform duration-500 ease-in-out ${isDropdownVisible ? "translate-y-0" : "-translate-y-full"
+                      }`}
                   >
                     <button
                       className="absolute top-4 right-4 text-4xl"

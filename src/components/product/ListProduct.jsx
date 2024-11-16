@@ -4,7 +4,7 @@ import { Link } from "@mui/material";
 
 function ListProduct({ items, title = "", path = "" }) {
   return (
-    <div className="w-full flex flex-col justify-center items-center px-20 py-5">
+    <div className="w-full flex flex-col justify-center items-center px-9 py-1 rounded-b-lg">
       <p className="text-3xl text-black font-sans font-bold my-4">{title}</p>
       <div className="grid grid-cols-5 gap-4">
         {items.map((item) => (

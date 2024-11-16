@@ -7,9 +7,10 @@ function ProductItem({ item }) {
   const [isHeart, setIsHeart] = React.useState(false);
 
   return (
-    <div key={item.id} className="relative h-full w-full border-1">
+    <div key={item.id} className="relative h-full w-full border-1 overflow-hidden group">
+        
       <Link
-        className="w-full h-fit p-0 m-0 flex flex-col items-start relative "
+        className="w-full h-fit p-0 m-0 flex flex-col items-start relative"
         href={`/products/${item.id}`}
         underline="none"
         color="textPrimary"
@@ -37,13 +38,10 @@ function ProductItem({ item }) {
             className="w-full h-full object-cover"
           />
         </div>
-
         <div className="h-full w-full flex flex-col p-1.5">
           <div className="flex justify-between w-full">
             <p className="font-medium font-mono">{item.sizes.length} Size</p>
-            <p className="font-medium font-mono">
-              {item.colors.length} Màu sắc
-            </p>
+            <p className="font-medium font-mono">{item.colors.length} Màu sắc</p>
           </div>
           <div className="flex flex-col items-start w-full">
             <p className="font-medium font-mono">{item.name}</p>
@@ -51,6 +49,9 @@ function ProductItem({ item }) {
           </div>
         </div>
       </Link>
+      <div className="details absolute bottom-0 left-0 w-full bg-red-500 text-white p-2 transform translate-y-full transition-transform duration-300 ease-in-out group-hover:translate-y-0">
+            <p className="font-medium">Chi tiết sản phẩm</p>
+          </div>
     </div>
   );
 }

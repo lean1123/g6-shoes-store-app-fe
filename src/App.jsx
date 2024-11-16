@@ -14,8 +14,14 @@ import ListNewProducts from "./components/product/new/ListNewProducts";
 import ListRecentProducts from "./components/product/recent/ListRecentProducts";
 import ListReview from "./components/product/review/ListReview";
 import ListTopSaleProducts from "./components/product/topSale/ListTopSaleProducts";
-import Cart from "./components/cart";
+import UpdateProfile from "./components/profile/UpdateProfile";
+// import ListReview from "./components/product/review/ListReview";
+// import WarrantyPolicy from "./components/product/detail/WarrantyPolicy";
+// import ReturnPolicy from "./components/product/detail/ReturnPolicy";
+import Profile from "./components/profile/Profile";
+import Cart from "./components/cart/Cart";
 import Pay from "./components/cart/pay/Pay";
+import Cart from "./components/cart";
 
 function App() {
   const location = useLocation(); // Lấy đường dẫn hiện tại
@@ -30,6 +36,9 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginForm />} />
         <Route path="/signup" element={<SignUpForm />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/updateProfile" element={<UpdateProfile />} />
         {role !== "admin" ? (
           <Route path="/">
             <Route index element={<HomePage />} />
@@ -40,7 +49,7 @@ function App() {
               element={<ListTopSaleProducts />}
             />
             <Route path="products">
-              <Route index element={<ListAllProducts />} />
+              <Route index element={<ListTopSaleProducts />} />
               <Route path=":id" element={<ProductDetail />}>
                 <Route path="description" element={<DescriptionInfo />} />
                 <Route path="reviews" element={<ListReview />} />
