@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router";
+import { Route, Routes, useLocation } from "react-router";
 import "./App.css";
 import LoginForm from "./components/auth/LoginForm";
 import SignUpForm from "./components/auth/SignUpForm";
@@ -20,12 +20,19 @@ import UpdateProfile from "./components/profile/UpdateProfile";
 // import ReturnPolicy from "./components/product/detail/ReturnPolicy";
 import Profile from "./components/profile/Profile";
 import Cart from "./components/cart/Cart";
+import Pay from "./components/cart/pay/Pay";
+import Cart from "./components/cart";
+
 function App() {
+  const location = useLocation(); // Lấy đường dẫn hiện tại
   const role = "customer";
 
   return (
     <div className="App">
-      <Header />
+      {/* Kiểm tra đường dẫn, ẩn Header và Footer nếu ở trang cart hoặc cart/pay */}
+      {location.pathname !== "/cart" && location.pathname !== "/cart/pay" && (
+        <Header />
+      )}
       <Routes>
         <Route path="/login" element={<LoginForm />} />
         <Route path="/signup" element={<SignUpForm />} />
@@ -51,14 +58,17 @@ function App() {
               </Route>
             </Route>
             <Route path="post" element={<h1>Post</h1>} />
-
             <Route path="*" element={<h1>404 Not Found</h1>} />
           </Route>
         ) : (
           <h1>Admin</h1>
         )}
+        <Route path="cart" element={<Cart />} />
+        <Route path="cart/pay" element={<Pay />} />
       </Routes>
-      <Footer />
+      {location.pathname !== "/cart" && location.pathname !== "/cart/pay" && (
+        <Footer />
+      )}
     </div>
   );
 }

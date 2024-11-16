@@ -100,12 +100,14 @@ function LoginForm() {
                 dõi tình trạng và lịch sử đơn hàng của mình. Chúng
               </div>
               <div className="font-calibri">
-                tôi sẽ  nhanh chóng tạo một tài khoản mới cho bạn.
+                tôi sẽ nhanh chóng tạo một tài khoản mới cho bạn.
               </div>
               <div className="font-calibri">
                 Để làm điều này,chúng tôi chỉ yêu cầu thông tin cần
               </div>
-              <div className="font-calibri">thiết để giúp quá trình mua hàng nhanh chóng và dễ</div>
+              <div className="font-calibri">
+                thiết để giúp quá trình mua hàng nhanh chóng và dễ
+              </div>
               <div className="font-calibri">dàng hơn.</div>
             </div>
             <div className="flex justify-center pt-14">
