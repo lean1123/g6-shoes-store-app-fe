@@ -1,8 +1,8 @@
 .scrollbar-hidden {
-  -ms-overflow-style: none; /* Cho IE/Edge */
-  scrollbar-width: none; /* Cho Firefox */
+	-ms-overflow-style: none;
+	scrollbar-width: none;
 }
 
 .scrollbar-hidden::-webkit-scrollbar {
-  display: none;
+	display: none;
 }
