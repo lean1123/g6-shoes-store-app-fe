@@ -22,7 +22,7 @@ function Footer() {
           TRỞ THÀNH HỘI VIÊN & HƯỞNG ƯU ĐÃI 15%
           <Link
             to="/login"
-            className="inline-block bg-white ml-10 px-4 py-2 rounded-md hover:bg-yellow-500 from-neutral-950 hover:text-white transition-colors hover:italic"
+            className="inline-block bg-white ml-10 px-4 py-2 rounded-md hover:bg-yellow-500 from-neutral-950 hover:text-slate-800 transition-colors hover:italic"
           >
             ĐĂNG KÝ MIỄN PHÍ <ArrowRightOutlined className="text-2xl" />
           </Link>
