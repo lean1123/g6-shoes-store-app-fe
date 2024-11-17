@@ -7,7 +7,7 @@ function ProductDetail() {
   const params = useParams();
 
   return (
-    <div className="grid grid-cols-2 my-6">
+    <div className="grid grid-cols-2 my-6 font-calibri">
       <div className="flex flex-row justify-center">
         <div className="flex-col h-96 overflow-auto scrollbar-hidden p-2 mr-2">
           {Array.from({ length: 10 }).map((_, index) => (
@@ -59,11 +59,13 @@ function ProductDetail() {
             ))}
           </div>
         </div>
-        <div className="mb-8 text-base text-slate-800">
-          <Link href="/products/1">Hướng dẫn chọn size</Link>
+        <div className="mb-8 text-base text-slate-800 ml-24">
+          <Link href="/products/1" color="textPrimary">
+            Hướng dẫn chọn size
+          </Link>
         </div>
         <div className="flex justify-start ml-24 mb-10">
-          <button className="btn bg-orange-600 px-8 py-2 font-bold hover:bg-slate-950 hover:text-sky-50">
+          <button className="bg-orange-600 px-8 py-2 font-bold hover:bg-slate-950 hover:text-sky-50">
             THÊM VÀO GIỎ HÀNG
           </button>
           <div className="px-8 py-2 font-bold border w-30 text-orange-600 border-orange-600">
