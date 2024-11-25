@@ -5,6 +5,7 @@ import { login } from "../../hooks/auth/authSlice";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import "@fortawesome/fontawesome-free/css/all.min.css";
+import { Link } from "react-router-dom";
 
 LoginForm.propTypes = {};
 
@@ -72,12 +73,18 @@ function LoginForm() {
               />
             </div>
             <div className="flex justify-center">
-              <button
+              {/* <button
                 type="submit"
                 className="bg-red py-2 px-4 text-white hover:bg-black"
               >
                 Đăng Nhập
-              </button>
+              </button> */}
+              <Link
+                to="/admin"
+                className="bg-red py-2 px-4 text-white hover:bg-black"
+              >
+                Đăng Nhập
+              </Link>
             </div>
             <div className="flex justify-center text-sl mt-3 hover:text-red-500">
               <button>Bạn quên mật khẩu?</button>
