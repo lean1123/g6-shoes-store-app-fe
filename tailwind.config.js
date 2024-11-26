@@ -11,6 +11,7 @@ export default {
 			fontFamily: {
 				calibri: ['Calibri', 'sans-serif'],
 			},
+			display: ['group-hover'],
 		},
 	},
 	plugins: [

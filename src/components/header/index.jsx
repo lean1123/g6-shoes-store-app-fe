@@ -258,45 +258,48 @@ function Header() {
 										</button>
 										<div
 											className='absolute -right-56 top-10 transform -translate-x-1/2 mt-2 p-2 bg-white
-                      text-black text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10
-                      flex flex-col items-center w-96 min-h-60 shadow-inner'
+                      						text-black text-sm rounded hidden group-hover:block transition-opacity duration-600 z-50
+                      							w-96 min-h-60 shadow-inner'
 										>
-											<span className='w-full text-base font-semibold font-calibri border-b py-2'>
-												GIỎ HÀNG
-											</span>
-											<div className='w-full h-52 flex flex-col overflow-y-auto scroll-smooth scrollbar-thin scrollbar-webkit mb-1'>
-												{Array.from({ length: 10 }).map((item, index) => (
-													<div
-														className='w-full flex items-center justify-around border-b p-1'
-														key={index}
-													>
-														<img
-															src='https://product.hstatic.net/1000230642/product/hsm004700trg__6__f55d057a6fb64cc498e04f8ce7fa4b31.jpg'
-															alt='san pham'
-															className='w-20 h-20'
-														/>
+											<div className='w-full flex flex-col items-center'>
+												<span className='w-full text-base font-semibold font-calibri border-b py-2'>
+													GIỎ HÀNG
+												</span>
+												<div className='w-full h-52 flex flex-col overflow-y-auto scroll-smooth scrollbar-thin scrollbar-webkit mb-1'>
+													{Array.from({ length: 10 }).map((item, index) => (
+														<div
+															className='w-full flex items-center justify-around border-b p-1'
+															key={index}
+														>
+															<img
+																src='https://product.hstatic.net/1000230642/product/hsm004700trg__6__f55d057a6fb64cc498e04f8ce7fa4b31.jpg'
+																alt='san pham'
+																className='w-20 h-20'
+															/>
 
-														<div className='flex flex-col font-calibri items-start'>
-															<span className='text-base font-semibold'>Áo thun nam</span>
-															<span className='text-base'>Màu/Size</span>
-															<span className='text-sm text-gray-400 font-semibold'>
-																Số lượng: 1
+															<div className='flex flex-col font-calibri items-start'>
+																<span className='text-base font-semibold'>Áo thun nam</span>
+																<span className='text-base'>Màu/Size</span>
+																<span className='text-sm text-gray-400 font-semibold'>
+																	Số lượng: 1
+																</span>
+															</div>
+															<span className='text-sm font-semibold font-calibri'>
+																200.000 VND
 															</span>
 														</div>
-														<span className='text-sm font-semibold font-calibri'>
-															200.000 VND
-														</span>
-													</div>
-												))}
+													))}
+												</div>
+												<div className='w-full flex justify-between items-center p-2 shadow-lg'>
+													<span className='text-base font-calibri'>TỔNG TIỀN:</span>
+													<span className='text-lg font-calibri'>1.000.000 đ</span>
+												</div>
+												<button className='w-full bg-black text-white p-2'>
+													ĐI TỚI GIỎ HÀNG
+												</button>
 											</div>
-											<div className='w-full flex justify-between items-center p-2 shadow-lg'>
-												<span className='text-base font-calibri'>TỔNG TIỀN:</span>
-												<span className='text-lg font-calibri'>1.000.000 đ</span>
-											</div>
-											<button className='w-full bg-black text-white p-2'>
-												ĐI TỚI GIỎ HÀNG
-											</button>
 										</div>
+										<div className='h-4 absolute left-0 right-0 p-2 z-10 hidden group-hover:block'></div>
 									</div>
 								</div>
 							</div>
