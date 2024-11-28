@@ -18,48 +18,57 @@ import Cart from './components/cart/Cart';
 import Pay from './components/cart/pay/Pay';
 import Profile from './components/profile/Profile';
 import LoginForm from './components/auth/LoginForm';
+import AdminPage from './components/admin';
 function App() {
 	const location = useLocation();
-	const role = 'customer';
+	const role = 'admin';
 
 	return (
 		<div className='App'>
-			{location.pathname !== '/cart' && location.pathname !== '/cart/pay' && (
-				<Header />
-			)}
-			<Routes>
-				<Route path='/login' element={<LoginForm />} />
-				<Route path='/signup' element={<SignUpForm />} />
-				<Route path='/profile' element={<Profile />} />
-				<Route path='/cart' element={<Cart />} />
-				<Route path='/updateProfile' element={<UpdateProfile />} />
-				{role !== 'admin' ? (
-					<Route path='/'>
-						<Route index element={<HomePage />} />
-						<Route path='listNewProducts' element={<ListNewProducts />} />
-						<Route path='listRecentProducts' element={<ListRecentProducts />} />
-						<Route path='listTopSaleProducts' element={<ListTopSaleProducts />} />
-						<Route path='products'>
-							<Route index element={<ListTopSaleProducts />} />
-							<Route path=':id' element={<ProductDetail />}>
-								<Route path='description' element={<DescriptionInfo />} />
-								<Route path='reviews' element={<ListReview />} />
-								<Route path='warrantyPolicy' element={<WarrantyPolicy />} />
-								<Route path='returnPolicy' element={<ReturnPolicy />} />
+			{/* {role === 'admin' ? (
+				<Routes>
+					<Route path='/admin/*' element={<AdminPage />} />
+				</Routes>
+			) : ( */}
+			<>
+				{location.pathname !== '/cart' &&
+					location.pathname !== '/cart/pay' &&
+					!location.pathname.includes('/admin') && <Header />}
+				<Routes>
+					<Route path='/login' element={<LoginForm />} />
+					<Route path='/signup' element={<SignUpForm />} />
+					<Route path='/profile' element={<Profile />} />
+					<Route path='/cart' element={<Cart />} />
+					<Route path='/updateProfile' element={<UpdateProfile />} />
+					{role !== 'admin' ? (
+						<Route path='/'>
+							<Route index element={<HomePage />} />
+							<Route path='listNewProducts' element={<ListNewProducts />} />
+							<Route path='listRecentProducts' element={<ListRecentProducts />} />
+							<Route path='listTopSaleProducts' element={<ListTopSaleProducts />} />
+							<Route path='products'>
+								<Route index element={<ListTopSaleProducts />} />
+								<Route path=':id' element={<ProductDetail />}>
+									<Route path='description' element={<DescriptionInfo />} />
+									<Route path='reviews' element={<ListReview />} />
+									<Route path='warrantyPolicy' element={<WarrantyPolicy />} />
+									<Route path='returnPolicy' element={<ReturnPolicy />} />
+								</Route>
 							</Route>
+							<Route path='post' element={<h1>Post</h1>} />
+							<Route path='*' element={<h1>404 Not Found</h1>} />
 						</Route>
-						<Route path='post' element={<h1>Post</h1>} />
-						<Route path='*' element={<h1>404 Not Found</h1>} />
-					</Route>
-				) : (
-					<h1>Admin</h1>
-				)}
-				<Route path='cart' element={<Cart />} />
-				<Route path='cart/pay' element={<Pay />} />
-			</Routes>
-			{location.pathname !== '/cart' && location.pathname !== '/cart/pay' && (
-				<Footer />
-			)}
+					) : (
+						<Route path='admin/*' element={<AdminPage />} />
+					)}
+					<Route path='cart' element={<Cart />} />
+					<Route path='cart/pay' element={<Pay />} />
+				</Routes>
+				{location.pathname !== '/cart' &&
+					location.pathname !== '/cart/pay' &&
+					!location.pathname.includes('/admin') && <Footer />}
+			</>
+			{/* )} */}
 		</div>
 	);
 }
