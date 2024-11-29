@@ -21,6 +21,11 @@ const userApi = {
             },
         });
     },
+    search: async (keyword) => {
+        return AdminAxiosClient.get(`/users/search`, {
+            params: { keyword },
+        });
+    },
 };
 
 export default userApi;
