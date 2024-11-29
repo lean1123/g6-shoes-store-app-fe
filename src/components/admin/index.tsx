@@ -18,6 +18,7 @@ import EditProduct from './pages/EditProduct';
 import EditProductItem from './pages/EditProductItem';
 import ListUser from './pages/ListUser';
 import UserDetail from './pages/UserDetail';
+import EditUser from './pages/EditUser';
 
 function AdminPage() {
 	const [loading, setLoading] = useState(true);
@@ -55,6 +56,7 @@ function AdminPage() {
 				<Route path='/categories/add' element={<CreateCategory />} />
 				<Route path='/users/list' element={<ListUser />} />
 				<Route path='/users/:id' element={<UserDetail />} />
+				<Route path='/users/:id/edit' element={<EditUser />} />
 				<Route path='/orders' element={<ListOrder />} />
 				<Route path='/orders/detail' element={<OrderDetail isEdit={false} />} />
 				<Route path='/orders/edit' element={<OrderDetail isEdit={true} />} />

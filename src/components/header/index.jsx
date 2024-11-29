@@ -22,7 +22,7 @@ function Header() {
 	const { cartItems } = useSelector((state) => state.persistedReducer.cart);
 
 	const totalPrice = useMemo(() => {
-		return cartItems.reduce(
+		return cartItems?.reduce(
 			(acc, item) => acc + item?.productItem?.price * item?.quantity,
 			0,
 		);

@@ -1,9 +1,10 @@
 import { CloudUpload } from '@mui/icons-material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import userApi from '../../../api/userApi';
 import { Alert, AlertTitle, CircularProgress } from '@mui/material';
+import { useNavigate, useParams } from 'react-router';
 
 interface User {
 	id?: string;
@@ -15,10 +16,24 @@ interface User {
 	email?: string;
 }
 
-function EditUser({ user }: { user: User }) {
+function EditUser() {
 	const [image, setImage] = useState<File | null>(null);
 	const [loading, setLoading] = useState(false);
 	const [successMessage, setSuccessMessage] = useState('');
+	const [user, setUser] = useState<User>();
+	const { id } = useParams();
+	const navigation = useNavigate();
+
+	// Fetch user information
+	const fetchUser = async () => {
+		try {
+			const response = await userApi.getById(id);
+			console.log(response.data);
+			setUser(response.data);
+		} catch (error) {
+			console.error('Failed to fetch user:', error);
+		}
+	};
 
 	// Schema validation
 	const validationSchema = Yup.object({
@@ -31,18 +46,17 @@ function EditUser({ user }: { user: User }) {
 		phone: Yup.string()
 			.required('Phone number is required')
 			.matches(/^[0-9]+$/, 'Phone number must contain only digits'),
-		email: Yup.string().email('Invalid email format'),
 		gender: Yup.string().required('Gender is required'),
-		image: Yup.mixed<File>().test(
-			'fileType',
-			'Only images are allowed',
-			(value) => {
-				return (
-					!value ||
-					(value instanceof File && ['image/jpeg', 'image/png'].includes(value.type))
-				);
-			},
-		),
+		// image: Yup.mixed<File>().test(
+		// 	'fileType',
+		// 	'Only images are allowed',
+		// 	(value) => {
+		// 		return (
+		// 			!value ||
+		// 			(value instanceof File && ['image/jpeg', 'image/png'].includes(value.type))
+		// 		);
+		// 	},
+		// ),
 	});
 
 	// Handle image input change
@@ -58,19 +72,19 @@ function EditUser({ user }: { user: User }) {
 	};
 
 	// Handle form submission
-	const handleSubmit = async (values: User & { avatar: File | null }) => {
+	const handleSubmit = async (values: User) => {
 		setLoading(true);
 		try {
 			const formData = new FormData();
 			formData.append('firstName', values.firstName);
 			formData.append('lastName', values.lastName);
 			formData.append('phone', values.phone);
-			formData.append('email', values.email || '');
 			formData.append('gender', values.gender);
 			if (image) {
-				formData.append('avatar', image);
+				formData.append('image', image);
 			}
-			const response = await userApi.updateUser(user.id, formData);
+			console.log('Form Data:', values);
+			const response = await userApi.update(id, formData);
 			console.log(response);
 			setSuccessMessage('User information updated successfully!');
 		} catch (error) {
@@ -80,6 +94,11 @@ function EditUser({ user }: { user: User }) {
 		}
 	};
 
+	useEffect(() => {
+		fetchUser();
+		console.log('User:', user);
+	}, []);
+
 	return (
 		<div className='p-3 shadow-md rounded-md grid grid-cols-12 gap-6 bg-white'>
 			<div className='col-span-12'>
@@ -88,17 +107,17 @@ function EditUser({ user }: { user: User }) {
 
 			<Formik
 				initialValues={{
-					firstName: user.firstName,
-					lastName: user.lastName,
-					phone: user.phone,
-					email: user.email || '',
-					gender: user.gender,
+					firstName: user?.firstName || '',
+					lastName: user?.lastName || '',
+					phone: user?.phone || '',
+					gender: user?.gender || '',
 					avatar: null,
 				}}
 				validationSchema={validationSchema}
 				onSubmit={(values) => {
-					handleSubmit(values);
+					handleSubmit(values as User);
 				}}
+				enableReinitialize
 			>
 				{({ setFieldValue }) => (
 					<Form className='col-span-12 grid grid-cols-12 gap-6'>
@@ -117,7 +136,7 @@ function EditUser({ user }: { user: User }) {
 								) : (
 									<img
 										alt='User Avatar'
-										src={user.avatar || ''}
+										src={user?.avatar || ''}
 										className='absolute w-[200px]'
 									/>
 								)}
@@ -192,23 +211,6 @@ function EditUser({ user }: { user: User }) {
 								</div>
 
 								<div>
-									<label className='text-black' htmlFor='email'>
-										Email
-									</label>
-									<Field
-										type='email'
-										id='email'
-										name='email'
-										className='w-full rounded-md border border-gray-300 p-2'
-									/>
-									<ErrorMessage
-										name='email'
-										component='div'
-										className='text-red-500 text-sm mt-1'
-									/>
-								</div>
-
-								<div>
 									<label className='text-black' htmlFor='gender'>
 										Gender
 									</label>
@@ -219,8 +221,8 @@ function EditUser({ user }: { user: User }) {
 										className='w-full rounded-md border border-gray-300 p-2'
 									>
 										<option value='' label='Select Gender' />
-										<option value='Male' label='Male' />
-										<option value='Female' label='Female' />
+										<option value='MALE' label='Male' />
+										<option value='FEMALE' label='Female' />
 									</Field>
 									<ErrorMessage
 										name='gender'
@@ -229,19 +231,22 @@ function EditUser({ user }: { user: User }) {
 									/>
 								</div>
 							</div>
-							<button
-								type='submit'
-								disabled={loading}
-								className='bg-blue-500 text-white p-2 rounded-md mt-3 min-w-[200px] flex items-center justify-center'
-							>
-								{loading ? <CircularProgress size={20} /> : 'Save Changes'}
-							</button>
-							{successMessage && (
-								<Alert severity='success' className='mt-3'>
-									<AlertTitle>Success</AlertTitle>
-									{successMessage}
-								</Alert>
-							)}
+							<div className='flex gap-4'>
+								<button
+									type='submit'
+									disabled={loading}
+									className='bg-blue-500 text-white p-2 rounded-md mt-3 min-w-[200px] flex items-center justify-center'
+								>
+									{loading ? <CircularProgress size={20} /> : 'Save Changes'}
+								</button>
+								<button
+									type='button'
+									onClick={() => navigation(-1)}
+									className='bg-gray-500 text-white p-2 rounded-md mt-3 min-w-[200px] flex items-center justify-center'
+								>
+									Back
+								</button>
+							</div>
 						</div>
 					</Form>
 				)}

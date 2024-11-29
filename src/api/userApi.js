@@ -14,6 +14,13 @@ const userApi = {
 		const url = `/users/${userId}`;
 		return AdminAxiosClient.get(url);
 	},
+    update: async (id, userData) => {
+        return AdminAxiosClient.put(`/users/${id}`, userData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+    },
 };
 
 export default userApi;

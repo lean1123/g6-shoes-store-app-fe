@@ -122,8 +122,8 @@ const cartSlice = createSlice({
 			})
 			.addCase(viewCart.fulfilled, (state, action) => {
 				state.loading = false;
-				state.cartItems = action.payload.data;
-				state.totalPrice = action.payload.data.reduce((total, item) => {
+				state.cartItems = action.payload?.data;
+				state.totalPrice = action.payload?.data?.reduce((total, item) => {
 					return (total += item.productItem.price * item.quantity);
 				}, 0);
 				state.totalQuantity = action.payload.data.length;
