@@ -71,7 +71,6 @@ export const updateQuantity = createAsyncThunk(
 	},
 );
 
-// Delete an item from the cart
 export const deleteCartDetail = createAsyncThunk(
 	'cart/deleteCartDetail',
 	async (productId, { rejectWithValue }) => {

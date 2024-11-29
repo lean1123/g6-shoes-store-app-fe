@@ -40,7 +40,6 @@ function Header() {
 		navigate('/');
 	};
 
-	//set time
 	useEffect(() => {
 		dispatch(viewCart());
 		const interval = setInterval(() => {
@@ -49,7 +48,7 @@ function Header() {
 					? 'GIAO HÀNG MIỄN PHÍ CHO THÀNH VIÊN CỦA LENDOM'
 					: 'TRẢ HÀNG DỄ DÀNG',
 			);
-		}, 3000); // Đổi tên mỗi 3 giây
+		}, 3000);
 
 		return () => clearInterval(interval);
 	}, [dispatch]);
@@ -58,7 +57,6 @@ function Header() {
 		setIsOpenDiv(!isOpendDiv);
 	};
 
-	// tìm kiếm
 	const handleButtonClick = () => {
 		setIsDropdownVisible(!isDropdownVisible);
 	};
