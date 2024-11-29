@@ -6,6 +6,7 @@ import {
 	Category,
 	ContactPage,
 	Dashboard,
+	Group,
 	Inventory,
 	KeyboardArrowDown,
 	KeyboardArrowUp,
@@ -245,10 +246,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 							</SidebarLinkGroup>
 							{/* <!-- Menu Item Brands --> */}
 
-							{/* <!-- Menu Item Brands --> */}
+							{/* <!-- Menu Item Category --> */}
 							<SidebarLinkGroup
 								activeCondition={
-									pathname === '/admin/brands' || pathname.includes('brands')
+									pathname === '/admin/categories' || pathname.includes('categories')
 								}
 							>
 								{(handleClick, open) => {
@@ -309,6 +310,23 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 								}}
 							</SidebarLinkGroup>
 							{/* <!-- Menu Item Category --> */}
+
+							{/* <!-- Menu Item User --> */}
+							<li>
+								<NavLink
+									to='/admin/users/list'
+									className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-slate-300 duration-300 ease-in-out hover:bg-gray-800  ${
+										pathname.includes('/users') &&
+										'bg-gray-800 border-l-[2px] border-orange-800'
+									}`}
+								>
+									<Group
+										className={`w-5 h-5 ${pathname.includes('/users') && 'text-orange-800'}`}
+									/>
+									User
+								</NavLink>
+							</li>
+							{/* <!-- Menu Item User --> */}
 
 							{/* <!-- Menu Item Order --> */}
 							<li>

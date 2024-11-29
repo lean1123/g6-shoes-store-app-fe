@@ -5,10 +5,13 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate, useParams } from 'react-router';
 import productItemApi from '../../../api/productItemApi';
+import { Replay } from '@mui/icons-material';
 
-export default function AddProductItem() {
+export default function EditProductItem() {
 	const [images, setImages] = useState<File[]>([]);
-	const { id } = useParams();
+	const [oldImages, setOldImages] = useState<string[]>([]);
+	const [indexImageDelete, setIndexImageDelete] = useState<number[]>([]);
+	const { id, itemId } = useParams();
 	const navigation = useNavigate();
 	const [loading, setLoading] = useState(false);
 
@@ -22,13 +25,13 @@ export default function AddProductItem() {
 			.required('Price is required'),
 		size: Yup.string().required('Size is required'),
 		color: Yup.string().required('Color is required'),
-		listDetailImages: Yup.array()
-			.min(1, 'At least one image is required')
-			.required('Images are required'),
+		// listDetailImages: Yup.array()
+		// 	.min(1, 'At least one image is required')
+		// 	.required('Images are required'),
 	});
 
 	// Initial values for the form
-	const initialValues = {
+	const [initialValues, setInitialValues] = useState({
 		quantity: '',
 		price: '',
 		size: '',
@@ -36,7 +39,8 @@ export default function AddProductItem() {
 		listDetailImages: images,
 		status: 'INSTOCK',
 		product: id,
-	};
+		listImagesDelete: indexImageDelete,
+	});
 
 	// Handle submit
 	const handleSubmit = async (values) => {
@@ -53,33 +57,111 @@ export default function AddProductItem() {
 				formData.append('listDetailImages', image);
 			});
 			formData.append('product', id as string);
+			values.listImagesDelete.forEach((indexDelete) => {
+				formData.append('listImagesDelete', indexDelete);
+			});
 
 			// Call API to add product item
-			const response = await productItemApi.addNewProductItem(formData);
+			const response = await productItemApi.updateProductItem(itemId, formData);
 			console.log(response);
 		} catch (error) {
-			console.error('Failed to add product item:', error);
-			alert('Failed to add product item!');
+			console.error('Failed to edit product item:', error);
+			alert('Failed to edit product item!');
 		} finally {
 			setLoading(false);
 		}
 	};
 
+	const fetchProductItem = async () => {
+		setLoading(true);
+		try {
+			const response = await productItemApi.getProductItemById(itemId);
+			console.log(response.data);
+			const productItem = response.data.data;
+
+			// Set initial values for the form
+			setInitialValues({
+				quantity: productItem.quantity || 0,
+				price: productItem.price || 0,
+				size: productItem.size || '',
+				color: productItem.color || '',
+				listDetailImages: productItem.listDetailImages || [],
+				status: productItem.status || 'INSTOCK',
+				product: id,
+				listImagesDelete: indexImageDelete,
+			});
+			setOldImages(productItem.listDetailImages || []);
+		} catch (error) {
+			console.error('Failed to fetch product item:', error);
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const deleteImage = (index) => {
+		setIndexImageDelete([...indexImageDelete, index]);
+	};
+
+	const refreshImages = (index) => {
+		setIndexImageDelete(indexImageDelete.filter((item) => item !== index));
+	};
+
+	useEffect(() => {
+		console.log('itemId', itemId);
+	}, [itemId]);
+
+	useEffect(() => {
+		fetchProductItem();
+	}, []);
+
 	return (
 		<>
-			<Breadcrumb pageName='Add Product Item' />
+			<Breadcrumb pageName='Edit Product Item' />
 			<DragDropImageUploader onImagesChange={setImages} />
 			<div className='p-3 rounded-md shadow-md mt-4 bg-white'>
+				<p className='font-bold '>List Old Image</p>
+				<div className='w-full h-auto flex justify-start items-start flex-wrap max-h-[150px] overflow-y-auto overflow-x-scroll no-scrollbar mt-2'>
+					{oldImages.map((image, index) => {
+						const isDeleted = indexImageDelete.includes(index);
+						return (
+							<div key={index} className='w-[100px] mr-1 h-[100px] relative mb-2'>
+								{isDeleted && (
+									<div className='absolute rounded-md top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center'>
+										<p className='text-white'>Deleted</p>
+									</div>
+								)}
+								{isDeleted ? (
+									<span
+										className='absolute -top-1 right-2 text-lg cursor-pointer z-[999]'
+										onClick={() => refreshImages(index)}
+									>
+										<Replay className='text-white' />
+									</span>
+								) : (
+									<span
+										className='absolute -top-1 right-2 text-lg cursor-pointer z-[999]'
+										onClick={() => deleteImage(index)}
+									>
+										&times;
+									</span>
+								)}
+								<img src={image} alt='' className='w-full h-full rounded' />
+							</div>
+						);
+					})}
+				</div>
 				<Formik
 					initialValues={initialValues}
 					validationSchema={validationSchema}
 					onSubmit={(values) => handleSubmit(values)}
+					enableReinitialize
 				>
 					{({ setFieldValue }) => {
 						// Sử dụng useEffect để đồng bộ images với Formik
 						useEffect(() => {
 							setFieldValue('listDetailImages', images);
-						}, [images, setFieldValue]);
+							setFieldValue('listImagesDelete', indexImageDelete);
+						}, [images, setFieldValue, indexImageDelete]);
 
 						return (
 							<Form>
@@ -178,7 +260,7 @@ export default function AddProductItem() {
 											type='submit'
 											className='w-full bg-blue-500 text-white rounded-md p-2'
 										>
-											{loading ? 'Loading...' : 'Add Product Item'}
+											{loading ? 'Loading...' : 'Save'}
 										</button>
 									</div>
 									<div className='col-span-12'>

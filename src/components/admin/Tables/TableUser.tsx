@@ -9,60 +9,48 @@ import productApi from '../../../api/productApi';
 import brandApi from '../../../api/brandApi';
 import collectionApi from '../../../api/collectionApi';
 import { useNavigate } from 'react-router';
+import userApi from '../../../api/userApi';
 
-interface Product {
-	id?: string;
-	name: string;
-	description: string;
-	category: {
-		id: string;
-		name: string;
-		description: string;
-	};
-	collection: {
-		id: string;
-		name: string;
-		brandId: string;
-	};
+interface User {
+	id: string;
+	firstName: string;
+	lastName: string;
+	phone: string;
+	avatar: string;
 	gender: string;
-	createDate?: Date;
-	rating: number;
-	brand?: string;
-	image?: string;
+	email?: string;
 }
 
-const TableProduct = () => {
+const TableUser = () => {
 	const [loading, setLoading] = React.useState(false);
-	const [productData, setProductData] = React.useState<Product[]>([]);
 	const navigate = useNavigate();
-	const fetchProduct = async () => {
+	const [users, setUsers] = React.useState<User[]>([]);
+	const fetchUser = async () => {
 		setLoading(true);
 		try {
-			const response = await productApi.getAll();
+			const response = await userApi.getAll();
 			console.log(response.data);
-			const products = response.data;
+			const users = response.data;
 
-			const productsWithBrand = await Promise.all(
-				products.map(async (product: Product) => {
-					if (product.collection && product.collection.brandId) {
-						const brandResponse = await brandApi.getBrandById(
-							product.collection.brandId,
-						);
+			const accountWithUser = await Promise.all(
+				users.map(async (user: User) => {
+					if (user.id) {
+						const accountResponse = await userApi.getAccount(user.id);
 						return {
-							...product,
-							brand: brandResponse.data.brandName,
+							...user,
+							email: accountResponse.data.email,
 						};
 					} else {
 						// If no collection or brandId exists, handle accordingly (e.g., return product as is)
 						return {
-							...product,
-							brand: 'Unknown', // Or any fallback value
+							...user,
+							email: 'Unknown', // Or any fallback value
 						};
 					}
 				}),
 			);
 
-			setProductData(productsWithBrand);
+			setUsers(accountWithUser);
 		} catch (error) {
 			console.error('Failed to fetch product:', error);
 		} finally {
@@ -71,7 +59,7 @@ const TableProduct = () => {
 	};
 
 	useEffect(() => {
-		fetchProduct();
+		fetchUser();
 	}, []);
 
 	return (
@@ -84,65 +72,71 @@ const TableProduct = () => {
 				<table className='w-full table-auto'>
 					<thead>
 						<tr className='bg-gray-2 text-left'>
-							<th className='min-w-[220px] py-2 px-4 font-medium text-black xl:pl-11'>
-								Product Name
+							<th className='min-w-[120px] py-2 px-4 font-medium text-black xl:pl-11'>
+								Avatar
 							</th>
 							<th className='min-w-[120px] py-2 px-4 font-medium text-black'>
-								Description
+								First Name
 							</th>
-							<th className='min-w-[150px] py-2 px-4 font-medium text-black'>Brand</th>
-							<th className='min-w-[120px] py-2 px-4 font-medium text-black'>
-								Category
+							<th className='min-w-[150px] py-2 px-4 font-medium text-black'>
+								Last Name
 							</th>
+							<th className='min-w-[120px] py-2 px-4 font-medium text-black'>Email</th>
+							<th className='min-w-[120px] py-2 px-4 font-medium text-black'>Phone</th>
 							<th className='min-w-[120px] py-2 px-4 font-medium text-black'>
-								Collection
-							</th>
-							<th className='min-w-[120px] py-2 px-4 font-medium text-black'>
-								Rating
+								Gender
 							</th>
 							<th className='py-2 px-4 font-medium text-black'>Actions</th>
 						</tr>
 					</thead>
 					<tbody>
-						{productData.map((productItem, key) => (
+						{users.map((item, key) => (
 							<tr key={key}>
 								<td className='border-b border-[#eee] py-2 px-4 pl-9 xl:pl-11'>
 									<div className='flex flex-col gap-4 sm:flex-row sm:items-center'>
 										<div className='h-12 w-16 rounded-md'>
 											<img
 												src={
-													productItem?.image ||
+													item?.avatar ||
 													'https://th.bing.com/th/id/R.b1edc35f0fa63d0e0b3c9bc5537de942?rik=CZKF5DOfyXPxig&pid=ImgRaw&r=0'
 												}
 												alt='Product'
 												className='h-12 w-16 rounded-md'
 											/>
 										</div>
-										<p className='text-sm text-black'>{productItem.name}</p>
+										{/* <p className='text-sm text-black'>{item.name}</p> */}
 									</div>
 								</td>
 								<td className='border-b border-[#eee] py-5 px-4'>
 									<p className='text-black dark:text-white'>
-										{productItem.description.length > 15
-											? productItem.description.substring(0, 15) + '...'
-											: productItem.description}
-									</p>
-								</td>
-								<td className='border-b border-[#eee] py-5 px-4'>
-									<p className='text-black dark:text-white'>{productItem.brand}</p>
-								</td>
-								<td className='border-b border-[#eee] py-5 px-4'>
-									<p className='text-black dark:text-white'>
-										{productItem.category ? productItem.category.name : 'Unknown'}
+										{item.firstName.length > 15
+											? item.firstName.substring(0, 15) + '...'
+											: item.firstName}
 									</p>
 								</td>
 								<td className='border-b border-[#eee] py-5 px-4'>
 									<p className='text-black dark:text-white'>
-										{productItem.collection ? productItem.collection.name : 'Unknown'}
+										{item.lastName.length > 15
+											? item.lastName.substring(0, 15) + '...'
+											: item.lastName}
+									</p>
+								</td>
+
+								<td className='border-b border-[#eee] py-5 px-4'>
+									<p className='text-black dark:text-white'>
+										{item.email ? item.email : 'Unknown'}
+									</p>
+								</td>
+
+								<td className='border-b border-[#eee] py-5 px-4'>
+									<p className='text-black dark:text-white'>
+										{item.phone ? item.phone : 'Unknown'}
 									</p>
 								</td>
 								<td className='border-b border-[#eee] py-5 px-4'>
-									<p className='text-black dark:text-white'>{productItem.rating}⭐</p>
+									<p className='text-black dark:text-white'>
+										{item.gender ? item.gender : 'Unknown'}
+									</p>
 								</td>
 								<td className='border-b border-[#eee] py-5 px-4'>
 									<div className='flex items-center space-x-3.5'>
@@ -150,29 +144,12 @@ const TableProduct = () => {
 										<div className='relative group'>
 											<button
 												className='hover:text-blue-500'
-												onClick={() =>
-													navigate(`/admin/products/${productItem.id}/list-item`)
-												}
+												onClick={() => navigate(`/admin/users/${item.id}`)}
 											>
 												<VisibilityOutlined className='w-5 h-5' />
 											</button>
 											<span className='absolute opacity-0 group-hover:opacity-100 bg-black text-white text-xs rounded py-1 px-2 -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap'>
-												View item
-											</span>
-										</div>
-
-										{/* Add button */}
-										<div className='relative group'>
-											<button
-												className='hover:text-green-500'
-												onClick={() =>
-													navigate(`/admin/products/${productItem.id}/add-item`)
-												}
-											>
-												<Add className='w-5 h-5' />
-											</button>
-											<span className='absolute opacity-0 group-hover:opacity-100 bg-black text-white text-xs rounded py-1 px-2 -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap'>
-												Add product item
+												View
 											</span>
 										</div>
 
@@ -180,7 +157,7 @@ const TableProduct = () => {
 										<div className='relative group'>
 											<button
 												className='hover:text-yellow-500'
-												onClick={() => navigate(`/admin/products/edit/${productItem.id}`)}
+												onClick={() => navigate(`/admin/users/${item.id}/edit`)}
 											>
 												<EditOutlined className='w-5 h-5' />
 											</button>
@@ -209,4 +186,4 @@ const TableProduct = () => {
 	);
 };
 
-export default TableProduct;
+export default TableUser;

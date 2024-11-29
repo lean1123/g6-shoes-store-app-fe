@@ -1,35 +1,37 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Product } from '../types/product';
 import { Add, DeleteForeverOutlined } from '@mui/icons-material';
 import { EditOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router';
+import categoryApi from '../../../api/categoryApi';
 
 interface Category {
 	id: number;
 	name: string;
+	description: string;
 }
-
-const categoryData: Category[] = [
-	{
-		id: 1,
-		name: 'Nike',
-	},
-	{
-		id: 2,
-		name: 'Adidas',
-	},
-	{
-		id: 3,
-		name: 'Puma',
-	},
-	{
-		id: 4,
-		name: 'Reebok',
-	},
-];
 
 const TableCategory = () => {
 	const navigate = useNavigate();
+	const [loading, setLoading] = React.useState(false);
+	const [categories, setCategories] = React.useState<Category[]>([]);
+
+	useEffect(() => {
+		const fetchCategory = async () => {
+			setLoading(true);
+			try {
+				const response = await categoryApi.getAll();
+				console.log(response.data);
+				setCategories(response.data);
+			} catch (error) {
+				console.error('Failed to fetch category:', error);
+			} finally {
+				setLoading(false);
+			}
+		};
+		fetchCategory();
+	}, []);
+
 	return (
 		<div className='rounded-md border border-gray-300 bg-white shadow-sm '>
 			<div className='py-6 px-4 md:px-6 xl:px-7'>
@@ -47,7 +49,7 @@ const TableCategory = () => {
 						</tr>
 					</thead>
 					<tbody>
-						{categoryData.map((categoryItem, key) => (
+						{categories.map((categoryItem, key) => (
 							<tr key={key}>
 								<td className='border-b border-[#eee] py-2 px-4 pl-9 xl:pl-11'>
 									<p className='text-sm text-black'>{categoryItem.name}</p>

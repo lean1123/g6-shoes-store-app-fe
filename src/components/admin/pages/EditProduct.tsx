@@ -2,11 +2,10 @@ import React, { useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Breadcrumb from '../Breadcrumbs/Breadcrumb';
-import { useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import brandApi from '../../../api/brandApi';
 import collectionApi from '../../../api/collectionApi';
 import categoryApi from '../../../api/categoryApi';
-import { set } from 'react-hook-form';
 import productApi from '../../../api/productApi';
 
 interface Brand {
@@ -37,17 +36,41 @@ interface Product {
 	createDate?: Date;
 }
 
-function CreateProduct() {
+function EditProduct() {
 	const navigate = useNavigate();
+	const { id } = useParams();
 
 	const [loading, setLoading] = React.useState(false);
-	const [success, setSuccess] = React.useState(false);
 	const [brands, setBrands] = React.useState<Brand[]>([]);
 	const [selectedBrand, setSelectedBrand] = React.useState<Brand>();
 	const [collections, setCollections] = React.useState<Collection[]>([]);
 	const [categories, setCategories] = React.useState<Category[]>([]);
 
-	const [productId, setProductId] = React.useState<String>('');
+	const fetchProduct = async () => {
+		setLoading(true);
+		try {
+			const response = await productApi.getById(id); // Gọi API lấy thông tin sản phẩm theo id
+			console.log(response.data);
+			const product = response.data;
+			// brand
+			const brandResponse = await brandApi.getBrandById(
+				product.collection.brandId,
+			);
+			setSelectedBrand(brandResponse.data);
+			formik.setValues({
+				name: product.name || '',
+				description: product.description || '',
+				category: product.category.id || '', // Thay đổi để khớp với định dạng của API
+				collection: product.collection.id || '', // Thay đổi để khớp với định dạng của API
+				gender: product.gender || '',
+			});
+		} catch (error) {
+			console.error('Failed to fetch product:', error);
+			alert('Failed to load product data');
+		} finally {
+			setLoading(false);
+		}
+	};
 
 	const fetchBrands = async () => {
 		setLoading(true);
@@ -111,6 +134,7 @@ function CreateProduct() {
 	});
 
 	useEffect(() => {
+		fetchProduct();
 		fetchBrands();
 		fetchCategories();
 	}, []);
@@ -137,15 +161,11 @@ function CreateProduct() {
 			formData.append('category', values.category);
 			formData.append('collection', values.collection);
 			formData.append('gender', values.gender);
-			const response = await productApi.addNew(formData);
+			const response = await productApi.update(id, formData);
 			console.log(response);
-			if (response.status === 200) {
-				setSuccess(true);
-				setProductId(response.data.data.id);
-			}
 		} catch (error) {
-			console.error('Failed to create product:', error);
-			alert('Failed to create product!');
+			console.error('Failed to edit product:', error);
+			alert('Failed to edit product!');
 		} finally {
 			setLoading(false);
 		}
@@ -153,41 +173,10 @@ function CreateProduct() {
 
 	return (
 		<>
-			<Breadcrumb pageName='Create Product' />
+			<Breadcrumb pageName='Edit Product' />
 			<div className='grid grid-cols-12 gap-4'>
-				{/* Preview of the product */}
-				<div className='col-span-3 max-h-[550px] p-6 rounded-md border border-gray-300 bg-white shadow-sm'>
-					<img
-						src='https://th.bing.com/th/id/R.341824fb9731186e574fe00ab9a5da66?rik=uFs84f4Clc%2b7bw&pid=ImgRaw&r=0'
-						alt='product'
-						className='w-full rounded-md'
-					/>
-					<h2 className='font-medium mt-4 text-black'>Sneaker 01 black</h2>
-					<p className='text-gray-500'>Nike</p>
-					<p className='text-black mt-4'>Price:</p>
-					<p className='font-medium text-black'>$200</p>
-					<p className='text-black mt-4'>Size:</p>
-					<div className='flex flex-row gap-2 mt-2'>
-						<button className='w-6 h-6 rounded-md bg-slate-500'>
-							<p className='text-white'>S</p>
-						</button>
-						<button className='w-6 h-6 rounded-md bg-slate-500'>
-							<p className='text-white'>M</p>
-						</button>
-						<button className='w-6 h-6 rounded-md bg-slate-500'>
-							<p className='text-white'>L</p>
-						</button>
-					</div>
-					<p className='text-black mt-4'>Color:</p>
-					<div className='flex flex-row gap-2 mt-2'>
-						<button className='w-6 h-6 rounded-full bg-black'></button>
-						<button className='w-6 h-6 rounded-full bg-blue-500'></button>
-						<button className='w-6 h-6 rounded-full bg-red-500'></button>
-					</div>
-				</div>
-
 				{/* Form to create a product */}
-				<div className='col-span-9'>
+				<div className='col-span-12'>
 					<form
 						onSubmit={(e) => {
 							e.preventDefault();
@@ -195,7 +184,7 @@ function CreateProduct() {
 						}}
 						className='grid grid-cols-1 gap-4 p-6 rounded-md border border-gray-300 bg-white shadow-sm'
 					>
-						<h2 className='text-black text-xl font-medium'>Product Information</h2>
+						<h2 className='text-black text-xl font-medium'>ID: {id}</h2>
 
 						<div>
 							<label className='text-black' htmlFor='name'>
@@ -336,7 +325,7 @@ function CreateProduct() {
 							<button
 								type='button'
 								className='w-full bg-red-500 text-white rounded-md py-2'
-								onClick={() => navigate('/admin/products')}
+								onClick={() => navigate(-1)}
 							>
 								Cancel
 							</button>
@@ -346,17 +335,9 @@ function CreateProduct() {
 								onClick={
 									() => console.log('clicked') // () => navigate('/admin/products')
 								}
-								disabled={loading || success}
+								disabled={loading}
 							>
-								{loading ? 'Loading...' : 'Create Product'}
-							</button>
-							<button
-								type='button'
-								className='w-full bg-green-500 text-white rounded-md py-2'
-								onClick={() => navigate(`/admin/products/${productId}/add-item`)}
-								disabled={!success}
-							>
-								Add Product Item
+								{loading ? 'Loading...' : 'Edit Product'}
 							</button>
 						</div>
 					</form>
@@ -366,4 +347,4 @@ function CreateProduct() {
 	);
 }
 
-export default CreateProduct;
+export default EditProduct;

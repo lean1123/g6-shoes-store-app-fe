@@ -2,9 +2,12 @@ import { CloudUpload } from '@mui/icons-material';
 import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import brandApi from '../../../api/brandApi';
+import { Alert, AlertTitle, CircularProgress } from '@mui/material';
 
 function CreateBrand() {
 	const [image, setImage] = useState<File | null>(null);
+	const [loading, setLoading] = useState(false);
 
 	// Schema validation
 	const validationSchema = Yup.object({
@@ -34,6 +37,24 @@ function CreateBrand() {
 		}
 	};
 
+	const handleSubmit = async (values: {
+		brandName: string;
+		avatar: File | null;
+	}) => {
+		setLoading(true);
+		if (!image) {
+			alert('Please select an image');
+			return;
+		}
+		console.log(values);
+		const formData = new FormData();
+		formData.append('brandName', values.brandName);
+		formData.append('avatar', image);
+		const response = await brandApi.addNewBrand(formData);
+		console.log(response);
+		setLoading(false);
+	};
+
 	return (
 		<div className='p-3 shadow-md rounded-md grid grid-cols-12 gap-6 bg-white'>
 			<div className='col-span-12'>
@@ -41,11 +62,10 @@ function CreateBrand() {
 			</div>
 
 			<Formik
-				initialValues={{ brandName: '', image: null }}
+				initialValues={{ brandName: '', avatar: null }}
 				validationSchema={validationSchema}
 				onSubmit={(values) => {
-					console.log('Form Data:', values);
-					alert('Brand Created Successfully!');
+					handleSubmit(values);
 				}}
 			>
 				{({ setFieldValue }) => (
@@ -102,9 +122,10 @@ function CreateBrand() {
 							</div>
 							<button
 								type='submit'
-								className='bg-blue-500 text-white p-2 rounded-md mt-3'
+								disabled={loading}
+								className='bg-blue-500 text-white p-2 rounded-md mt-3 min-w-[200px] flex items-center justify-center'
 							>
-								Create Brand
+								{loading ? <CircularProgress size={20} /> : 'Create Brand'}
 							</button>
 						</div>
 					</Form>
