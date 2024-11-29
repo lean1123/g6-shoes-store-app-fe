@@ -9,7 +9,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { SnackbarProvider } from 'notistack';
 
 createRoot(document.getElementById('root')).render(
-	<StrictMode>
+// 	<StrictMode>
 		<Provider store={store}>
 			<PersistGate
 				loading={
@@ -30,5 +30,6 @@ createRoot(document.getElementById('root')).render(
 				</BrowserRouter>
 			</PersistGate>
 		</Provider>
-	</StrictMode>,
+// 	</StrictMode>,
+
 );
