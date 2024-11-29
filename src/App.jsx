@@ -20,7 +20,7 @@ import Profile from './components/profile/Profile';
 import LoginForm from './components/auth/LoginForm';
 function App() {
 	const location = useLocation();
-	const role = 'customer';
+	const role = 'admin';
 
 	return (
 		<div className='App'>
@@ -33,29 +33,33 @@ function App() {
 				<Route path='/profile' element={<Profile />} />
 				<Route path='/cart' element={<Cart />} />
 				<Route path='/updateProfile' element={<UpdateProfile />} />
-				{role !== 'admin' ? (
-					<Route path='/'>
-						<Route index element={<HomePage />} />
-						<Route path='listNewProducts' element={<ListNewProducts />} />
-						<Route path='listRecentProducts' element={<ListRecentProducts />} />
-						<Route path='listTopSaleProducts' element={<ListTopSaleProducts />} />
-						<Route path='products'>
-							<Route index element={<ListTopSaleProducts />} />
-							<Route path=':id' element={<ProductDetail />}>
-								<Route path='description' element={<DescriptionInfo />} />
-								<Route path='reviews' element={<ListReview />} />
-								<Route path='warrantyPolicy' element={<WarrantyPolicy />} />
-								<Route path='returnPolicy' element={<ReturnPolicy />} />
-							</Route>
+
+				<Route path='/'>
+					<Route index element={<HomePage />} />
+					<Route path='listNewProducts' element={<ListNewProducts />} />
+					<Route path='listRecentProducts' element={<ListRecentProducts />} />
+					<Route path='listTopSaleProducts' element={<ListTopSaleProducts />} />
+					<Route path='products'>
+						<Route index element={<ListTopSaleProducts />} />
+						<Route path=':id' element={<ProductDetail />}>
+							<Route path='description' element={<DescriptionInfo />} />
+							<Route path='reviews' element={<ListReview />} />
+							<Route path='warrantyPolicy' element={<WarrantyPolicy />} />
+							<Route path='returnPolicy' element={<ReturnPolicy />} />
 						</Route>
-						<Route path='post' element={<h1>Post</h1>} />
+					</Route>
+					{role === 'customer' ||
+						(role === 'admin' && <Route path='pay' element={<Pay />} />)}
+					<Route path='post' element={<h1>Post</h1>} />
+					<Route path='*' element={<h1>404 Not Found</h1>} />
+				</Route>
+
+				{role === 'admin' && (
+					<Route path='admin'>
+						<Route index element={<h1>Admin</h1>} />
 						<Route path='*' element={<h1>404 Not Found</h1>} />
 					</Route>
-				) : (
-					<h1>Admin</h1>
 				)}
-				<Route path='cart' element={<Cart />} />
-				<Route path='cart/pay' element={<Pay />} />
 			</Routes>
 			{location.pathname !== '/cart' && location.pathname !== '/cart/pay' && (
 				<Footer />

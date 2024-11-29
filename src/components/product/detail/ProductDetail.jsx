@@ -1,61 +1,95 @@
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { Link } from '@mui/material';
-import { Outlet, useParams } from 'react-router';
+import { unwrapResult } from '@reduxjs/toolkit';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Outlet, useNavigate, useParams } from 'react-router';
+import { addToCart } from '../../../hooks/cart/cartSlice';
+import {
+	fetchProductItem,
+	getProductItemByColorAndSize,
+} from '../../../hooks/product/productItemSlice';
 import './Style.css';
 import SubProductDetail from './SubProductDetail';
-import useProductItem from '../../../hooks/product/useProductItem';
-import { useState } from 'react';
-
-// {
-//   "status": 200,
-//   "data": {
-//     "id": "bcabc1f8-8091-44ef-8076-304728a32ca3",
-//     "price": 100000,
-//     "quantity": 10,
-//     "listDetailImages": [
-//       "http://res.cloudinary.com/dr7uxdi9o/image/upload/v1732706775/ShoesShopApp/Product-Item/null_f327f540.webp"
-//     ],
-//     "color": "BLACK",
-//     "size": "40",
-//     "product": {
-//       "id": "e1738e3e-21cb-4fae-a6c0-36665b28f2c2",
-//       "name": "Product 2",
-//       "description": "Demo",
-//       "warrantyInformation": null,
-//       "returnInformation": null,
-//       "avatar": "http://res.cloudinary.com/dr7uxdi9o/image/upload/v1732519798/ShoesShopApp/Product/Product%202.webp",
-//       "shippingInformation": null,
-//       "rating": 0,
-//       "createdDate": "2024-12-11T17:00:00.000+00:00",
-//       "gender": null,
-//       "collection": null,
-//       "category": {
-//         "id": "1",
-//         "name": "cate 1",
-//         "description": null
-//       }
-//     },
-//     "status": "INSTOCK"
-//   }
-// }
+import { enqueueSnackbar } from 'notistack';
 
 function ProductDetail() {
 	const params = useParams();
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+	const productItem = useSelector(
+		(state) => state.persistedReducer.productItem.productItem,
+	);
 
-	const { isLoading, productItem } = useProductItem(params.id);
+	useEffect(() => {
+		dispatch(fetchProductItem(params.id));
+	}, [params.id, dispatch]);
 
-	const [selectedSize, setSelectedSize] = useState(null);
-	const [selectedColor, setSelectedColor] = useState(null);
+	const [selectedSize, setSelectedSize] = useState(productItem?.size);
+	const [selectedColor, setSelectedColor] = useState(productItem?.color);
 
 	const handleColorSelect = (color) => {
 		setSelectedColor(color);
 	};
 
 	const handleSizeSelect = (size) => {
-		console.log(size);
-
 		setSelectedSize(size);
 	};
+
+	const handleAddToCart = async () => {
+		try {
+			const result = await dispatch(
+				addToCart({
+					productId: productItem.id,
+					quantity: 1,
+				}),
+			);
+
+			const data = unwrapResult(result);
+
+			if (data?.length > 0 || typeof data !== 'string') {
+				enqueueSnackbar('Thêm vào giỏ hàng thành công', { variant: 'success' });
+				return;
+			}
+
+			enqueueSnackbar('Thêm vào giỏ hàng thất bại', { variant: 'error' });
+		} catch (error) {
+			console.error('Error adding to cart:', error);
+			enqueueSnackbar('Thêm vào giỏ hàng thất bại', { variant: 'error' });
+		}
+	};
+
+	useEffect(() => {
+		const fetchData = async () => {
+			if (selectedSize && selectedColor && productItem?.product?.id) {
+				try {
+					const result = await dispatch(
+						getProductItemByColorAndSize({
+							productId: productItem.product.id,
+							color: selectedColor,
+							size: selectedSize,
+						}),
+					);
+
+					const data = unwrapResult(result);
+					console.log('Product item:', data);
+					if (data?.id) {
+						navigate(`/products/${data.id}`);
+					}
+				} catch (error) {
+					console.error('Error fetching product item:', error);
+				}
+			}
+		};
+
+		fetchData();
+	}, [
+		selectedColor,
+		selectedSize,
+		productItem?.product?.id,
+		dispatch,
+		navigate,
+	]);
 
 	return (
 		<div className='grid grid-cols-2 my-6 font-calibri'>
@@ -63,7 +97,7 @@ function ProductDetail() {
 				<div className='flex-col h-96 overflow-auto scrollbar-hidden p-2 mr-2'>
 					{productItem?.listDetailImages.map((item, index) => (
 						<img
-							key={index + 1}
+							key={index}
 							className='w-20 mb-4 border rounded-lg'
 							src={item}
 							alt='product'
@@ -94,7 +128,8 @@ function ProductDetail() {
 						{productItem?.product?.colors.map((color) => (
 							<button
 								key={color}
-								className={`mr-2 border px-3 py-2 ${color === selectedSize ? 'bg-orange-300' : ''}`}
+								onClick={handleColorSelect.bind(this, color)}
+								className={`mr-2 border px-3 py-2 ${color === selectedColor ? 'bg-orange-300' : ''}`}
 							>
 								<span>{color}</span>
 							</button>
@@ -121,7 +156,10 @@ function ProductDetail() {
 					</Link>
 				</div>
 				<div className='flex justify-start ml-24 mb-10'>
-					<button className='bg-orange-600 px-8 py-2 font-bold hover:bg-slate-950 hover:text-sky-50'>
+					<button
+						className='bg-orange-600 px-8 py-2 font-bold hover:bg-slate-950 hover:text-sky-50'
+						onClick={handleAddToCart}
+					>
 						THÊM VÀO GIỎ HÀNG
 					</button>
 					<div className='px-8 py-2 font-bold border w-30 text-orange-600 border-orange-600'>

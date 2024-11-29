@@ -8,7 +8,9 @@ const productItemApi = {
 	},
 
 	getProductItemById: (id) => {
-		return AdminAxiosClient.get(`/product-items/${id}`);
+		return AdminAxiosClient.get(`/product-items/${id}`, {
+			withCredentials: true,
+		});
 	},
 
 	addNewProductItem: (productItemData) => {
@@ -46,6 +48,16 @@ const productItemApi = {
 	getNewProductItems: (page = 0, size = 9) => {
 		return AdminAxiosClient.get('/product-items/new', {
 			params: { page, size },
+		});
+	},
+
+	getProductItemByColorAndSize: (productId, color, size) => {
+		return AdminAxiosClient.get(`/product-items/get-by-color-and-size`, {
+			params: {
+				productId,
+				color,
+				size,
+			},
 		});
 	},
 };

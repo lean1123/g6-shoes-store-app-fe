@@ -3,28 +3,33 @@ import { useMemo, useState } from 'react';
 
 CartDetailItem.propTypes = {
 	item: PropTypes.object,
-	onChange: PropTypes.func,
+	onQuantityChange: PropTypes.func,
+	onRemoveProduct: PropTypes.func,
 };
 
-function CartDetailItem({ item, onChange }) {
-	const [quantity, setQuantity] = useState(1);
+function CartDetailItem({ item, onQuantityChange, onRemoveProduct }) {
+	const [quantity, setQuantity] = useState(item?.quantity);
+
 	const totalPrice = useMemo(
 		() => item.productItem?.price * quantity,
 		[item.productItem?.price, quantity],
 	);
-	// Function to increase quantity
+
 	const increaseQuantity = () => {
 		setQuantity(quantity + 1);
-		onChange(true);
+		if (onQuantityChange) onQuantityChange(item, quantity + 1);
 	};
 
-	// Function to decrease quantity, ensuring it doesn't go below 1
 	const decreaseQuantity = () => {
-		if (quantity > 1) {
-			setQuantity(quantity - 1);
-			onChange(true);
-		}
+		if (quantity === 0) return;
+		setQuantity(quantity - 1);
+		if (onQuantityChange) onQuantityChange(item, quantity - 1);
 	};
+
+	const handleRemoveProduct = () => {
+		if (onRemoveProduct) onRemoveProduct(item?.productItem?.id);
+	};
+
 	return (
 		<div>
 			<div className='flex items-center justify-between border p-4 rounded-md mb-6'>
@@ -47,8 +52,14 @@ function CartDetailItem({ item, onChange }) {
 					</p>
 				</div>
 
-				{/* Quantity and Total Price Section */}
-				<div className='flex flex-col items-start mt-4 space-y-2'>
+				<div className='flex flex-col items-start mt-4 space-y-2 relative'>
+					<button
+						type='button'
+						className='bg-red-400 text-red-700 hover:text-black absolute -top-11 -right-5 rounded-lg px-2 py-1 text-center'
+						onClick={handleRemoveProduct}
+					>
+						Remove
+					</button>
 					<div className='flex items-center space-x-2'>
 						<button
 							type='button'
