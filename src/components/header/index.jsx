@@ -1,10 +1,11 @@
 import { Badge, Link } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../hooks/auth/authSlice';
 import { useNavigate } from 'react-router';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import './style.css';
+import { viewCart } from '../../hooks/cart/cartSlice';
 
 function Header() {
 	const [isOpen, setIsOpen] = useState(false);
@@ -17,6 +18,15 @@ function Header() {
 	const token = useSelector(
 		(state) => state.persistedReducer?.user?.accessToken,
 	);
+
+	const { cartItems } = useSelector((state) => state.persistedReducer.cart);
+
+	const totalPrice = useMemo(() => {
+		return cartItems.reduce(
+			(acc, item) => acc + item?.productItem?.price * item?.quantity,
+			0,
+		);
+	}, [cartItems]);
 
 	useEffect(() => {
 		if (token) {
@@ -32,6 +42,7 @@ function Header() {
 
 	//set time
 	useEffect(() => {
+		dispatch(viewCart());
 		const interval = setInterval(() => {
 			setName((prevName) =>
 				prevName === 'TRẢ HÀNG DỄ DÀNG'
@@ -41,7 +52,7 @@ function Header() {
 		}, 3000); // Đổi tên mỗi 3 giây
 
 		return () => clearInterval(interval);
-	}, []);
+	}, [dispatch]);
 
 	const toggleDropdown = () => {
 		setIsOpenDiv(!isOpendDiv);
@@ -231,7 +242,7 @@ function Header() {
 										/>
 									</button>
 									<button className='px-3 py-2 rounded-md text-sm font-medium'>
-										<Badge badgeContent={3} color='warning'>
+										<Badge badgeContent={cartItems?.length} color='warning'>
 											<img
 												className='block h-5 w-auto'
 												src='/heart.png'
@@ -247,7 +258,7 @@ function Header() {
 												navigate('/cart');
 											}}
 										>
-											<Badge badgeContent={3} color='warning'>
+											<Badge badgeContent={cartItems?.length} color='warning'>
 												<img
 													className='block h-5 w-auto'
 													src='/market.png'
@@ -266,33 +277,37 @@ function Header() {
 													GIỎ HÀNG
 												</span>
 												<div className='w-full h-52 flex flex-col overflow-y-auto scroll-smooth scrollbar-thin scrollbar-webkit mb-1'>
-													{Array.from({ length: 10 }).map((item, index) => (
+													{cartItems?.map((item, index) => (
 														<div
 															className='w-full flex items-center justify-around border-b p-1'
 															key={index}
 														>
 															<img
-																src='https://product.hstatic.net/1000230642/product/hsm004700trg__6__f55d057a6fb64cc498e04f8ce7fa4b31.jpg'
+																src={item?.productItem?.listDetailImages[0]}
 																alt='san pham'
 																className='w-20 h-20'
 															/>
 
 															<div className='flex flex-col font-calibri items-start'>
-																<span className='text-base font-semibold'>Áo thun nam</span>
-																<span className='text-base'>Màu/Size</span>
+																<span className='text-base font-semibold'>
+																	{item?.product?.name}
+																</span>
+																<span className='text-base'>
+																	{item?.productItem?.color}/{item?.productItem?.size}
+																</span>
 																<span className='text-sm text-gray-400 font-semibold'>
-																	Số lượng: 1
+																	{item?.quantity}
 																</span>
 															</div>
 															<span className='text-sm font-semibold font-calibri'>
-																200.000 VND
+																{item?.productItem?.price} VND
 															</span>
 														</div>
 													))}
 												</div>
 												<div className='w-full flex justify-between items-center p-2 shadow-lg'>
 													<span className='text-base font-calibri'>TỔNG TIỀN:</span>
-													<span className='text-lg font-calibri'>1.000.000 đ</span>
+													<span className='text-lg font-calibri'>{totalPrice || 0}</span>
 												</div>
 												<button className='w-full bg-black text-white p-2'>
 													ĐI TỚI GIỎ HÀNG

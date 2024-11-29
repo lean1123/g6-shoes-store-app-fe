@@ -8,6 +8,9 @@ function Profile() {
   const handleUpdateProfile = () => {
     navigate("/updateProfile");
   };
+  const handleBackAddress = () => {
+		navigate('/address');
+	};
   return (
     <div className="flex p-5 font-sans">
       {/* Sidebar */}
@@ -21,7 +24,7 @@ function Profile() {
         <ul className="list-none p-0 text-center mt-5 space-y-2">
           <li className="text-blue-500">
             <i class="fa fa-user-circle-o" aria-hidden="true"></i>
-            <a href="">Thông tin tài khoản</a>
+            <a href="" onClick={handleUpdateProfile}>Thông tin tài khoản</a>
           </li>
           <li className="text-blue-500">
             <i class="fa fa-list-alt" aria-hidden="true"></i>
@@ -29,7 +32,7 @@ function Profile() {
           </li>
           <li className="text-blue-500">
             <i class="fa fa-map-marker" aria-hidden="true"></i>
-            <a href="">Danh sách địa chỉ</a>
+            <a href="" onClick={handleBackAddress}>Danh sách địa chỉ</a>
           </li>
           <li className="text-red-500">
             <i class="fa fa-sign-out" aria-hidden="true"></i>

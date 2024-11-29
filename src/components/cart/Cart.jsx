@@ -1,43 +1,61 @@
-import { useEffect, useMemo, useState } from 'react';
-import cartApi from '../../api/cartApi';
+import { useEffect, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+	viewCart,
+	updateQuantity,
+	deleteCartDetail,
+} from '../../hooks/cart/cartSlice';
 import CartDetailItem from './CartDetailItem';
+import { useNavigate } from 'react-router';
+import { enqueueSnackbar } from 'notistack';
 
 const Cart = () => {
-	const [cartDetails, setCartDetails] = useState([]);
-	const [isItemChange, setIsItemChange] = useState(false);
-	const totalPrice = useMemo(() => {
-		if (cartDetails.length === 0 || typeof cartDetails === 'string') return 0;
+	const dispatch = useDispatch();
+	const navigation = useNavigate();
 
-		return cartDetails.reduce((total, item) => {
-			return total + item.productItem.price;
+	const { cartItems } = useSelector((state) => state.persistedReducer.cart);
+
+	const totalPrice = useMemo(() => {
+		if (cartItems?.length === 0 || typeof cartItems === 'string') return 0;
+
+		return cartItems?.reduce((total, item) => {
+			return (total += item.productItem.price * item.quantity);
 		}, 0);
-	}, [cartDetails]);
+	}, [cartItems]);
 
 	const quantity = useMemo(() => {
-		if (cartDetails.length === 0 || typeof cartDetails === 'string') return 0;
-		return cartDetails.length;
-	}, [cartDetails]);
+		if (cartItems?.length === 0 || typeof cartItems === 'string') return 0;
+		return cartItems?.length;
+	}, [cartItems]);
 
 	useEffect(() => {
-		const fetchCartDetails = async () => {
-			try {
-				const response = await cartApi.viewCart();
-				if (!response.status === 200) {
-					throw new Error('Error fetching cart details');
-				}
-				console.log('response', response);
+		dispatch(viewCart());
+	}, [dispatch]);
 
-				setCartDetails(response.data?.data);
-			} catch (error) {
-				console.error('Error fetching cart details: ', error);
-			}
+	const handleQuantityChange = (item, newQuantity) => {
+		if (newQuantity < 0) {
+			return;
+		}
+		const updatedItem = {
+			cartId: item?.cartDetailPK?.cartId || null,
+			productId: item?.productItem?.id,
+			quantity: newQuantity,
 		};
 
-		fetchCartDetails();
-	}, [isItemChange]);
+		console.log('updatedItem', updatedItem);
 
-	const handleItemChange = (value) => {
-		setIsItemChange(value);
+		if (updatedItem.quantity === 0) {
+			dispatch(deleteCartDetail(updatedItem.productId));
+			return;
+		}
+
+		dispatch(updateQuantity(updatedItem));
+	};
+
+	const handleRemoveProduct = (productId) => {
+		console.log('productId', productId);
+
+		dispatch(deleteCartDetail(productId));
 	};
 
 	return (
@@ -50,60 +68,15 @@ const Cart = () => {
 						trong giỏ hàng
 					</p>
 
-					{typeof cartDetails === 'string' ? (
+					{typeof cartItems === 'string' ? (
 						<p>Không có sản phẩm nào trong giỏ hàng của bạn!</p>
 					) : (
-						cartDetails.map((item) => (
-							// <div key={item.cartDetailPK.cartId + item.cartDetailPK.productItemId}>
-							// 	<div className='flex items-center justify-between border p-4 rounded-md mb-6'>
-							// 		<img
-							// 			src={item.productItem.listDetailImages[0]}
-							// 			alt={'product item'}
-							// 			className='w-20 h-20 object-cover rounded-md'
-							// 		/>
-							// 		<div className='flex-1 ml-4'>
-							// 			<p className='font-medium'>{item.product.name}</p>
-							// 			<div className='flex justify-start items-center space-x-4 text-gray-500 mt-2'>
-							// 				<p>
-							// 					Màu sắc: <span className='ml-2'>{item.productItem?.color}</span>
-							// 				</p>
-							// 				<p>Kích thước: {item.productItem?.size}</p>
-							// 			</div>
-							// 			{/* Price per item */}
-							// 			<p className='font-semibold text-red-500 mt-2'>
-							// 				Giá: {item.productItem?.price.toLocaleString()} ₫
-							// 			</p>
-							// 		</div>
-
-							// 		{/* Quantity and Total Price Section */}
-							// 		<div className='flex flex-col items-start mt-4 space-y-2'>
-							// 			<div className='flex items-center space-x-2'>
-							// 				<button
-							// 					type='button'
-							// 					onClick={decreaseQuantity}
-							// 					className='px-2 py-1 bg-gray-200 rounded'
-							// 				>
-							// 					-
-							// 				</button>
-							// 				<span>{quantity}</span>
-							// 				<button
-							// 					type='button'
-							// 					onClick={increaseQuantity}
-							// 					className='px-2 py-1 bg-gray-200 rounded'
-							// 				>
-							// 					+
-							// 				</button>
-							// 			</div>
-							// 			<p className='font-semibold text-red-500'>
-							// 				{totalPrice.toLocaleString()} ₫
-							// 			</p>
-							// 		</div>
-							// 	</div>
-							// </div>
+						cartItems?.map((item) => (
 							<CartDetailItem
-								key={item.cartDetailPK.cartId + item.cartDetailPK.productItemId}
+								key={item.cartDetailPK?.cartId + item.cartDetailPK?.productItemId}
 								item={item}
-								onChange={handleItemChange}
+								onQuantityChange={handleQuantityChange}
+								onRemoveProduct={handleRemoveProduct}
 							/>
 						))
 					)}
@@ -130,7 +103,7 @@ const Cart = () => {
 				<div className='flex justify-between mb-4'>
 					<span>Tổng tiền:</span>
 					<span className='text-red-500 font-semibold text-lg'>
-						{totalPrice.toLocaleString()} ₫
+						{totalPrice?.toLocaleString()} ₫
 					</span>
 				</div>
 				<p className='text-gray-500 mb-6'>
@@ -140,11 +113,20 @@ const Cart = () => {
 					Bạn cũng có thể nhập mã giảm giá ở trang thanh toán.
 				</p>
 
-				<button className='w-full bg-red-500 text-white py-2 rounded mb-4 font-semibold'>
+				<button
+					className='w-full bg-red-500 text-white py-2 rounded mb-4 font-semibold'
+					onClick={() => {
+						if (cartItems?.length === 0 || typeof cartItems === 'string') {
+							enqueueSnackbar('Không có sản phẩm nào trong giỏ hàng của bạn!', {
+								variant: 'error',
+							});
+							return;
+						} else {
+							navigation('/pay');
+						}
+					}}
+				>
 					ĐẶT HÀNG NGAY (Áp dụng cho Việt Nam)
-				</button>
-				<button className='w-full bg-black text-white py-2 rounded font-semibold'>
-					ĐẶT HÀNG QUỐC TẾ (Cho các quốc gia khác)
 				</button>
 			</div>
 		</div>
