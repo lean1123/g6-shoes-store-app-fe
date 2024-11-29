@@ -62,8 +62,8 @@ function ProductItem({ item }) {
 						Mới
 					</div>
 					<img
-						src={item.listDetailImages[0]}
-						alt={item.product.name}
+						src={item?.listDetailImages[0]}
+						alt={item?.product?.name}
 						className='w-full h-full object-cover'
 					/>
 				</div>

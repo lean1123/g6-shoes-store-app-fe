@@ -50,6 +50,7 @@ function App() {
 					</Route>
 					{role === 'customer' ||
 						(role === 'admin' && <Route path='pay' element={<Pay />} />)}
+					<Route path='/orderSuccess' element={<h1>Your order is complete!</h1>} />
 					<Route path='post' element={<h1>Post</h1>} />
 					<Route path='*' element={<h1>404 Not Found</h1>} />
 				</Route>
