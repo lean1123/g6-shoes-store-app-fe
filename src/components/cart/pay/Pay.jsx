@@ -1,15 +1,53 @@
-import { LoadingOutlined } from '@ant-design/icons';
-import { Box, Checkbox, FormControlLabel, FormGroup } from '@mui/material';
+import { yupResolver } from '@hookform/resolvers/yup';
+import {
+	Box,
+	Checkbox,
+	FormControlLabel,
+	FormGroup,
+	Radio,
+	RadioGroup,
+	Typography,
+} from '@mui/material';
+import { unwrapResult } from '@reduxjs/toolkit';
+import { enqueueSnackbar } from 'notistack';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router';
+import * as yup from 'yup';
+import { viewCart } from '../../../hooks/cart/cartSlice';
+import { createOrder } from '../../../hooks/order/orderSlice';
+import { fetchAddress } from '../../../hooks/user/userSlice';
+
+const schema = yup.object().shape({
+	paymentMethod: yup
+		.string()
+		.test(
+			'is-true',
+			'Vui lòng chọn phương thức thanh toán',
+			(value) => value === 'true',
+		)
+		.required('Vui lòng chọn phương thức thanh toán'),
+	addressId: yup.string().required('Vui lòng chọn địa chỉ'),
+});
 
 const Pay = () => {
+	const dispatch = useDispatch();
+	const navigation = useNavigate();
 	const [isExpanded, setIsExpanded] = useState(false);
-	const [isCod, setIsCod] = useState(true);
+	const [isCod, setIsCod] = useState(false);
 
 	const { cartItems } = useSelector((state) => state.persistedReducer.cart);
 	const { userId } = useSelector((state) => state.persistedReducer.user);
+	const { address } = useSelector((state) => state.persistedReducer.userInfo);
+	const [selectedAddress, setSelectedAddress] = useState('');
+
+	useEffect(() => {
+		if (userId) {
+			dispatch(fetchAddress(userId));
+			return;
+		}
+	}, [dispatch, userId]);
 
 	const [isShow, setIsShow] = useState(false);
 	useEffect(() => {
@@ -27,25 +65,58 @@ const Pay = () => {
 
 	const form = useForm({
 		defaultValues: {
-			paymentMethod: isCod === true ? 'CASH' : '',
+			paymentMethod: isCod ? 'CASH' : '',
 			totalPrice: total,
 			orderDetails: cartItems?.map((item) => ({
-				productId: item?.productItem?.id,
+				productItemId: item?.productItem?.id,
 				quantity: item?.quantity,
 				pricePerItem: item?.productItem?.price,
 			})),
 			userId: userId,
+			addressId: selectedAddress,
 		},
+		resolver: yupResolver(schema),
 	});
 
-	const { register, setValue } = form;
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+	} = form;
 
-	useEffect(() => {
-		setValue('paymentMethod', isCod ? 'CASH' : '');
-	}, [isCod, setValue]);
+	const onSubmit = async (data) => {
+		if (data.paymentMethod === 'true') {
+			data.paymentMethod = 'CASH';
+		} else {
+			enqueueSnackbar('Vui lòng chọn phương thức thanh toán', {
+				variant: 'error',
+			});
+			return;
+		}
 
-	const onSubmit = (data) => {
-		console.log('Form data: ', data);
+		if (data.orderDetails.length === 0) {
+			enqueueSnackbar('Vui lòng chọn sản phẩm vào giỏ hàng trước khi đặt hàng!', {
+				variant: 'error',
+			});
+			return;
+		}
+
+		console.log('data', data);
+
+		try {
+			const orderResult = await dispatch(createOrder(data));
+			const resultUnwrapped = unwrapResult(orderResult);
+			if (resultUnwrapped?.id) {
+				enqueueSnackbar('Đặt hàng thành công', { variant: 'success' });
+				dispatch(viewCart());
+				navigation('/orderSuccess');
+				return;
+			}
+			enqueueSnackbar('Đặt hàng thất bại', { variant: 'error' });
+		} catch (error) {
+			console.error('Error creating order:', error);
+			enqueueSnackbar('Đặt hàng thất bại', { variant: 'error' });
+		}
 	};
 
 	return (
@@ -54,9 +125,6 @@ const Pay = () => {
 				<img src='logo.png' alt='logo' className='h-20 w-20' />
 
 				<div className='flex flex-row justify-between items-center py-2'>
-					<div>
-						<LoadingOutlined />
-					</div>
 					<strong className='ml-1 animate-bounce'>
 						Sản phẩm đang trong giỏ hàng của nhiều người dùng. Đừng lo
 						<span className='text-red-500 hover:cursor-pointer animate-bounce'>
@@ -67,22 +135,65 @@ const Pay = () => {
 					</strong>
 				</div>
 
-				<Box component='form' onSubmit={form.handleSubmit(onSubmit)}>
-					<div className='flex items-center justify-between py-1'>
-						<FormGroup>
-							<FormControlLabel
-								content='center'
-								control={
-									<Checkbox
-										defaultChecked
-										value={isCod}
-										onChange={() => setIsCod((prev) => !prev)}
-										{...register('paymentMethod')}
+				<Box component='form' onSubmit={handleSubmit(onSubmit)}>
+					<div className='flex flex-col items-start py-1 w-full'>
+						<Box>
+							<Typography variant='subtitle1' fontWeight={'bold'}>
+								Chọn phương thức thanh toán
+							</Typography>
+							<FormGroup>
+								<FormControlLabel
+									content='center'
+									control={
+										<Checkbox
+											checked={isCod}
+											onChange={(e) => {
+												setIsCod(e.target.checked);
+											}}
+										/>
+									}
+									label='Thanh toán khi nhận hàng'
+									checked={isCod}
+									{...register('paymentMethod')}
+								/>
+							</FormGroup>
+							{errors.paymentMethod && (
+								<Typography color='error'>{errors?.paymentMethod?.message}</Typography>
+							)}
+						</Box>
+
+						<Box>
+							<Typography variant='subtitle1' fontWeight={'bold'}>
+								Chọn địa chỉ giao hàng
+							</Typography>
+							<RadioGroup
+								value={selectedAddress}
+								onChange={(e) => setSelectedAddress(e.target.value)}
+							>
+								{address?.map((address) => (
+									<FormControlLabel
+										key={address?.id}
+										value={address?.id}
+										control={<Radio {...register('addressId')} />}
+										label={
+											address?.homeNumber +
+											'/' +
+											address?.street +
+											'/' +
+											address?.ward +
+											'/' +
+											address?.district +
+											'/' +
+											address?.city
+										}
 									/>
-								}
-								label='Thanh toán khi nhận hàng'
-							/>
-						</FormGroup>
+								))}
+							</RadioGroup>
+							{errors.addressId && (
+								<Typography color='error'>{errors?.addressId?.message}</Typography>
+							)}
+						</Box>
+
 						<input
 							type='submit'
 							value='Hoàn tất đơn hàng'
@@ -122,7 +233,7 @@ const Pay = () => {
 							</div>
 							<div>
 								<p>{item?.productItem?.price.toLocaleString()}đ</p>
-								<p className='text-stone-500'>x1</p>
+								<p className='text-stone-500'>x{item?.quantity}</p>
 							</div>
 						</div>
 					))}

@@ -108,6 +108,11 @@ const cartSlice = createSlice({
 			state.totalPrice = 0;
 			state.totalQuantity = 0;
 		},
+		setTotalPrice: (state) => {
+			state.totalPrice = state.cartItems.reduce((total, item) => {
+				return (total += item.productItem.price * item.quantity);
+			}, 0);
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -118,6 +123,10 @@ const cartSlice = createSlice({
 			.addCase(viewCart.fulfilled, (state, action) => {
 				state.loading = false;
 				state.cartItems = action.payload.data;
+				state.totalPrice = action.payload.data.reduce((total, item) => {
+					return (total += item.productItem.price * item.quantity);
+				}, 0);
+				state.totalQuantity = action.payload.data.length;
 			})
 			.addCase(viewCart.rejected, (state, action) => {
 				state.loading = false;

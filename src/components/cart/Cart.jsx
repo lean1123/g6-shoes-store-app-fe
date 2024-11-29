@@ -7,6 +7,7 @@ import {
 } from '../../hooks/cart/cartSlice';
 import CartDetailItem from './CartDetailItem';
 import { useNavigate } from 'react-router';
+import { enqueueSnackbar } from 'notistack';
 
 const Cart = () => {
 	const dispatch = useDispatch();
@@ -114,7 +115,16 @@ const Cart = () => {
 
 				<button
 					className='w-full bg-red-500 text-white py-2 rounded mb-4 font-semibold'
-					onClick={() => navigation('/pay')}
+					onClick={() => {
+						if (cartItems?.length === 0 || typeof cartItems === 'string') {
+							enqueueSnackbar('Không có sản phẩm nào trong giỏ hàng của bạn!', {
+								variant: 'error',
+							});
+							return;
+						} else {
+							navigation('/pay');
+						}
+					}}
 				>
 					ĐẶT HÀNG NGAY (Áp dụng cho Việt Nam)
 				</button>
