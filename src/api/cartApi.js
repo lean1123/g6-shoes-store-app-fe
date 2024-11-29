@@ -13,6 +13,8 @@ const cartApi = {
 	},
 
 	updateQuantity: (cartDetailRequest) => {
+		console.log('cartDetailRequest', cartDetailRequest);
+
 		const url = '/cart/updateQuantity';
 		return AdminAxiosClient.put(url, cartDetailRequest, {
 			withCredentials: true,
@@ -20,8 +22,11 @@ const cartApi = {
 	},
 
 	deleteCartDetail: (productId) => {
-		const url = `/cart/delete/${productId}`;
-		return AdminAxiosClient.put(url, { withCredentials: true });
+		const url = `/cart/delete`;
+		return AdminAxiosClient.get(url, {
+			params: { productId },
+			withCredentials: true,
+		});
 	},
 };
 
