@@ -18,6 +18,7 @@ import Cart from './components/cart/Cart';
 import Pay from './components/cart/pay/Pay';
 import Profile from './components/profile/Profile';
 import LoginForm from './components/auth/LoginForm';
+import Address from './components/profile/Address';
 function App() {
 	const location = useLocation();
 	const role = 'admin';
@@ -33,7 +34,7 @@ function App() {
 				<Route path='/profile' element={<Profile />} />
 				<Route path='/cart' element={<Cart />} />
 				<Route path='/updateProfile' element={<UpdateProfile />} />
-
+				<Route path='/address' element={<Address />} />
 				<Route path='/'>
 					<Route index element={<HomePage />} />
 					<Route path='listNewProducts' element={<ListNewProducts />} />
