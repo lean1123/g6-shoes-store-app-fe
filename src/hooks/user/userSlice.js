@@ -5,25 +5,24 @@ import addressApi from '../../api/addressApi';
 export const fetchUser = createAsyncThunk(
 	'user/fetchUser',
 	async (userId, { rejectWithValue }) => {
-		try {
-			const userResponse = await userApi.getUserInfo(userId);
-
-			if (userResponse.status !== 200) {
-				return rejectWithValue(
-					`Failed to fetch user. Status: ${userResponse.status}, Message: ${userResponse.statusText}`,
-				);
-			}
-
-			const user = userResponse.data;
-
-			return user;
-		} catch (error) {
-			console.error('Error fetching user:', error);
-			return rejectWithValue('Error fetching user');
+	  try {
+		console.log("Fetching user info for userId:", userId);
+		const userResponse = await userApi.getUserInfo(userId);
+		console.log("API response for user info:", userResponse);
+		
+		if (userResponse.status !== 200) {
+		  return rejectWithValue(`Failed to fetch user info. Status: ${userResponse.status}`);
 		}
-	},
-);
-
+  
+		return userResponse.data;  // Nếu dữ liệu trả về hợp lệ
+	  } catch (error) {
+		console.error('Error fetching user:', error);
+		return rejectWithValue(error.message);  // Trả lỗi chi tiết
+	  }
+	}
+  );
+  
+  
 export const fetchAddress = createAsyncThunk(
 	'user/fetchAddress',
 	async (userId, { rejectWithValue }) => {
@@ -43,6 +42,34 @@ export const fetchAddress = createAsyncThunk(
 		}
 	},
 );
+export const updateAddress = createAsyncThunk(
+    'user/updateAddress',
+    async ({ userId, addressId, addressData }, { rejectWithValue }) => {
+        try {
+            const response = await userApi.updateAddress(userId, addressId, addressData);
+            if (response.status !== 200) {
+                return rejectWithValue('Failed to update address');
+            }
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.message);
+        }
+    }
+);
+export const addAddress = createAsyncThunk(
+    'user/addAddress',
+    async ({ userId, addressData }, { rejectWithValue }) => {
+        try {
+            const response = await userApi.addAddress(userId, addressData);
+            if (response.status !== 201) {
+                return rejectWithValue('Failed to add address');
+            }
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.message);
+        }
+    }
+);
 
 const userSlice = createSlice({
 	name: 'user',
@@ -50,6 +77,8 @@ const userSlice = createSlice({
 		user: null,
 		address: [],
 		error: null,
+		status: 'idle'
+
 	},
 	reducers: {
 		setUser: (state, action) => {
@@ -69,7 +98,33 @@ const userSlice = createSlice({
 			})
 			.addCase(fetchAddress.rejected, (state, action) => {
 				state.error = action.payload;
-			});
+			})
+			 .addCase(updateAddress.pending, (state) => {
+                state.status = 'loading';
+            })
+            .addCase(updateAddress.fulfilled, (state, action) => {
+                state.status = 'succeeded';
+                // Cập nhật địa chỉ trong mảng
+                const updatedAddress = action.payload;
+                state.address = state.address.map(addr =>
+                    addr.id === updatedAddress.id ? updatedAddress : addr
+                );
+            })
+            .addCase(updateAddress.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.payload;
+            })
+            .addCase(addAddress.pending, (state) => {
+                state.status = 'loading';
+            })
+            .addCase(addAddress.fulfilled, (state, action) => {
+                state.status = 'succeeded';
+                state.address.push(action.payload);
+            })
+            .addCase(addAddress.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.payload;
+            });
 	},
 });
 

@@ -25,6 +25,12 @@ const productApi = {
 			},
 		});
 	},
+	searchByKeyword: (keyword) => {
+		const url = `/products/searchByKeyword`;
+		return AdminAxiosClient.get(url, {
+			params: { keyword },
+		});
+	},
 };
 
 export default productApi;

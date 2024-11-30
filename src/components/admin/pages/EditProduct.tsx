@@ -7,6 +7,7 @@ import brandApi from '../../../api/brandApi';
 import collectionApi from '../../../api/collectionApi';
 import categoryApi from '../../../api/categoryApi';
 import productApi from '../../../api/productApi';
+import { enqueueSnackbar } from 'notistack';
 
 interface Brand {
 	id: string;
@@ -163,6 +164,8 @@ function EditProduct() {
 			formData.append('gender', values.gender);
 			const response = await productApi.update(id, formData);
 			console.log(response);
+
+			enqueueSnackbar('Edit product successfully', { variant: 'success' });
 		} catch (error) {
 			console.error('Failed to edit product:', error);
 			alert('Failed to edit product!');

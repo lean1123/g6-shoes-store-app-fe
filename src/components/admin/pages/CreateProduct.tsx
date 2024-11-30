@@ -336,7 +336,7 @@ function CreateProduct() {
 							<button
 								type='button'
 								className='w-full bg-red-500 text-white rounded-md py-2'
-								onClick={() => navigate('/admin/products')}
+								onClick={() => navigate(-1)}
 							>
 								Cancel
 							</button>
@@ -350,14 +350,14 @@ function CreateProduct() {
 							>
 								{loading ? 'Loading...' : 'Create Product'}
 							</button>
-							<button
+							{/* <button
 								type='button'
 								className='w-full bg-green-500 text-white rounded-md py-2'
 								onClick={() => navigate(`/admin/products/${productId}/add-item`)}
 								disabled={!success}
 							>
 								Add Product Item
-							</button>
+							</button> */}
 						</div>
 					</form>
 				</div>

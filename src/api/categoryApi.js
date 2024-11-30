@@ -15,7 +15,10 @@ const categoryApi = {
         return AdminAxiosClient.get(`/categories/search`, {
             params: { keyword },
         });
-    }
+    },
+    update: (id, categoryData) => {
+        return AdminAxiosClient.put(`/categories/${id}`, categoryData);
+    },
 }
 
 export default categoryApi;

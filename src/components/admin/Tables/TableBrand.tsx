@@ -45,10 +45,32 @@ interface Brand {
 const TableBrand = () => {
 	const navigate = useNavigate();
 	const [brands, setBrands] = useState<Brand[]>([]);
+	const [loading, setLoading] = useState(false);
+	const [keyword, setKeyword] = useState('');
 	const fetchBrand = async () => {
-		const response = await brandApi.getAllBrands();
-		console.log(response.data);
-		setBrands(response.data);
+		setLoading(true);
+		try {
+			const response = await brandApi.getAllBrands();
+			console.log(response.data);
+			setBrands(response.data);
+		} catch (error) {
+			console.error('Failed to fetch brand:', error);
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const filterBrands = async () => {
+		setLoading(true);
+		try {
+			const response = await brandApi.searchBrands(keyword);
+			console.log(response.data);
+			setBrands(response.data);
+		} catch (error) {
+			console.error('Failed to fetch brand:', error);
+		} finally {
+			setLoading(false);
+		}
 	};
 
 	useEffect(() => {
@@ -57,7 +79,22 @@ const TableBrand = () => {
 	return (
 		<div className='rounded-md border border-gray-300 bg-white shadow-sm '>
 			<div className='py-6 px-4 md:px-6 xl:px-7'>
-				<h4 className='text-xl font-semibold text-black'>List Brands</h4>
+				{/* <h4 className='text-xl font-semibold text-black'>List Brands</h4> */}
+				<div className='mt-2 flex items-center justify-between max-w-[400px] gap-4'>
+					<input
+						type='text'
+						className='w-full border border-gray-300 rounded-md py-2 px-4'
+						placeholder='Search brand...'
+						value={keyword}
+						onChange={(e) => setKeyword(e.target.value)}
+					/>
+					<button
+						className='bg-black text-white px-6 py-2 rounded-md'
+						onClick={() => filterBrands()}
+					>
+						Search
+					</button>
+				</div>
 			</div>
 
 			<div className='max-w-full overflow-x-auto'>
@@ -120,7 +157,10 @@ const TableBrand = () => {
 
 										{/* Edit button */}
 										<div className='relative group'>
-											<button className='hover:text-yellow-500'>
+											<button
+												className='hover:text-yellow-500'
+												onClick={() => navigate(`/admin/brands/${brandItem.id}/edit`)}
+											>
 												<EditOutlined className='w-5 h-5' />
 											</button>
 											<span className='absolute opacity-0 group-hover:opacity-100 bg-black text-white text-xs rounded py-1 px-2 -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap'>
