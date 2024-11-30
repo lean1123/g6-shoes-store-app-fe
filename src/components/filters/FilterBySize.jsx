@@ -1,21 +1,25 @@
-function FilterBySize() {
+import PropTypes from 'prop-types';
+
+function FilterBySize({ onChange }) {
+	const handleSizeChange = (e) => {
+		onChange({ size: e.target.value });
+	};
+
 	return (
-		<div className='search-container mt-4 bg-white'>
-			<h1 className='font-bold mb-3'>SIZE</h1>
-			<div className='grid-container'>
-				<button className='size-btn'>36</button>
-				<button className='size-btn'>37</button>
-				<button className='size-btn'>38</button>
-				<button className='size-btn'>39</button>
-				<button className='size-btn'>40</button>
-				<button className='size-btn'>41</button>
-				<button className='size-btn'>42</button>
-				<button className='size-btn'>43</button>
-				<button className='size-btn'>44</button>
-				<button className='size-btn mb-4'>45</button>
-			</div>
+		<div>
+			<h2>Filter by Size</h2>
+			<select onChange={handleSizeChange}>
+				<option value=''>All</option>
+				<option value='35'>35</option>
+				<option value='36'>36</option>
+				<option value='41'>41</option>
+			</select>
 		</div>
 	);
 }
+
+FilterBySize.propTypes = {
+	onChange: PropTypes.func.isRequired,
+};
 
 export default FilterBySize;

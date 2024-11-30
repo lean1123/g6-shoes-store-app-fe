@@ -8,12 +8,14 @@ import {
 import CartDetailItem from './CartDetailItem';
 import { useNavigate } from 'react-router';
 import { enqueueSnackbar } from 'notistack';
+import { fetchUser } from '../../hooks/user/userSlice';
 
 const Cart = () => {
 	const dispatch = useDispatch();
 	const navigation = useNavigate();
 
 	const { cartItems } = useSelector((state) => state.persistedReducer.cart);
+	const { userId, user } = useSelector((state) => state.persistedReducer.user);
 
 	const totalPrice = useMemo(() => {
 		if (cartItems?.length === 0 || typeof cartItems === 'string') return 0;
@@ -30,6 +32,7 @@ const Cart = () => {
 
 	useEffect(() => {
 		dispatch(viewCart());
+		dispatch(fetchUser(userId));
 	}, [dispatch]);
 
 	const handleQuantityChange = (item, newQuantity) => {
@@ -116,6 +119,13 @@ const Cart = () => {
 				<button
 					className='w-full bg-red-500 text-white py-2 rounded mb-4 font-semibold'
 					onClick={() => {
+						if (user === null || userId === null) {
+							enqueueSnackbar('Vui lòng đăng nhập để tiếp tục!', {
+								variant: 'info',
+							});
+							return;
+						}
+
 						if (cartItems?.length === 0 || typeof cartItems === 'string') {
 							enqueueSnackbar('Không có sản phẩm nào trong giỏ hàng của bạn!', {
 								variant: 'error',

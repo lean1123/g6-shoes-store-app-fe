@@ -151,7 +151,7 @@ function Header() {
 										onClick={() => navigate('/products')}
 										className='text-black hover:text-red-500 px-3 py-2 rounded-md text-ml font-medium'
 									>
-										BÁN CHẠY
+										TẤT CẢ SẢN PHẨM
 									</button>
 									<button
 										onClick={() => navigate('/about')}
@@ -240,7 +240,7 @@ function Header() {
 										/>
 									</button>
 									<button className='px-3 py-2 rounded-md text-sm font-medium'>
-										<Badge badgeContent={cartItems?.length} color='warning'>
+										<Badge badgeContent={0} color='warning'>
 											<img
 												className='block h-5 w-auto'
 												src='/heart.png'

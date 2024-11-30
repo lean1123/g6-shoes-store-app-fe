@@ -6,7 +6,7 @@ import ListProduct from '../ListProduct';
 const pagination = {
 	limit: 10,
 	page: 0,
-	filter: 'banChay', // Giá trị mặc định
+	sort: 'desc', // Giá trị mặc định
 	totalPages: 1,
 };
 
@@ -20,12 +20,13 @@ function ListTopSaleProducts() {
 				const response = await productItemApi.getTopSaleProductItems(
 					paginationObject?.page,
 					paginationObject?.limit,
-					paginationObject?.filter,
 				);
 				if (response.status !== 200) {
 					console.error('Failed to fetch top sale products:', response);
 					return;
 				}
+
+				console.log('response', response);
 
 				if (response?.data?.data) {
 					setListTopSaleProducts(response.data.data.data);
@@ -42,36 +43,18 @@ function ListTopSaleProducts() {
 		fetchListTopSaleProducts();
 	}, [paginationObject.page, paginationObject.limit, paginationObject.filter]);
 
-	const handleFilterChange = (e) => {
-		const value = e.target.value;
-		setPaginationObject((prev) => ({ ...prev, page: 0, filter: value }));
-	};
-
 	return (
-		<div className='topSale-container'>
-			<div className='flex justify-center items-center mt-5'>
+		<div className='flex flex-col items-center w-full p-10'>
+			<div className='w-full flex justify-center items-center mt-5'>
 				<h1 className='text-4xl font-bold'>Danh sách sản phẩm bán chạy</h1>
 			</div>
-			<div className='flex mt-4'>
+			<div className='flex justify-center mt-4'>
 				<div className='w-4/5'>
 					<div className='flex justify-between'>
 						<div>
 							<button className='font-bold text-sm'>Trang chủ</button>
 							<span className='ml-1 mr-1'>/</span>
 							<button className='font-bold text-sm'>Giày Sneaker</button>
-						</div>
-						<div className='search-container mr-3'>
-							<select
-								className='w-full border no-border py-1 px-10 input-field font-bold'
-								onChange={handleFilterChange}
-							>
-								<option value='banChay' className='font-bold'>
-									Bán chạy
-								</option>
-								<option value='moiNhat' className='font-bold'>
-									Mới nhất
-								</option>
-							</select>
 						</div>
 					</div>
 					<div className='w-full flex flex-col items-center'>
