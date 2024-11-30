@@ -1,32 +1,38 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Breadcrumb from '../Breadcrumbs/Breadcrumb';
-import { useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
+import orderApi from '../../../api/orderApi';
+import orderDetailApi from '../../../api/orderDetailApi';
 
 type OrderDetail = {
 	id: number;
-	image: string;
-	productName: string;
+	image?: string;
 	quantity: number;
-	price: number;
+	pricePerItem: number;
+	productName?: string;
 };
 
 type Order = {
-	orderId: number;
+	id: number;
 	customerName: string;
-	orderDate: string;
-	totalAmount: number;
+	createdDate: Date;
+	totalPrice: number;
 	paymentMethod: string;
-	status: string;
+	orderStatus: string;
 	orderDetails: OrderDetail[];
+	user?: {
+		firstName: string;
+		lastName: string;
+	};
 };
 
 const initialOrderData: Order = {
-	orderId: 12345,
+	id: 12345,
 	customerName: 'John Doe',
-	orderDate: '2024-11-28',
-	totalAmount: 199.99,
+	createdDate: new Date(),
+	totalPrice: 199.99,
 	paymentMethod: 'Paypal',
-	status: 'Pending',
+	orderStatus: 'Pending',
 	orderDetails: [
 		{
 			id: 1,
@@ -34,7 +40,7 @@ const initialOrderData: Order = {
 				'https://th.bing.com/th/id/R.ed278c63783d1bfe0db837841c1cfc0e?rik=OCUTydZ3uoh%2b%2bg&pid=ImgRaw&r=0',
 			productName: 'Nike Air Max 270',
 			quantity: 1,
-			price: 199.99,
+			pricePerItem: 199.99,
 		},
 		{
 			id: 2,
@@ -42,7 +48,7 @@ const initialOrderData: Order = {
 				'https://th.bing.com/th/id/R.ed278c63783d1bfe0db837841c1cfc0e?rik=OCUTydZ3uoh%2b%2bg&pid=ImgRaw&r=0',
 			productName: 'Adidas Yeezy Boost 350',
 			quantity: 1,
-			price: 199.99,
+			pricePerItem: 199.99,
 		},
 	],
 };
@@ -50,9 +56,39 @@ const initialOrderData: Order = {
 const OrderDetail = ({ isEdit }: { isEdit: boolean }) => {
 	const navigate = useNavigate();
 	const [orderData, setOrderData] = useState<Order>(initialOrderData);
+	const [loading, setLoading] = useState(false);
+
+	const [data, setData] = useState<Order>();
+	const { id } = useParams();
+
+	const fetchOrderData = async () => {
+		setLoading(true);
+		try {
+			const response = await orderApi.getOrderById(id);
+			setData(response.data.data);
+			const orderDetailsResponse = await orderDetailApi.getOrderDetail(id);
+
+			orderDetailsResponse.data.data.forEach((detail) => {
+				detail.image = detail.productItem.listDetailImages[0];
+				detail.productName = detail.productItem.product.name;
+			});
+			const combinedData: Order = {
+				...response.data.data,
+				orderDetails: orderDetailsResponse.data.data,
+			};
+
+			setData(combinedData);
+			console.log('Combined Data:', combinedData);
+		} catch (error) {
+			console.error('Failed to fetch order data:', error);
+		} finally {
+			setLoading(false);
+		}
+	};
 
 	const updateQuantity = (id: number, increment: boolean) => {
-		const updatedOrderDetails = orderData.orderDetails.map((detail) =>
+		if (!data) return;
+		const updatedOrderDetails = data.orderDetails.map((detail) =>
 			detail.id === id
 				? {
 						...detail,
@@ -60,7 +96,7 @@ const OrderDetail = ({ isEdit }: { isEdit: boolean }) => {
 					}
 				: detail,
 		);
-		setOrderData({ ...orderData, orderDetails: updatedOrderDetails });
+		setData({ ...data, orderDetails: updatedOrderDetails });
 	};
 
 	const handleSave = () => {
@@ -74,6 +110,10 @@ const OrderDetail = ({ isEdit }: { isEdit: boolean }) => {
 		console.log('Back button clicked');
 	};
 
+	useEffect(() => {
+		fetchOrderData();
+	}, []);
+
 	return (
 		<>
 			<Breadcrumb pageName='Order Detail' />
@@ -82,25 +122,32 @@ const OrderDetail = ({ isEdit }: { isEdit: boolean }) => {
 				<div className='bg-white shadow-md rounded-lg p-6 mb-1'>
 					<h2 className='text-2xl font-semibold mb-4'>Order Details</h2>
 					<p className='text-lg mb-2'>
-						<strong>Order ID:</strong> {orderData.orderId}
+						<strong>Order ID:</strong> {data?.id ? data.id : 'N/A'}
 					</p>
 					<p className='text-lg mb-2'>
-						<strong>Customer Name:</strong> {orderData.customerName}
+						<strong>Customer Name:</strong>{' '}
+						{data?.user?.firstName ? data.user.firstName : 'N/A'}{' '}
+						{data?.user?.lastName ? data.user.lastName : 'N/A'}
 					</p>
 					<p className='text-lg mb-2'>
-						<strong>Order Date:</strong> {orderData.orderDate}
+						<strong>Order Date:</strong>{' '}
+						{data?.createdDate ? data.createdDate.toString() : 'N/A'}
 					</p>
 					<p className='text-lg mb-2'>
-						<strong>Total Amount:</strong> $
-						{orderData.orderDetails
-							.reduce((total, item) => total + item.price * item.quantity, 0)
-							.toFixed(2)}
+						<strong>Total Amount:</strong>
+						{/* {data?.totalPrice ? data.totalPrice : 'N/A'} */}
+						{data &&
+							data.orderDetails
+								.reduce((total, item) => total + item.pricePerItem * item.quantity, 0)
+								.toFixed(2)}
+						VND
 					</p>
 					<p className='text-lg mb-2'>
-						<strong>Payment Method:</strong> {orderData.paymentMethod}
+						<strong>Payment Method:</strong>{' '}
+						{data?.paymentMethod ? data.paymentMethod : 'N/A'}
 					</p>
 					<p className='text-lg mb-2'>
-						<strong>Status:</strong> {orderData.status}
+						<strong>Status:</strong> {data?.orderStatus ? data.orderStatus : 'N/A'}
 					</p>
 				</div>
 				{/* Action Buttons */}
@@ -134,45 +181,44 @@ const OrderDetail = ({ isEdit }: { isEdit: boolean }) => {
 							</tr>
 						</thead>
 						<tbody>
-							{orderData.orderDetails.map((detail) => (
-								<tr key={detail.id} className='border-b'>
-									<td className='py-2'>
-										<div className='flex items-center space-x-4 gap-3'>
-											<img
-												src={detail.image}
-												alt={detail.productName}
-												className='w-16 h-16 object-cover rounded-md'
-											/>
-											{detail.productName}
-										</div>
-									</td>
-									<td className='py-2'>
-										{isEdit ? (
-											<div className='flex items-center space-x-3'>
-												<button
-													className='px-2 py-1 bg-gray-300 rounded'
-													onClick={() => updateQuantity(detail.id, false)}
-												>
-													-
-												</button>
-												<span>{detail.quantity}</span>
-												<button
-													className='px-2 py-1 bg-gray-300 rounded'
-													onClick={() => updateQuantity(detail.id, true)}
-												>
-													+
-												</button>
+							{data &&
+								data.orderDetails.map((detail) => (
+									<tr key={detail.id} className='border-b'>
+										<td className='py-2'>
+											<div className='flex items-center space-x-4 gap-3'>
+												<img
+													src={detail.image}
+													alt={detail.productName}
+													className='w-16 h-16 object-cover rounded-md'
+												/>
+												{detail.productName}
 											</div>
-										) : (
-											<span>{detail.quantity}</span>
-										)}
-									</td>
-									<td className='py-2'>${detail.price.toFixed(2)}</td>
-									<td className='py-2'>
-										${(detail.price * detail.quantity).toFixed(2)}
-									</td>
-								</tr>
-							))}
+										</td>
+										<td className='py-2'>
+											{isEdit ? (
+												<div className='flex items-center space-x-3'>
+													<button
+														className='px-2 py-1 bg-gray-300 rounded'
+														onClick={() => updateQuantity(detail.id, false)}
+													>
+														-
+													</button>
+													<span>{detail.quantity}</span>
+													<button
+														className='px-2 py-1 bg-gray-300 rounded'
+														onClick={() => updateQuantity(detail.id, true)}
+													>
+														+
+													</button>
+												</div>
+											) : (
+												<span>{detail.quantity}</span>
+											)}
+										</td>
+										<td className='py-2'>{detail.pricePerItem}VND</td>
+										<td className='py-2'>{detail.pricePerItem * detail.quantity}VND</td>
+									</tr>
+								))}
 						</tbody>
 					</table>
 				</div>
