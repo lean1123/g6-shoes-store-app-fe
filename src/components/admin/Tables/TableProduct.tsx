@@ -34,11 +34,47 @@ interface Product {
 const TableProduct = () => {
 	const [loading, setLoading] = React.useState(false);
 	const [productData, setProductData] = React.useState<Product[]>([]);
+	const [keyword, setKeyword] = React.useState('');
 	const navigate = useNavigate();
 	const fetchProduct = async () => {
 		setLoading(true);
 		try {
 			const response = await productApi.getAll();
+			console.log(response.data);
+			const products = response.data;
+
+			const productsWithBrand = await Promise.all(
+				products.map(async (product: Product) => {
+					if (product.collection && product.collection.brandId) {
+						const brandResponse = await brandApi.getBrandById(
+							product.collection.brandId,
+						);
+						return {
+							...product,
+							brand: brandResponse.data.brandName,
+						};
+					} else {
+						// If no collection or brandId exists, handle accordingly (e.g., return product as is)
+						return {
+							...product,
+							brand: 'Unknown', // Or any fallback value
+						};
+					}
+				}),
+			);
+
+			setProductData(productsWithBrand);
+		} catch (error) {
+			console.error('Failed to fetch product:', error);
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const filterProduct = async () => {
+		setLoading(true);
+		try {
+			const response = await productApi.searchByKeyword(keyword);
 			console.log(response.data);
 			const products = response.data;
 
@@ -77,7 +113,24 @@ const TableProduct = () => {
 	return (
 		<div className='rounded-md border border-gray-300 bg-white shadow-sm '>
 			<div className='py-6 px-4 md:px-6 xl:px-7'>
-				<h4 className='text-xl font-semibold text-black'>List Products</h4>
+				{/* <h4 className='text-xl font-semibold text-black'>List Products</h4> */}
+				<div className='mt-2 flex items-center justify-between max-w-[400px] gap-4'>
+					<input
+						type='text'
+						className='w-full border border-gray-300 rounded-md py-2 px-4'
+						placeholder='Search product...'
+						value={keyword}
+						onChange={(e) => setKeyword(e.target.value)}
+					/>
+					<button
+						className='bg-black text-white px-6 py-2 rounded-md'
+						onClick={() => {
+							filterProduct();
+						}}
+					>
+						Search
+					</button>
+				</div>
 			</div>
 
 			<div className='max-w-full overflow-x-auto'>

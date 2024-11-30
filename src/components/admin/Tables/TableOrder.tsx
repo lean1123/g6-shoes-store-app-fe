@@ -3,74 +3,126 @@ import {
 	EditOutlined,
 	VisibilityOutlined,
 } from '@mui/icons-material';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router';
+import orderApi from '../../../api/orderApi';
 
 interface Order {
-	id: number;
+	id: string;
 	user: {
 		id: number;
-		name: string;
+		firstName: string;
+		lastName: string;
 	};
 	totalPrice: number;
-	status: string;
-	createdAt: Date;
-	payment: string;
+	orderStatus: string;
+	createdDate: Date;
+	paymentMethod: string;
 }
 
-const orderData: Order[] = [
-	{
-		id: 1,
-		user: {
-			id: 1,
-			name: 'John Doe',
-		},
-		totalPrice: 100,
-		status: 'Delivered',
-		createdAt: new Date(),
-		payment: 'Paypal',
-	},
-	{
-		id: 2,
-		user: {
-			id: 2,
-			name: 'Jane Doe',
-		},
-		totalPrice: 200,
-		status: 'Pending',
-		createdAt: new Date(),
-		payment: 'Stripe',
-	},
-	{
-		id: 3,
-		user: {
-			id: 3,
-			name: 'John Smith',
-		},
-		totalPrice: 300,
-		status: 'Delivered',
-		createdAt: new Date(),
-		payment: 'Paypal',
-	},
-	{
-		id: 4,
-		user: {
-			id: 4,
-			name: 'Jane Smith',
-		},
-		totalPrice: 400,
-		status: 'Pending',
-		createdAt: new Date(),
-		payment: 'Stripe',
-	},
-];
+// const orderData: Order[] = [
+// 	{
+// 		id: 1,
+// 		user: {
+// 			id: 1,
+// 			name: 'John Doe',
+// 		},
+// 		totalPrice: 100,
+// 		status: 'Delivered',
+// 		createdAt: new Date(),
+// 		payment: 'Paypal',
+// 	},
+// 	{
+// 		id: 2,
+// 		user: {
+// 			id: 2,
+// 			name: 'Jane Doe',
+// 		},
+// 		totalPrice: 200,
+// 		status: 'Pending',
+// 		createdAt: new Date(),
+// 		payment: 'Stripe',
+// 	},
+// 	{
+// 		id: 3,
+// 		user: {
+// 			id: 3,
+// 			name: 'John Smith',
+// 		},
+// 		totalPrice: 300,
+// 		status: 'Delivered',
+// 		createdAt: new Date(),
+// 		payment: 'Paypal',
+// 	},
+// 	{
+// 		id: 4,
+// 		user: {
+// 			id: 4,
+// 			name: 'Jane Smith',
+// 		},
+// 		totalPrice: 400,
+// 		status: 'Pending',
+// 		createdAt: new Date(),
+// 		payment: 'Stripe',
+// 	},
+// ];
 
 function TableOrder() {
 	const navigate = useNavigate();
+	const [orderData, setOrderData] = React.useState<Order[]>([]);
+	const [loading, setLoading] = React.useState(false);
+	const [keyword, setKeyword] = React.useState('');
+	const fetchOrder = async () => {
+		// Fetch order data here
+		setLoading(true);
+		try {
+			const response = await orderApi.getAll();
+			console.log(response.data);
+			setOrderData(response.data.data);
+		} catch (error) {
+			console.error('Failed to fetch order:', error);
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const filterOrder = async () => {
+		setLoading(true);
+		try {
+			const response = await orderApi.search(keyword);
+			console.log(response.data);
+			setOrderData(response.data.data);
+		} catch (error) {
+			console.error('Failed to fetch order:', error);
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	useEffect(() => {
+		fetchOrder();
+	}, []);
 	return (
 		<div className='rounded-md border border-gray-300 bg-white shadow-sm '>
 			<div className='py-6 px-4 md:px-6 xl:px-7'>
-				<h4 className='text-xl font-semibold text-black'>List Orders</h4>
+				{/* <h4 className='text-xl font-semibold text-black'>List Orders</h4> */}
+				<div className='mt-2 flex items-center justify-between max-w-[400px] gap-4'>
+					<input
+						type='text'
+						className='w-full border border-gray-300 rounded-md py-2 px-4'
+						placeholder='Search order...'
+						value={keyword}
+						onChange={(e) => setKeyword(e.target.value)}
+					/>
+					<button
+						className='bg-black text-white px-6 py-2 rounded-md'
+						onClick={() => {
+							filterOrder();
+						}}
+					>
+						Search
+					</button>
+				</div>
 			</div>
 
 			<div className='max-w-full overflow-x-auto'>
@@ -105,21 +157,21 @@ function TableOrder() {
 									</div>
 								</td>
 								<td className='border-b border-[#eee] py-2 px-4'>
-									<p className='text-black dark:text-white'>{item.user.name}</p>
+									<p className='text-black dark:text-white'>{item.user.firstName}</p>
 								</td>
 								<td className='border-b border-[#eee] py-2 px-4'>
 									<p className='text-black dark:text-white'>
-										{item.createdAt.toString()}
+										{item.createdDate.toString()}
 									</p>
 								</td>
 								<td className='border-b border-[#eee] py-2 px-4'>
-									<p className='text-black dark:text-white'>{item.payment}</p>
+									<p className='text-black dark:text-white'>{item.paymentMethod}</p>
 								</td>
 								<td className='border-b border-[#eee] py-2 px-4'>
 									<p className='text-black dark:text-white'>${item.totalPrice}</p>
 								</td>
 								<td className='border-b border-[#eee] py-2 px-4'>
-									<p className='text-black dark:text-white'>{item.status}</p>
+									<p className='text-black dark:text-white'>{item.orderStatus}</p>
 								</td>
 								<td className='border-b border-[#eee] py-2 px-4'>
 									<div className='flex items-center space-x-3.5'>
@@ -127,7 +179,7 @@ function TableOrder() {
 										<div className='relative group'>
 											<button
 												className='hover:text-blue-500'
-												onClick={() => navigate(`/admin/orders/detail`)}
+												onClick={() => navigate(`/admin/orders/${item.id}`)}
 											>
 												<VisibilityOutlined className='w-5 h-5' />
 											</button>
@@ -137,11 +189,11 @@ function TableOrder() {
 										</div>
 
 										{/* Edit button */}
-										{item.status === 'Pending' && (
+										{item?.orderStatus === 'PENDING' && (
 											<div className='relative group'>
 												<button
 													className='hover:text-yellow-500'
-													onClick={() => navigate(`/admin/orders/edit`)}
+													onClick={() => navigate(`/admin/orders/${item.id}/edit`)}
 												>
 													<EditOutlined className='w-5 h-5' />
 												</button>

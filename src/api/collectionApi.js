@@ -7,13 +7,16 @@ const collectionApi = {
     getCollectionById: (id) => {
         return AdminAxiosClient.get(`/collections/${id}`);
     },
-    searchCollections: (keyword) => {
-        return AdminAxiosClient.get(`/collections/search`, {
+    searchCollections: (brandId,keyword) => {
+        return AdminAxiosClient.get(`/collections/${brandId}/search`, {
             params: { keyword },
         });
     },
     addNewCollection: (collectionData) => {
         return AdminAxiosClient.post('/collections', collectionData);
+    },
+    updateCollection: (id,collectionData) => {
+        return AdminAxiosClient.put(`/collections/${id}`, collectionData);
     },
 };
 
