@@ -39,7 +39,7 @@ const productItemApi = {
 		});
 	},
 
-	getTopSaleProductItems: (page = 0, size = 9) => {
+	getTopSaleProductItems: (page = 0, size = 10) => {
 		return AdminAxiosClient.get('/product-items/top-sale', {
 			params: { page, size },
 		});
@@ -58,6 +58,12 @@ const productItemApi = {
 				color,
 				size,
 			},
+		});
+	},
+
+	search: (color, size, minPrice, maxPrice, productName) => {
+		return AdminAxiosClient.get('/product-items/search', {
+			params: { color, size, minPrice, maxPrice, productName },
 		});
 	},
 };

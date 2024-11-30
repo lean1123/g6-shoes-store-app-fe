@@ -1,93 +1,113 @@
-import axios from "axios";
-import AuthAPI from "./AuthApi";
+import axios from 'axios';
+import AuthAPI from './AuthApi';
 
 const AdminAxiosClient = axios.create({
-  baseURL: "http://localhost:8080/api",
-  headers: {
-    "Content-Type": "application/json",
-  },
+	baseURL: 'http://localhost:8080/api',
+	headers: {
+		'Content-Type': 'application/json',
+	},
 });
 
 const getToken = () => {
-  const token = localStorage.getItem("accessToken");
-  return token ? token : "";
+	const token = localStorage.getItem('accessToken');
+	return token ? token : '';
 };
 
 AdminAxiosClient.interceptors.request.use(
-  async (config) => {
-    const publicEndpoints = [
-      /auth\/login/,
-      /auth\/signUp/,
-      /auth\/refreshToken/,
-    ];
+	async (config) => {
+		// const publicEndpoints = [
+		// 	/auth\/login/,
+		// 	/auth\/register/,
+		// 	/auth\/refreshToken/,
+		// 	/products/,
+		// 	/product-items/,
+		// 	/cart/,
+		// ];
 
-    const isPublicEndpoint = publicEndpoints.some((pattern) =>
-      pattern.test(config.url)
-    );
+		// const isPublicEndpoint = publicEndpoints.some((pattern) =>
+		// 	pattern.test(config.url),
+		// );
 
-    if (isPublicEndpoint) {
-      if (config.headers.Authorization) {
-        delete config.headers.Authorization;
-      }
-      return config;
-    }
+		const publicEndpoints = [
+			{ urlPattern: /\/auth\/login/, methods: ['POST'] },
+			{ urlPattern: /\/auth\/signUp/, methods: ['POST'] },
+			{ urlPattern: /\/auth\/refreshToken/, methods: ['POST'] },
+			{ urlPattern: /\/products/, methods: ['GET'] },
+			{ urlPattern: /\/product-items/, methods: ['GET'] },
+			{ urlPattern: /\/cart/, methods: ['GET', 'POST', 'PUT'] },
+		];
 
-    const token = getToken();
+		const isPublicEndpoint = publicEndpoints.some(
+			(endpoint) =>
+				endpoint.urlPattern.test(config.url) &&
+				endpoint.methods.includes(config.method.toUpperCase()),
+		);
 
-    config.headers.Authorization = `Bearer ${token}`;
+		if (isPublicEndpoint) {
+			if (config.headers.Authorization) {
+				delete config.headers.Authorization;
+			}
+			return config;
+		}
 
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
+		const token = getToken();
+
+		config.headers.Authorization = `Bearer ${token}`;
+
+		return config;
+	},
+	(error) => {
+		return Promise.reject(error);
+	},
 );
 
 AdminAxiosClient.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  async (error) => {
-    const originalRequest = error.config;
+	(response) => {
+		return response;
+	},
+	async (error) => {
+		const originalRequest = error.config;
 
-    if (error.response.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
+		if (error.response.status === 401 && !originalRequest._retry) {
+			originalRequest._retry = true;
 
-      let token = getToken();
+			let token = getToken();
 
-      if (token) {
-        try {
-          const refreshedToken = await AuthAPI.refreshToken();
+			if (token) {
+				try {
+					const refreshedToken = await AuthAPI.refreshToken();
 
-          console.log("refreshedToken in admin axios: ", refreshedToken);
-          if (refreshedToken.status !== 200) {
-            return Promise.reject(error);
-          }
-          token = await refreshedToken.data.token;
-          localStorage.setItem("accessToken", token);
-          originalRequest.headers.Authorization = `Bearer ${token}`;
+					console.log('refreshedToken in admin axios: ', refreshedToken);
+					if (refreshedToken.status !== 200) {
+						window.location.href = '/login';
+						return Promise.reject(error);
+					}
+					token = await refreshedToken.data.token;
+					localStorage.setItem('accessToken', token);
+					originalRequest.headers.Authorization = `Bearer ${token}`;
 
-          return AdminAxiosClient(originalRequest);
-        } catch (error) {
-          console.error("Error during token refresh request", error);
-          //   logOutCurrentUser();
-          return Promise.reject(error);
-        }
-      }
+					return AdminAxiosClient(originalRequest);
+				} catch (error) {
+					console.error('Error during token refresh request', error);
+					//   logOutCurrentUser();
+					window.location.href = '/login';
+					return Promise.reject(error);
+				}
+			}
+			window.location.href = '/login';
+			return Promise.reject(error);
+		}
 
-      return Promise.reject(error);
-    }
+		if (error.response) {
+			console.error('Response error', error.response);
+		} else if (error.request) {
+			console.error('No response received', error.request);
+		} else {
+			console.error('Request setup error', error.message);
+		}
 
-    if (error.response) {
-      console.error("Response error", error.response);
-    } else if (error.request) {
-      console.error("No response received", error.request);
-    } else {
-      console.error("Request setup error", error.message);
-    }
-
-    return Promise.reject(error);
-  }
+		return Promise.reject(error);
+	},
 );
 
 export default AdminAxiosClient;

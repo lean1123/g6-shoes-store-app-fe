@@ -40,7 +40,6 @@ function Header() {
 		navigate('/');
 	};
 
-	//set time
 	useEffect(() => {
 		dispatch(viewCart());
 		const interval = setInterval(() => {
@@ -49,7 +48,7 @@ function Header() {
 					? 'GIAO HÀNG MIỄN PHÍ CHO THÀNH VIÊN CỦA LENDOM'
 					: 'TRẢ HÀNG DỄ DÀNG',
 			);
-		}, 3000); // Đổi tên mỗi 3 giây
+		}, 3000);
 
 		return () => clearInterval(interval);
 	}, [dispatch]);
@@ -58,7 +57,6 @@ function Header() {
 		setIsOpenDiv(!isOpendDiv);
 	};
 
-	// tìm kiếm
 	const handleButtonClick = () => {
 		setIsDropdownVisible(!isDropdownVisible);
 	};
@@ -153,7 +151,7 @@ function Header() {
 										onClick={() => navigate('/products')}
 										className='text-black hover:text-red-500 px-3 py-2 rounded-md text-ml font-medium'
 									>
-										BÁN CHẠY
+										TẤT CẢ SẢN PHẨM
 									</button>
 									<button
 										onClick={() => navigate('/about')}
@@ -242,7 +240,7 @@ function Header() {
 										/>
 									</button>
 									<button className='px-3 py-2 rounded-md text-sm font-medium'>
-										<Badge badgeContent={cartItems?.length} color='warning'>
+										<Badge badgeContent={0} color='warning'>
 											<img
 												className='block h-5 w-auto'
 												src='/heart.png'

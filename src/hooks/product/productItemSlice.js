@@ -11,6 +11,7 @@ export const fetchProductItem = createAsyncThunk(
 					`Failed to fetch product item. Status: ${response.status}, Message: ${response.statusText}`,
 				);
 			}
+
 			return response.data?.data;
 		} catch (error) {
 			console.error('Error fetching product item: ', error);

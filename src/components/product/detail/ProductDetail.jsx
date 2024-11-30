@@ -25,8 +25,8 @@ function ProductDetail() {
 		dispatch(fetchProductItem(params.id));
 	}, [params.id, dispatch]);
 
-	const [selectedSize, setSelectedSize] = useState(productItem?.size);
-	const [selectedColor, setSelectedColor] = useState(productItem?.color);
+	const [selectedSize, setSelectedSize] = useState('');
+	const [selectedColor, setSelectedColor] = useState('');
 
 	const handleColorSelect = (color) => {
 		setSelectedColor(color);
@@ -73,8 +73,10 @@ function ProductDetail() {
 
 					const data = unwrapResult(result);
 					console.log('Product item:', data);
-					if (data?.id) {
+					if (data?.id && data.id !== productItem.id) {
+						enqueueSnackbar('Đã chuyển sang sản phẩm khác', { variant: 'success' });
 						navigate(`/products/${data.id}`);
+						return;
 					}
 				} catch (error) {
 					console.error('Error fetching product item:', error);
@@ -89,6 +91,7 @@ function ProductDetail() {
 		productItem?.product?.id,
 		dispatch,
 		navigate,
+		productItem?.id,
 	]);
 
 	return (

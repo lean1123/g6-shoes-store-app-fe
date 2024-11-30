@@ -20,10 +20,38 @@ import Profile from './components/profile/Profile';
 import LoginForm from './components/auth/LoginForm';
 import AdminPage from './components/admin';
 import Address from './components/profile/Address';
+import ListAllProducts from './components/product/ListAllProducts';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchUser } from './hooks/user/userSlice';
+import { unwrapResult } from '@reduxjs/toolkit';
 
 function App() {
 	const location = useLocation();
+	// const dispatch = useDispatch();
+	// const { user } = useSelector((state) => state.persistedReducer.userInfo);
+	// const { userId } = useSelector((state) => state.persistedReducer.user);
+	// const [role, setRole] = useState('customer');
+	const { user } = useSelector((state) => state.persistedReducer.userInfo);
 	const role = 'admin';
+
+	// useEffect(() => {
+	// 	const fetchUserData = async () => {
+	// 		if (userId && user === null) {
+	// 			try {
+	// 				const actionResult = await dispatch(fetchUser(userId));
+	// 				const fetchedUser = unwrapResult(actionResult);
+	// 				setRole(fetchedUser.role);
+	// 			} catch (error) {
+	// 				console.error('Failed to fetch user:', error);
+	// 			}
+	// 		} else if (user) {
+	// 			setRole(user.role);
+	// 		}
+	// 	};
+
+	// 	fetchUserData();
+	// }, [dispatch, user, userId, location.pathname]);
 
 	return (
 		<div className='App'>
@@ -44,7 +72,7 @@ function App() {
 					<Route path='listRecentProducts' element={<ListRecentProducts />} />
 					<Route path='listTopSaleProducts' element={<ListTopSaleProducts />} />
 					<Route path='products'>
-						<Route index element={<ListTopSaleProducts />} />
+						<Route index element={<ListAllProducts />} />
 						<Route path=':id' element={<ProductDetail />}>
 							<Route path='description' element={<DescriptionInfo />} />
 							<Route path='reviews' element={<ListReview />} />
@@ -52,8 +80,8 @@ function App() {
 							<Route path='returnPolicy' element={<ReturnPolicy />} />
 						</Route>
 					</Route>
-					{role === 'customer' ||
-						(role === 'admin' && <Route path='pay' element={<Pay />} />)}
+					{role === 'admin' ||
+						(role === 'customer' && <Route path='pay' element={<Pay />} />)}
 					<Route path='/orderSuccess' element={<h1>Your order is complete!</h1>} />
 					<Route path='post' element={<h1>Post</h1>} />
 					<Route path='*' element={<h1>404 Not Found</h1>} />

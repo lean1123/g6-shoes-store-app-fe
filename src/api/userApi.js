@@ -11,77 +11,76 @@ const userApi = {
 		return AdminAxiosClient.get(`/users/${id}`);
 	},
 	getUserInfo: async (userId) => {
-        // Bỏ /api vì đã có trong baseURL
-        const url = `/users/${userId}`;
-        console.log('Calling getUserInfo with URL:', url);
-        console.log('UserId received:', userId);
-        
-        try {
-            const response = await AdminAxiosClient.get(url);
-            console.log('getUserInfo success response:', response);
-            return response;
-        } catch (error) {
-            console.log('getUserInfo error details:', {
-                status: error.response?.status,
-                data: error.response?.data,
-                message: error.message
-            });
-            throw error;
-        }
-    },
+		// Bỏ /api vì đã có trong baseURL
+		const url = `/users/${userId}`;
+		console.log('Calling getUserInfo with URL:', url);
+		console.log('UserId received:', userId);
+
+		try {
+			const response = await AdminAxiosClient.get(url);
+			console.log('getUserInfo success response:', response);
+			return response;
+		} catch (error) {
+			console.log('getUserInfo error details:', {
+				status: error.response?.status,
+				data: error.response?.data,
+				message: error.message,
+			});
+			throw error;
+		}
+	},
 	update: async (id, userData) => {
-        return AdminAxiosClient.put(`/users/${id}`, userData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        });
-    },
+		return AdminAxiosClient.put(`/users/${id}`, userData, {
+			headers: {
+				'Content-Type': 'multipart/form-data',
+			},
+		});
+	},
 
-    search: async (keyword) => {
-        return AdminAxiosClient.get(`/users/search`, {
-            params: { keyword },
-        });
-    },
-};
+	search: async (keyword) => {
+		return AdminAxiosClient.get(`/users/search`, {
+			params: { keyword },
+		});
+	},
 
-    // Thêm các phương thức mới cho địa chỉ
+	// Thêm các phương thức mới cho địa chỉ
 	updateAddress: async (userId, addressId, addressData) => {
-        const url = `/users/${userId}/addresses/${addressId}`;
-        
-        // Đảm bảo gửi đúng format
-        const formattedData = {
-            homeNumber: addressData.homeNumber,
-            street: addressData.street,
-            ward: addressData.ward,
-            district: addressData.district,
-            city: addressData.city
-        };
+		const url = `/users/${userId}/addresses/${addressId}`;
 
-        console.log('Update address request:', {
-            url,
-            data: formattedData
-        });
+		// Đảm bảo gửi đúng format
+		const formattedData = {
+			homeNumber: addressData.homeNumber,
+			street: addressData.street,
+			ward: addressData.ward,
+			district: addressData.district,
+			city: addressData.city,
+		};
 
-        try {
-            const response = await AdminAxiosClient.put(url, formattedData, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-            return response;
-        } catch (error) {
-            console.error('Update address error:', error.response?.data);
-            throw error;
-        }
-    },
+		console.log('Update address request:', {
+			url,
+			data: formattedData,
+		});
 
-    addAddress: async (userId, addressData) => {
-        const url = `/users/${userId}/addresses`;
-        return AdminAxiosClient.post(url, addressData, {
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        });
-    },
+		try {
+			const response = await AdminAxiosClient.put(url, formattedData, {
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
+			return response;
+		} catch (error) {
+			console.error('Update address error:', error.response?.data);
+			throw error;
+		}
+	},
+
+	addAddress: async (userId, addressData) => {
+		const url = `/users/${userId}/addresses`;
+		return AdminAxiosClient.post(url, addressData, {
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		});
+	},
 };
 export default userApi;

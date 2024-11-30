@@ -1,39 +1,33 @@
-function FilterByPrice() {
+import PropTypes from 'prop-types';
+
+function FilterByPrice({ onChange }) {
+	const handleMinPriceChange = (e) => {
+		onChange({ minPrice: e.target.value });
+	};
+
+	const handleMaxPriceChange = (e) => {
+		onChange({ maxPrice: e.target.value });
+	};
+
 	return (
-		<>
-			return{' '}
-			<div>
-				<h1 className='font-bold mt-4'>GIÁ</h1>
-			</div>
-			<div className='search-container'>
-				<div className=' flex flex-col space-y-2 group'>
-					<div className='flex items-center space-x-24 mt-3'>
-						<span className='font-bold text-sm'>1tr - 2tr</span>
-						<span className='text-black px-3 py-1 rounded-full border border-grey text-xs font-bold group-hover:bg-black group-hover:text-white transition-colors duration-300'>
-							10
-						</span>
-					</div>
-				</div>
-				<div className='flex flex-col space-y-2 group'>
-					<div className='flex items-center space-x-20 mt-3'>
-						<span className='font-bold text-sm'>500k-999k</span>
-						<span className='text-black px-3 py-1 rounded-full border border-grey text-xs font-bold group-hover:bg-black group-hover:text-white transition-colors duration-300'>
-							10
-						</span>
-					</div>
-				</div>
-				<div className='flex flex-col space-y-2 group mb-3'>
-					<div className='flex items-center space-x-20 mt-3'>
-						<span className='font-bold text-sm'>Dưới 500k</span>
-						<span className='text-black px-3 py-1 rounded-full border border-grey text-xs font-bold group-hover:bg-black group-hover:text-white transition-colors duration-300'>
-							10
-						</span>
-					</div>
-				</div>
-			</div>
-			return{' '}
-		</>
+		<div>
+			<h2>Filter by Price</h2>
+			<input
+				type='number'
+				placeholder='Min Price'
+				onChange={handleMinPriceChange}
+			/>
+			<input
+				type='number'
+				placeholder='Max Price'
+				onChange={handleMaxPriceChange}
+			/>
+		</div>
 	);
 }
+
+FilterByPrice.propTypes = {
+	onChange: PropTypes.func.isRequired,
+};
 
 export default FilterByPrice;
