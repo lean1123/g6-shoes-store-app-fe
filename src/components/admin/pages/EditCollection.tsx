@@ -1,13 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import Breadcrumb from '../Breadcrumbs/Breadcrumb';
-import { useNavigate, useParams } from 'react-router-dom'; // Sử dụng useParams từ react-router-dom
+import { useNavigate, useParams } from 'react-router-dom';
 import brandApi from '../../../api/brandApi';
-import { CircularProgress } from '@mui/material';
 import collectionApi from '../../../api/collectionApi';
+import { CircularProgress } from '@mui/material';
+import { enqueueSnackbar } from 'notistack';
 
-// Xác thực với Yup
+// Validation schema
 const validationSchema = Yup.object({
 	name: Yup.string()
 		.required('Collection Name is required')
@@ -20,49 +21,62 @@ interface Brand {
 	avatar: string;
 }
 
-function AddCollection() {
-	const [loading, setLoading] = React.useState(false); // Trạng thái tải dữ liệu brand // Trạng thái khi form đang submit
-	const [brand, setBrand] = React.useState<Brand>();
+interface Collection {
+	id: number;
+	name: string;
+	brandId: number;
+}
 
-	const { id } = useParams();
-	const navigation = useNavigate();
+function EditCollection() {
+	const [loading, setLoading] = useState(false);
+	const [brand, setBrand] = useState<Brand | null>(null);
+	const [collection, setCollection] = useState<Collection | null>(null);
+
+	const { id: brandId, collectionId } = useParams();
+	const navigate = useNavigate();
 
 	useEffect(() => {
-		console.log('id:', id);
-		const fetchBrand = async () => {
+		// Fetch brand and collection details
+		const fetchData = async () => {
 			setLoading(true);
 			try {
-				const response = await brandApi.getBrandById(id);
-				console.log('Brand:', response.data);
-				setBrand(response.data);
+				// Fetch brand by ID
+				const brandResponse = await brandApi.getBrandById(brandId);
+				setBrand(brandResponse.data);
+
+				// Fetch collection by ID
+				const collectionResponse =
+					await collectionApi.getCollectionById(collectionId);
+				setCollection(collectionResponse.data);
 			} catch (error) {
-				console.error('Failed to fetch brand:', error);
+				console.error('Failed to fetch data:', error);
 			} finally {
 				setLoading(false);
 			}
 		};
-		fetchBrand();
-	}, [id]);
+		fetchData();
+	}, [brandId, collectionId]);
 
 	const handleSubmit = async (values: { name: string }) => {
-		console.log('Form data:', values);
+		setLoading(true);
 		try {
-			const response = await collectionApi.addNewCollection({
+			const response = await collectionApi.updateCollection(collectionId, {
 				name: values.name,
-				brandId: id,
+				brandId: brandId,
 			});
-			console.log(response);
-			alert('Collection added successfully!');
-			// navigation(-1); // Điều hướng quay lại trang trước
+			console.log('Collection updated:', response.data);
+			if (response.status === 200) {
+				enqueueSnackbar('Collection updated successfully!', { variant: 'success' });
+			}
 		} catch (error) {
-			console.error('Failed to add collection:', error);
-			alert('Failed to add collection!');
+			console.error('Failed to update collection:', error);
+			enqueueSnackbar('Failed to update collection!', { variant: 'error' });
 		} finally {
 			setLoading(false);
 		}
 	};
 
-	// Hiển thị giao diện chờ khi đang tải dữ liệu
+	// Show loading state while fetching data
 	if (loading) {
 		return (
 			<div className='flex justify-center items-center h-full'>
@@ -71,18 +85,18 @@ function AddCollection() {
 		);
 	}
 
-	// Nếu brand chưa được tải
-	if (!brand) {
-		return <div>No brand found!</div>;
+	// Handle case when data is not found
+	if (!brand || !collection) {
+		return <div>Brand or Collection not found!</div>;
 	}
 
 	return (
 		<>
-			<Breadcrumb pageName='Add Collection' />
+			<Breadcrumb pageName='Update Collection' />
 			<Formik
 				initialValues={{
-					name: '',
-					brand: brand?.brandName || '',
+					name: collection.name || '',
+					brand: brand.brandName || '',
 				}}
 				validationSchema={validationSchema}
 				onSubmit={(values) => handleSubmit(values)}
@@ -127,10 +141,9 @@ function AddCollection() {
 							<button
 								type='submit'
 								className='bg-blue-500 text-white p-2 rounded-md mt-3 min-w-[150px] flex items-center justify-center'
-								onClick={() => console.log('Button clicked')}
 								disabled={loading}
 							>
-								{loading ? <CircularProgress size={20} /> : 'Add Collection'}
+								{loading ? <CircularProgress size={20} /> : 'Update Collection'}
 							</button>
 						</div>
 
@@ -139,7 +152,7 @@ function AddCollection() {
 							<button
 								type='button'
 								className='bg-gray-500 text-white p-2 rounded-md mt-3'
-								onClick={() => navigation(-1)}
+								onClick={() => navigate(-1)}
 							>
 								Back
 							</button>
@@ -151,4 +164,4 @@ function AddCollection() {
 	);
 }
 
-export default AddCollection;
+export default EditCollection;

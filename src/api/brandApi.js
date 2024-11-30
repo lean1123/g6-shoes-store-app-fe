@@ -19,6 +19,14 @@ const brandApi = {
             },
         });
     },
+    updateBrand: (id,brandData) => {
+        return AdminAxiosClient.put(`/brands/${id}`, brandData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+    },
+    
 };
 
 export default brandApi;

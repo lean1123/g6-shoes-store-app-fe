@@ -37,6 +37,13 @@ const userApi = {
         });
     },
 
+    search: async (keyword) => {
+        return AdminAxiosClient.get(`/users/search`, {
+            params: { keyword },
+        });
+    },
+};
+
     // Thêm các phương thức mới cho địa chỉ
 	updateAddress: async (userId, addressId, addressData) => {
         const url = `/users/${userId}/addresses/${addressId}`;

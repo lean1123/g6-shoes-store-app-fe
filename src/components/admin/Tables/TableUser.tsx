@@ -25,6 +25,7 @@ const TableUser = () => {
 	const [loading, setLoading] = React.useState(false);
 	const navigate = useNavigate();
 	const [users, setUsers] = React.useState<User[]>([]);
+	const [keyword, setKeyword] = React.useState('');
 	const fetchUser = async () => {
 		setLoading(true);
 		try {
@@ -58,6 +59,19 @@ const TableUser = () => {
 		}
 	};
 
+	const filterUser = async () => {
+		setLoading(true);
+		try {
+			const response = await userApi.search(keyword);
+			console.log(response.data);
+			setUsers(response.data);
+		} catch (error) {
+			console.error('Failed to fetch product:', error);
+		} finally {
+			setLoading(false);
+		}
+	};
+
 	useEffect(() => {
 		fetchUser();
 	}, []);
@@ -65,7 +79,24 @@ const TableUser = () => {
 	return (
 		<div className='rounded-md border border-gray-300 bg-white shadow-sm '>
 			<div className='py-6 px-4 md:px-6 xl:px-7'>
-				<h4 className='text-xl font-semibold text-black'>List Products</h4>
+				{/* <h4 className='text-xl font-semibold text-black'>List Products</h4> */}
+				<div className='mt-2 flex items-center justify-between max-w-[400px] gap-4'>
+					<input
+						type='text'
+						className='w-full border border-gray-300 rounded-md py-2 px-4'
+						placeholder='Search brand...'
+						value={keyword}
+						onChange={(e) => setKeyword(e.target.value)}
+					/>
+					<button
+						className='bg-black text-white px-6 py-2 rounded-md'
+						onClick={() => {
+							filterUser();
+						}}
+					>
+						Search
+					</button>
+				</div>
 			</div>
 
 			<div className='max-w-full overflow-x-auto'>
