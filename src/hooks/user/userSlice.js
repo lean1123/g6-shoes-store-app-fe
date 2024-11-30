@@ -3,24 +3,18 @@ import userApi from '../../api/userApi';
 import addressApi from '../../api/addressApi';
 
 export const fetchUser = createAsyncThunk(
-	'user/fetchUser',
-	async (userId, { rejectWithValue }) => {
-	  try {
-		console.log("Fetching user info for userId:", userId);
-		const userResponse = await userApi.getUserInfo(userId);
-		console.log("API response for user info:", userResponse);
-		
-		if (userResponse.status !== 200) {
-		  return rejectWithValue(`Failed to fetch user info. Status: ${userResponse.status}`);
+	'userInfo/fetchUser',
+	async (userId) => {
+		try {
+			const response = await userApi.getUserInfo(userId);
+		//	console.log('fetchUser thunk response:', response);
+			return response;
+		} catch (error) {
+			console.error('fetchUser thunk error:', error);
+			throw error;
 		}
-  
-		return userResponse.data;  // Nếu dữ liệu trả về hợp lệ
-	  } catch (error) {
-		console.error('Error fetching user:', error);
-		return rejectWithValue(error.message);  // Trả lỗi chi tiết
-	  }
 	}
-  );
+);
   
   
 export const fetchAddress = createAsyncThunk(
@@ -71,61 +65,30 @@ export const addAddress = createAsyncThunk(
     }
 );
 
-const userSlice = createSlice({
-	name: 'user',
+export const userSlice = createSlice({
+	name: 'userInfo',
 	initialState: {
 		user: null,
-		address: [],
 		error: null,
-		status: 'idle'
-
+		loading: false
 	},
-	reducers: {
-		setUser: (state, action) => {
-			state.user = action.payload;
-		},
-	},
+	reducers: {},
 	extraReducers: (builder) => {
 		builder
+			.addCase(fetchUser.pending, (state) => {
+				state.loading = true;
+				state.error = null;
+			})
 			.addCase(fetchUser.fulfilled, (state, action) => {
-				state.user = action.payload;
+				state.loading = false;
+				state.user = action.payload.data;
+				state.error = null;
 			})
 			.addCase(fetchUser.rejected, (state, action) => {
-				state.error = action.payload;
-			})
-			.addCase(fetchAddress.fulfilled, (state, action) => {
-				state.address = action.payload;
-			})
-			.addCase(fetchAddress.rejected, (state, action) => {
-				state.error = action.payload;
-			})
-			 .addCase(updateAddress.pending, (state) => {
-                state.status = 'loading';
-            })
-            .addCase(updateAddress.fulfilled, (state, action) => {
-                state.status = 'succeeded';
-                // Cập nhật địa chỉ trong mảng
-                const updatedAddress = action.payload;
-                state.address = state.address.map(addr =>
-                    addr.id === updatedAddress.id ? updatedAddress : addr
-                );
-            })
-            .addCase(updateAddress.rejected, (state, action) => {
-                state.status = 'failed';
-                state.error = action.payload;
-            })
-            .addCase(addAddress.pending, (state) => {
-                state.status = 'loading';
-            })
-            .addCase(addAddress.fulfilled, (state, action) => {
-                state.status = 'succeeded';
-                state.address.push(action.payload);
-            })
-            .addCase(addAddress.rejected, (state, action) => {
-                state.status = 'failed';
-                state.error = action.payload;
-            });
-	},
+				state.loading = false;
+				state.error = action.error.message;
+			});
+	}
 });
 
 export const { setUser } = userSlice.actions;

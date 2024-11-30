@@ -14,7 +14,9 @@ function Address() {
     // Thay đổi cách lấy address từ userInfo
     const userInfo = useSelector((state) => state.persistedReducer.userInfo);
     const address = userInfo?.address || [];
-
+    const { user } = useSelector((state) => ({
+        user: state.persistedReducer.userInfo.user,
+      }));  
     useEffect(() => {
         if (!userId) {
             navigate('/login');
@@ -49,10 +51,12 @@ function Address() {
             {/* Sidebar */}
             <div className='w-64 mr-5'>
                 <div className='bg-orange-500 p-5 text-center rounded-full w-24 h-24 text-4xl text-white mx-auto flex items-center justify-center'>
-                    LA
+                    
                 </div>
                 <p className='text-center mt-3'>
-                    Xin chào <span className='text-blue-500 font-bold'>Lê Thanh An</span>
+                    Xin chào   <span className="text-blue-500 font-bold">
+            {user ? `${user.firstName} ${user.lastName}` : "Khách"}
+          </span>
                 </p>
                 <ul className='list-none p-0 text-center mt-5 space-y-2'>
                     <li className='text-blue-500'>

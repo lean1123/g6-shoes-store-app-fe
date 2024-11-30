@@ -5,6 +5,7 @@ import * as Yup from 'yup';
 import userApi from '../../../api/userApi';
 import { Alert, AlertTitle, CircularProgress } from '@mui/material';
 import { useNavigate, useParams } from 'react-router';
+import { enqueueSnackbar } from 'notistack';
 
 interface User {
 	id?: string;
@@ -87,8 +88,14 @@ function EditUser() {
 			const response = await userApi.update(id, formData);
 			console.log(response);
 			setSuccessMessage('User information updated successfully!');
+			if (response.status === 200) {
+				enqueueSnackbar('User information updated successfully!', {
+					variant: 'success',
+				});
+			}
 		} catch (error) {
 			console.error(error);
+			enqueueSnackbar('Failed to update user information!', { variant: 'error' });
 		} finally {
 			setLoading(false);
 		}

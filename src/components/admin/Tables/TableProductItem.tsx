@@ -126,7 +126,17 @@ function TableProductItem() {
 						Rating: {product?.rating}⭐
 					</p>
 				</div>
-				<img src={brand} className='w-10 h-10' />
+				<div className='flex flex-col gap-2 justify-center items-center'>
+					<img src={brand} className='w-10 h-10' />
+					<button
+						className='bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded'
+						onClick={() => {
+							navigate(-1);
+						}}
+					>
+						Back
+					</button>
+				</div>
 			</div>
 			<div className='max-w-full overflow-x-auto'>
 				{productItems.length > 0 ? (

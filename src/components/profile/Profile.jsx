@@ -11,32 +11,47 @@ function Profile() {
   const [orders, setOrders] = useState([]);
 
   const { userId } = useSelector((state) => state.persistedReducer.user);
-  const { user, error: userError } = useSelector((state) => state.persistedReducer.userInfo);
-  console.log("Redux state (user):", useSelector((state) => state.persistedReducer.user));
-  console.log("Redux state (userInfo):", useSelector((state) => state.persistedReducer.userInfo));
-  
-  // Fetch user info and orders
+  const { user, error: userError } = useSelector((state) => ({
+    user: state.persistedReducer.userInfo.user,
+    error: state.persistedReducer.userInfo.error
+  }));
+
+  // Add these console logs
+  console.log('Current user state 1:', user);
+  console.log('Current error state:', userError);
+  console.log('Loading state:', useSelector(state => state.persistedReducer.userInfo.loading));
+
   useEffect(() => {
     if (userId) {
+      console.log('userId trong Profile:', userId);
+      console.log('Kiểu dữ liệu của userId:', typeof userId);
       dispatch(fetchUser(userId));
       fetchOrders(userId);
     }
   }, [dispatch, userId]);
-  console.log('userId:', userId);
 
-  const fetchOrders = async () => {
+  const fetchOrders = async (userId) => {
     try {
-      console.log('Fetching orders for userId:', userId);
-      const response = await orderApi.getOrdersByUserId(userId);
-      console.log('API response:', response);  // Log response từ API
-      if (response.status !== 200) {
-        throw new Error('Failed to fetch orders. Invalid response status');
-      }
-      setOrders(response.data);
+        console.log('Đang tải đơn hàng cho userId:', userId);
+        const response = await orderApi.getOrdersByUserId(userId);
+        console.log('Response từ API:', response);
+        
+        if (response?.data?.data) {
+            setOrders(response.data.data);
+        } else {
+            console.warn('Không có dữ liệu đơn hàng');
+            setOrders([]);
+        }
     } catch (error) {
-      console.error('Failed to fetch orders:', error.message || error);
+        console.error('Lỗi khi tải đơn hàng:', {
+            message: error.message,
+            response: error.response?.data,
+            status: error.response?.status
+        });
+        setOrders([]);
     }
   };
+  
   
 
   const handleUpdateProfile = () => navigate('/updateProfile');
@@ -47,12 +62,14 @@ function Profile() {
     <div className="flex p-5 font-sans">
       {/* Sidebar */}
       <div className="w-64 mr-5">
-        <div className="bg-orange-500 p-5 text-center rounded-full w-24 h-24 text-4xl text-white mx-auto flex items-center justify-center">
-          {user?.fullName ? user.fullName.charAt(0).toUpperCase() : 'U'}
-        </div>
-        <p className="text-center mt-3">
-          Xin chào <span className="text-blue-500 font-bold">{user?.fullName || 'Khách'}</span>
-        </p>
+      <div className="bg-orange-500 p-5 text-center rounded-full w-24 h-24 text-4xl text-white mx-auto flex items-center justify-center">
+  {user ? user.firstName.charAt(0).toUpperCase() : 'U'}
+</div>
+<p className="text-center mt-3">
+  Xin chào <span className="text-blue-500 font-bold">
+    {user ? `${user.firstName} ${user.lastName}` : 'Khách'}
+  </span>
+</p>
         <ul className="list-none p-0 text-center mt-5 space-y-2">
           <li className="text-blue-500">
             <i className="fa fa-user-circle-o" aria-hidden="true"></i>
@@ -79,26 +96,24 @@ function Profile() {
         <div className="mb-5">
           <h2 className="text-2xl font-bold text-gray-800">THÔNG TIN TÀI KHOẢN</h2>
           {userError ? (
-            <p className="text-red-500">Không thể tải thông tin người dùng: {userError}</p>
-          ) : user ? (
-            <>
-              <p><span>Họ và tên: </span>{user.fullName}</p>
-              <p><span>Email: </span>{user.email}</p>
-              <p><span>Địa chỉ: </span>{user.address}</p>
-              <p><span>Ngày sinh: </span>{user.dateOfBirth}</p>
-              <p><span>Điện thoại: </span>{user.phone}</p>
-              <div className="mt-3 space-x-4">
-                <button
-                  onClick={handleUpdateProfile}
-                  className="bg-blue-500 text-white py-2 px-4 rounded font-semibold hover:bg-blue-600"
-                >
-                  CẬP NHẬT
-                </button>
-              </div>
-            </>
-          ) : (
-            <p>Đang tải thông tin...</p>
-          )}
+  <p className="text-red-500">Không thể tải thông tin người dùng: {userError}</p>
+) : user ? (
+  <>
+    <p><span>Họ và tên: </span>{`${user.firstName} ${user.lastName}`}</p>
+    <p><span>Giới tính: </span>{user.gender === 'MALE' ? 'Nam' : 'Nữ'}</p>
+    <p><span>Điện thoại: </span>{user.phone}</p>
+    <div className="mt-3 space-x-4">
+      <button
+        onClick={handleUpdateProfile}
+        className="bg-blue-500 text-white py-2 px-4 rounded font-semibold hover:bg-blue-600"
+      >
+        CẬP NHẬT
+      </button>
+    </div>
+  </>
+) : (
+  <p>Đang tải thông tin...</p>
+)}
         </div>
         {/* Membership Level */}
         <div className="bg-blue-100 p-4 rounded mb-5 text-sm text-gray-700">

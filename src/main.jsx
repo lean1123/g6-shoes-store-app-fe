@@ -23,6 +23,7 @@ createRoot(document.getElementById('root')).render(
 					maxSnack={3}
 					anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
 					autoHideDuration={3000}
+					style={{ zIndex: 9999 }}
 				>
 					<App />
 				</SnackbarProvider>

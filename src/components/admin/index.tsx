@@ -58,8 +58,8 @@ function AdminPage() {
 				<Route path='/users/:id' element={<UserDetail />} />
 				<Route path='/users/:id/edit' element={<EditUser />} />
 				<Route path='/orders' element={<ListOrder />} />
-				<Route path='/orders/detail' element={<OrderDetail isEdit={false} />} />
-				<Route path='/orders/edit' element={<OrderDetail isEdit={true} />} />
+				<Route path='/orders/:id' element={<OrderDetail isEdit={false} />} />
+				<Route path='/orders/:id/edit' element={<OrderDetail isEdit={true} />} />
 			</Routes>
 		</AdminLayout>
 	);
