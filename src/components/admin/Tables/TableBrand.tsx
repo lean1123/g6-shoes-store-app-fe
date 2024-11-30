@@ -157,7 +157,10 @@ const TableBrand = () => {
 
 										{/* Edit button */}
 										<div className='relative group'>
-											<button className='hover:text-yellow-500'>
+											<button
+												className='hover:text-yellow-500'
+												onClick={() => navigate(`/admin/brands/${brandItem.id}/edit`)}
+											>
 												<EditOutlined className='w-5 h-5' />
 											</button>
 											<span className='absolute opacity-0 group-hover:opacity-100 bg-black text-white text-xs rounded py-1 px-2 -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap'>

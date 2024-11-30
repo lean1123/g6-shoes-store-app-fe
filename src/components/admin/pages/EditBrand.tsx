@@ -1,29 +1,32 @@
 import { CloudUpload } from '@mui/icons-material';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import brandApi from '../../../api/brandApi';
 import { CircularProgress } from '@mui/material';
+import { useNavigate, useParams } from 'react-router';
 import { enqueueSnackbar } from 'notistack';
 
-function CreateBrand() {
+interface Brand {
+	id: number;
+	brandName: string;
+	avatar: string;
+}
+
+function EditBrand() {
 	const [image, setImage] = useState<File | null>(null);
 	const [loading, setLoading] = useState(false);
+	const [previewImage, setPreviewImage] = useState<string | null>(null);
+	const { id } = useParams();
+	const [brand, setBrand] = useState<Brand | null>(null);
+	const [loadingBrand, setLoadingBrand] = useState(false);
+	const navigate = useNavigate();
 
 	// Schema validation
 	const validationSchema = Yup.object({
 		brandName: Yup.string()
 			.required('Brand Name is required')
 			.min(2, 'Brand Name must be at least 2 characters long'),
-		image: Yup.mixed<File>()
-			.required('Brand image is required')
-			.test('fileType', 'Only images are allowed', (value) => {
-				// Check if the value is a File and verify the type
-				return (
-					value instanceof File &&
-					['image/jpeg', 'image/png', 'image/jpg'].includes(value.type)
-				);
-			}),
 	});
 
 	// Handle image input change
@@ -34,7 +37,8 @@ function CreateBrand() {
 		const file = e.target.files?.[0];
 		if (file) {
 			setImage(file);
-			setFieldValue('image', file);
+			setPreviewImage(URL.createObjectURL(file));
+			setFieldValue('avatar', file);
 		}
 	};
 
@@ -43,40 +47,61 @@ function CreateBrand() {
 		avatar: File | null;
 	}) => {
 		setLoading(true);
-		if (!image) {
-			alert('Please select an image');
-			return;
-		}
-		console.log(values);
 		const formData = new FormData();
 		formData.append('brandName', values.brandName);
-		formData.append('avatar', image);
+		if (image) {
+			formData.append('avatar', image);
+		}
 		try {
-			const response = await brandApi.addNewBrand(formData);
-			console.log(response);
+			const response = await brandApi.updateBrand(id, formData);
+			// alert('Brand updated successfully!');
+			// navigate('/brands'); // Điều hướng về trang danh sách thương hiệu
 			if (response.status === 200) {
-				enqueueSnackbar('Brand created successfully!', { variant: 'success' });
+				enqueueSnackbar('Brand updated successfully!', { variant: 'success' });
 			}
 		} catch (error) {
-			console.error('Failed to create brand:', error);
-			enqueueSnackbar('Failed to create brand', { variant: 'error' });
+			console.error(error);
+			enqueueSnackbar('Failed to update brand!', { variant: 'error' });
 		} finally {
 			setLoading(false);
 		}
 	};
 
+	const fetchBrand = async () => {
+		setLoadingBrand(true);
+		try {
+			const response = await brandApi.getBrandById(id);
+			setBrand(response.data);
+			setPreviewImage(response.data.avatar); // Hiển thị ảnh hiện tại
+		} catch (error) {
+			console.error('Failed to fetch brand:', error);
+		} finally {
+			setLoadingBrand(false);
+		}
+	};
+
+	useEffect(() => {
+		fetchBrand();
+	}, [id]);
+
+	if (loadingBrand) {
+		return <div>Loading brand data...</div>;
+	}
+
+	if (!brand) {
+		return <div>Brand not found!</div>;
+	}
+
 	return (
 		<div className='p-3 shadow-md rounded-md grid grid-cols-12 gap-6 bg-white'>
 			<div className='col-span-12'>
-				<h1 className='font-semibold text-xl mb-2'>Create a New Brand</h1>
+				<h1 className='font-semibold text-xl mb-2'>Edit Brand</h1>
 			</div>
 
 			<Formik
-				initialValues={{ brandName: '', avatar: null }}
+				initialValues={{ brandName: brand.brandName, avatar: null }}
 				validationSchema={validationSchema}
-				onSubmit={(values) => {
-					handleSubmit(values);
-				}}
+				onSubmit={(values) => handleSubmit(values)}
 			>
 				{({ setFieldValue }) => (
 					<Form className='col-span-12 grid grid-cols-12 gap-6'>
@@ -86,12 +111,8 @@ function CreateBrand() {
 							<div
 								className={`flex justify-center items-center h-[200px] w-full relative border-1 border-dashed rounded-lg border-blue-500`}
 							>
-								{image && (
-									<img
-										alt='Brand'
-										src={URL.createObjectURL(image)}
-										className='absolute w-[200px]'
-									/>
+								{previewImage && (
+									<img alt='Brand' src={previewImage} className='absolute w-[200px]' />
 								)}
 
 								<input
@@ -100,10 +121,10 @@ function CreateBrand() {
 									className={`block h-full w-full absolute opacity-0 z-10 cursor-pointer`}
 									onChange={(e) => handleImageChange(e, setFieldValue)}
 								/>
-								{!image && <CloudUpload className='text-blue-500 z-0' />}
+								{!previewImage && <CloudUpload className='text-blue-500 z-0' />}
 							</div>
 							<ErrorMessage
-								name='image'
+								name='avatar'
 								component='div'
 								className='text-red-500 text-sm mt-1'
 							/>
@@ -135,7 +156,18 @@ function CreateBrand() {
 								disabled={loading}
 								className='bg-blue-500 text-white p-2 rounded-md mt-3 min-w-[200px] flex items-center justify-center'
 							>
-								{loading ? <CircularProgress size={20} /> : 'Create Brand'}
+								{loading ? <CircularProgress size={20} /> : 'Update Brand'}
+							</button>
+
+							<button
+								type='button'
+								disabled={loading}
+								onClick={() => {
+									navigate(-1);
+								}}
+								className='bg-gray-500 text-white p-2 rounded-md mt-3 min-w-[200px] flex items-center justify-center'
+							>
+								Back
 							</button>
 						</div>
 					</Form>
@@ -145,4 +177,4 @@ function CreateBrand() {
 	);
 }
 
-export default CreateBrand;
+export default EditBrand;
