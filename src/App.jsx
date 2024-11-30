@@ -20,10 +20,21 @@ import Profile from './components/profile/Profile';
 import LoginForm from './components/auth/LoginForm';
 import AdminPage from './components/admin';
 import Address from './components/profile/Address';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchUser } from './hooks/user/userSlice';
 
 function App() {
 	const location = useLocation();
-	const role = 'admin';
+	const role = 'ADMIN';
+	// const dispatch = useDispatch();
+
+	// const user = useSelector((state) => state.persistedReducer.userInfo.user);
+	// const role = user.role;
+
+	// useEffect(() => {
+	// 	dispatch(fetchUser());
+	// 	role = user.role;
+	// }, []);
 
 	return (
 		<div className='App'>
@@ -53,13 +64,13 @@ function App() {
 						</Route>
 					</Route>
 					{role === 'customer' ||
-						(role === 'admin' && <Route path='pay' element={<Pay />} />)}
+						(role === 'ADMIN' && <Route path='pay' element={<Pay />} />)}
 					<Route path='/orderSuccess' element={<h1>Your order is complete!</h1>} />
 					<Route path='post' element={<h1>Post</h1>} />
 					<Route path='*' element={<h1>404 Not Found</h1>} />
 				</Route>
 
-				{role === 'admin' && <Route path='admin/*' element={<AdminPage />} />}
+				{role === 'ADMIN' && <Route path='admin/*' element={<AdminPage />} />}
 			</Routes>
 			{location.pathname !== '/cart' &&
 				location.pathname !== '/cart/pay' &&

@@ -5,6 +5,7 @@ import Breadcrumb from '../Breadcrumbs/Breadcrumb';
 import { useNavigate } from 'react-router';
 import categoryApi from '../../../api/categoryApi';
 import { CircularProgress } from '@mui/material';
+import { enqueueSnackbar } from 'notistack';
 
 // Validation schema using Yup
 const validationSchema = Yup.object({
@@ -24,10 +25,12 @@ function CreateCategory() {
 				name: values.name,
 				description: 'Description',
 			});
-			console.log(response);
+			if (response.status === 200) {
+				enqueueSnackbar('Category created successfully!', { variant: 'success' });
+			}
 		} catch (error) {
 			console.error('Failed to create category:', error);
-			alert('Failed to create category!');
+			enqueueSnackbar('Failed to create category!', { variant: 'error' });
 		} finally {
 			setLoading(false);
 		}

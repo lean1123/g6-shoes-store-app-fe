@@ -42,7 +42,11 @@ const userApi = {
             params: { keyword },
         });
     },
-};
+
+    delete: async (id) => {
+        return AdminAxiosClient.delete(`/users/${id}`);
+    },
+
 
     // Thêm các phương thức mới cho địa chỉ
 	updateAddress: async (userId, addressId, addressData) => {

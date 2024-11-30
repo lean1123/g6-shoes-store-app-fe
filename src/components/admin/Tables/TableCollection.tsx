@@ -4,6 +4,7 @@ import { EditOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router';
 import collectionApi from '../../../api/collectionApi';
 import { CircularProgress } from '@mui/material';
+import { enqueueSnackbar } from 'notistack';
 
 interface Collection {
 	id: number;
@@ -39,6 +40,20 @@ const TableCollection = () => {
 			setCollections(response.data);
 		} catch (error) {
 			console.error('Failed to fetch collections:', error);
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const handleDelete = async (id) => {
+		setLoading(true);
+		try {
+			await collectionApi.deleteCollection(id);
+			fetchCollection();
+			enqueueSnackbar('Delete collection successfully', { variant: 'success' });
+		} catch (error) {
+			console.error('Failed to fetch collections:', error);
+			enqueueSnackbar('Delete collection failed', { variant: 'error' });
 		} finally {
 			setLoading(false);
 		}
@@ -134,7 +149,10 @@ const TableCollection = () => {
 
 												{/* Delete button */}
 												<div className='relative group'>
-													<button className='hover:text-red-500'>
+													<button
+														className='hover:text-red-500'
+														onClick={() => handleDelete(item.id)}
+													>
 														<DeleteForeverOutlined className='w-5 h-5' />
 													</button>
 													<span className='absolute opacity-0 group-hover:opacity-100 bg-black text-white text-xs rounded py-1 px-2 -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap'>

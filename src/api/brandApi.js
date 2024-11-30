@@ -26,6 +26,9 @@ const brandApi = {
             },
         });
     },
+    deleteBrand: (id) => {
+        return AdminAxiosClient.delete(`/brands/${id}`);
+    },
     
 };
 

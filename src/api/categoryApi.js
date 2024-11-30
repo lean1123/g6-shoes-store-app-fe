@@ -19,6 +19,9 @@ const categoryApi = {
     update: (id, categoryData) => {
         return AdminAxiosClient.put(`/categories/${id}`, categoryData);
     },
+    delete: (id) => {
+        return AdminAxiosClient.delete(`/categories/${id}`);
+    },
 }
 
 export default categoryApi;

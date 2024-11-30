@@ -10,6 +10,7 @@ import brandApi from '../../../api/brandApi';
 import collectionApi from '../../../api/collectionApi';
 import { useNavigate } from 'react-router';
 import userApi from '../../../api/userApi';
+import { enqueueSnackbar } from 'notistack';
 
 interface User {
 	id: string;
@@ -69,6 +70,18 @@ const TableUser = () => {
 			console.error('Failed to fetch product:', error);
 		} finally {
 			setLoading(false);
+		}
+	};
+
+	const handleDelete = async (id: string) => {
+		try {
+			await userApi.delete(id);
+			const newUsers = users.filter((item) => item.id !== id);
+			setUsers(newUsers);
+			enqueueSnackbar('User deleted successfully!', { variant: 'success' });
+		} catch (error) {
+			console.error('Failed to delete user:', error);
+			enqueueSnackbar('Failed to delete user!', { variant: 'error' });
 		}
 	};
 
@@ -199,7 +212,10 @@ const TableUser = () => {
 
 										{/* Delete button */}
 										<div className='relative group'>
-											<button className='hover:text-red-500'>
+											<button
+												className='hover:text-red-500'
+												onClick={() => handleDelete(item.id)}
+											>
 												<DeleteForeverOutlined className='w-5 h-5' />
 											</button>
 											<span className='absolute opacity-0 group-hover:opacity-100 bg-black text-white text-xs rounded py-1 px-2 -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap'>

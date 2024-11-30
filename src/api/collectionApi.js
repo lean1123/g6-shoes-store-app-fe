@@ -18,6 +18,9 @@ const collectionApi = {
     updateCollection: (id,collectionData) => {
         return AdminAxiosClient.put(`/collections/${id}`, collectionData);
     },
+    deleteCollection: (id) => {
+        return AdminAxiosClient.delete(`/collections/${id}`);
+    },
 };
 
 export default collectionApi;

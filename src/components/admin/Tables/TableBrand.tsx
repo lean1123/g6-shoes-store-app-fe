@@ -8,6 +8,7 @@ import {
 import { EditOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router';
 import brandApi from '../../../api/brandApi';
+import { enqueueSnackbar } from 'notistack';
 
 interface Brand {
 	id: number;
@@ -70,6 +71,17 @@ const TableBrand = () => {
 			console.error('Failed to fetch brand:', error);
 		} finally {
 			setLoading(false);
+		}
+	};
+
+	const handleRemoveBrand = async (id) => {
+		try {
+			await brandApi.deleteBrand(id);
+			fetchBrand();
+			enqueueSnackbar('Remove brand successfully', { variant: 'success' });
+		} catch (error) {
+			console.error('Failed to remove brand:', error);
+			enqueueSnackbar('Remove brand failed', { variant: 'error' });
 		}
 	};
 
@@ -170,7 +182,10 @@ const TableBrand = () => {
 
 										{/* Delete button */}
 										<div className='relative group'>
-											<button className='hover:text-red-500'>
+											<button
+												className='hover:text-red-500'
+												onClick={() => handleRemoveBrand(brandItem.id)}
+											>
 												<DeleteForeverOutlined className='w-5 h-5' />
 											</button>
 											<span className='absolute opacity-0 group-hover:opacity-100 bg-black text-white text-xs rounded py-1 px-2 -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap'>

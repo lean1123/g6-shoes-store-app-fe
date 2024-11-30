@@ -5,6 +5,9 @@ import { login } from '../../hooks/auth/authSlice';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import { enqueueSnackbar } from 'notistack';
+import { fetchUser } from '../../hooks/user/userSlice';
+import { unwrapResult } from '@reduxjs/toolkit';
 
 LoginForm.propTypes = {};
 
@@ -25,14 +28,24 @@ function LoginForm() {
 		resolver: yupResolver(schema),
 	});
 
-	const handleOnSubmit = (values) => {
+	const handleOnSubmit = async (values) => {
 		try {
 			const action = login(values);
-			const result = dispatch(action);
-			console.log('result: ', result);
-			navigate('/');
+			const result = await dispatch(action);
+			const resultUnwrapped = unwrapResult(result);
+			console.log('Result:', resultUnwrapped);
+
+			if (resultUnwrapped?.userId) {
+				dispatch(fetchUser(resultUnwrapped.userId));
+				enqueueSnackbar('Đăng nhập thành công', { variant: 'success' });
+				navigate('/');
+				return;
+			}
+
+			enqueueSnackbar('Đăng nhập thất bại', { variant: 'error' });
 		} catch (error) {
 			console.log('Error: ', error);
+			enqueueSnackbar('Đăng nhập thất bại', { variant: 'error' });
 		}
 	};
 

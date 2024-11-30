@@ -15,14 +15,30 @@ const getToken = () => {
 
 AdminAxiosClient.interceptors.request.use(
   async (config) => {
-    const publicEndpoints = [
-      /auth\/login/,
-      /auth\/signUp/,
-      /auth\/refreshToken/,
-    ];
+    // const publicEndpoints = [
+    //   /auth\/login/,
+    //   /auth\/signUp/,
+    //   /auth\/refreshToken/,
+    //   /auth\/forgotPassword/,
+    //   /auth\/resetPassword/,
+    // ];
 
-    const isPublicEndpoint = publicEndpoints.some((pattern) =>
-      pattern.test(config.url)
+    // const isPublicEndpoint = publicEndpoints.some((pattern) =>
+    //   pattern.test(config.url)
+    // );
+
+    const publicEndpoints = [
+      { urlPattern: /\/auth\/login/, methods: ['POST'] },        // POST /auth/login
+      { urlPattern: /\/auth\/signUp/, methods: ['POST'] },     // POST /auth/register
+      { urlPattern: /\/auth\/refreshToken/, methods: ['POST'] }, // POST /auth/refreshToken
+      { urlPattern: /\/products/, methods: ['GET'] },            // GET /products
+      { urlPattern: /\/product-items/, methods: ['GET'] },       // GET /product-items
+      { urlPattern: /\/cart/, methods: ['GET', 'POST'] },        // GET, POST /cart
+    ];
+    
+    // Kiểm tra xem URL và phương thức có phù hợp với bất kỳ endpoint công cộng nào không
+    const isPublicEndpoint = publicEndpoints.some((endpoint) => 
+      endpoint.urlPattern.test(config.url) && endpoint.methods.includes(config.method.toUpperCase())
     );
 
     if (isPublicEndpoint) {

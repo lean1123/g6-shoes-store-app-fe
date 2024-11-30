@@ -1,108 +1,144 @@
+import { useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
+import { register as registerAction } from '../../hooks/auth/authSlice';
+import { unwrapResult } from '@reduxjs/toolkit';
+import { enqueueSnackbar } from 'notistack';
+import { fetchUser } from '../../hooks/user/userSlice';
+
 function SignUpForm() {
-  return (
-    <>
-      <div className="flex justify-center pt-5">
-        <div className="boder-createAccount pt-3">
-          <div className="flex justify-center">
-            <h1 className="font-bold text-xl justify-center">Thêm Tài Khoản</h1>
-          </div>
-          <div className="flex items-center pt-3">
-            <text className="ml-5 font-bold">Tên đầu:</text>
-            <div className="ml-8 mb-4 search-container w-3/5">
-              <input
-                className="w-full boder no-border py-1  input-field"
-                type="firstName"
-                id="firstName"
-                name="firstName"
-              />
-            </div>
-          </div>
-          <div className="flex items-center pt-3">
-            <text className="ml-5 font-bold">Tên cuối:</text>
-            <div className="ml-8 mb-4 search-container w-3/5">
-              <input
-                className="w-full boder no-border py-1  input-field"
-                type="lastName"
-                id="lastName"
-                name="lastName"
-              />
-            </div>
-          </div>
-          <div className="flex items-center pt-3">
-            <text className="ml-5 font-bold ">SDT:</text>
-            <div className="ml-16 mb-4 search-container w-3/5">
-              <input
-                className="w-full boder no-border py-1  input-field"
-                type="sdt"
-                id="sdt"
-                name="sdt"
-              />
-            </div>
-          </div>
-          <div className="flex items-center pt-3">
-            <text className="ml-5 font-bold ">Địa chỉ:</text>
-            <div className="ml-10 mb-4 search-container w-3/5">
-              <input
-                className="w-full boder no-border py-1  input-field"
-                type="diaChi"
-                id="diaChi"
-                name="diaChi"
-              />
-            </div>
-          </div>
-          <div className="flex items-center pt-5">
-            <text className="ml-5 font-bold">Hình ảnh:</text>
-            <div className="ml-10 ">
-              <input type="file" className="w-full" />
-            </div>
-          </div>
-          <div className="flex items-center pt-8">
-            <text className="ml-5 font-bold">Giới tính:</text>
-            <div className="ml-10 flex justify">
-              <div className="flex items-center mr-4">
-                <input type="radio" name="gender" value="male" />
-                <label htmlFor="male">Nam</label>
-              </div>
-              <div className="flex items-center">
-                <input type="radio" name="gender" value="female" />
-                <label htmlFor="female">Nữ</label>
-              </div>
-            </div>
-          </div>
-          <div className="flex items-center pt-8">
-            <text className="ml-5 font-bold">Vai trò:</text>
-            <div className="ml-14 search-container">
-              <select className="w-full border no-border py-1 px-10 input-field">
-                <option value="user">Người dùng</option>
-                <option value="admin">Quản lý</option>
-              </select>
-            </div>
-          </div>
-          <div className="flex items-center pt-6 ml-6">
-            <input
-              type="checkbox"
-              id="subscribe-checkbox"
-              className="mr-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-            ></input>
-            <label
-              htmlFor="subscribe-checkbox"
-              className="text-sm font-medium text-gray-700"
-            >
-              Bạn sẽ luôn được cập nhật các sản phẩm và ưu đãi mới nhất.
-            </label>
-          </div>
-          <div className="flex justify-center pt-6">
-            <button
-              type="submit"
-              className="bg-red py-2 px-4 text-white hover:bg-black"
-            >
-              Đăng Ký
-            </button>
-          </div>
-        </div>
-      </div>
-    </>
-  );
+	const dispatch = useDispatch();
+
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+	} = useForm({
+		defaultValues: {
+			firstName: '',
+			lastName: '',
+			email: '',
+			password: '',
+		},
+	});
+
+	const onSubmit = async (data) => {
+		console.log('Form Data:', data);
+		// Xử lý logic gửi form ở đây
+
+		try {
+			const result = await dispatch(registerAction(data));
+			const dataResult = unwrapResult(result);
+			if (dataResult?.userId) {
+				dispatch(fetchUser(dataResult.userId));
+				enqueueSnackbar('Đăng ký thành công', { variant: 'success' });
+				navigate('/');
+				return;
+			}
+
+			enqueueSnackbar('Đăng ký thất bại', { variant: 'error' });
+		} catch (error) {
+			console.error('Failed to register:', error);
+			enqueueSnackbar('Đăng ký thất bại', { variant: 'error' });
+		}
+	};
+
+	return (
+		<>
+			<div className='flex justify-center pt-5'>
+				<div className='boder-createAccount pt-3'>
+					<div className='flex justify-center'>
+						<h1 className='font-bold text-xl justify-center'>Thêm Tài Khoản</h1>
+					</div>
+					<form onSubmit={handleSubmit(onSubmit)}>
+						<div className='flex items-center pt-3'>
+							<label htmlFor='firstName' className='ml-5 font-bold'>
+								Tên đầu:
+							</label>
+							<div className='ml-8 mb-4 search-container w-3/5'>
+								<input
+									className='w-full boder no-border py-1 input-field'
+									type='text'
+									id='firstName'
+									{...register('firstName', { required: 'Tên đầu là bắt buộc' })}
+								/>
+								{errors.firstName && (
+									<p className='text-red-500 text-sm'>{errors.firstName.message}</p>
+								)}
+							</div>
+						</div>
+						<div className='flex items-center pt-3'>
+							<label htmlFor='lastName' className='ml-5 font-bold'>
+								Tên cuối:
+							</label>
+							<div className='ml-8 mb-4 search-container w-3/5'>
+								<input
+									className='w-full boder no-border py-1 input-field'
+									type='text'
+									id='lastName'
+									{...register('lastName', { required: 'Tên cuối là bắt buộc' })}
+								/>
+								{errors.lastName && (
+									<p className='text-red-500 text-sm'>{errors.lastName.message}</p>
+								)}
+							</div>
+						</div>
+						<div className='flex items-center pt-3'>
+							<label htmlFor='email' className='ml-5 font-bold'>
+								Email:
+							</label>
+							<div className='ml-8 mb-4 search-container w-3/5'>
+								<input
+									className='w-full boder no-border py-1 input-field'
+									type='email'
+									id='email'
+									{...register('email', {
+										required: 'Email là bắt buộc',
+										pattern: {
+											value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+											message: 'Email không hợp lệ',
+										},
+									})}
+								/>
+								{errors.email && (
+									<p className='text-red-500 text-sm'>{errors.email.message}</p>
+								)}
+							</div>
+						</div>
+						<div className='flex items-center pt-3'>
+							<label htmlFor='password' className='ml-5 font-bold'>
+								Mật khẩu:
+							</label>
+							<div className='ml-8 mb-4 search-container w-3/5'>
+								<input
+									className='w-full boder no-border py-1 input-field'
+									type='password'
+									id='password'
+									{...register('password', {
+										required: 'Mật khẩu là bắt buộc',
+										minLength: {
+											value: 6,
+											message: 'Mật khẩu phải có ít nhất 6 ký tự',
+										},
+									})}
+								/>
+								{errors.password && (
+									<p className='text-red-500 text-sm'>{errors.password.message}</p>
+								)}
+							</div>
+						</div>
+						<div className='flex justify-center pt-3'>
+							<button
+								type='submit'
+								className='px-4 py-2 bg-blue-500 text-white font-bold rounded'
+							>
+								Tạo Tài Khoản
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</>
+	);
 }
 
 export default SignUpForm;

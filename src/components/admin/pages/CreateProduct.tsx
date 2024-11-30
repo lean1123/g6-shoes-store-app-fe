@@ -8,6 +8,7 @@ import collectionApi from '../../../api/collectionApi';
 import categoryApi from '../../../api/categoryApi';
 import { set } from 'react-hook-form';
 import productApi from '../../../api/productApi';
+import { enqueueSnackbar } from 'notistack';
 
 interface Brand {
 	id: string;
@@ -142,10 +143,11 @@ function CreateProduct() {
 			if (response.status === 200) {
 				setSuccess(true);
 				setProductId(response.data.data.id);
+				enqueueSnackbar('Product created successfully!', { variant: 'success' });
 			}
 		} catch (error) {
 			console.error('Failed to create product:', error);
-			alert('Failed to create product!');
+			enqueueSnackbar('Failed to create product!', { variant: 'error' });
 		} finally {
 			setLoading(false);
 		}

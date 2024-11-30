@@ -6,6 +6,7 @@ import * as Yup from 'yup';
 import { useNavigate, useParams } from 'react-router';
 import productItemApi from '../../../api/productItemApi';
 import { Replay } from '@mui/icons-material';
+import { enqueueSnackbar } from 'notistack';
 
 export default function EditProductItem() {
 	const [images, setImages] = useState<File[]>([]);
@@ -63,10 +64,14 @@ export default function EditProductItem() {
 
 			// Call API to add product item
 			const response = await productItemApi.updateProductItem(itemId, formData);
-			console.log(response);
+			if (response.status === 200) {
+				enqueueSnackbar('Product item updated successfully!', {
+					variant: 'success',
+				});
+			}
 		} catch (error) {
 			console.error('Failed to edit product item:', error);
-			alert('Failed to edit product item!');
+			enqueueSnackbar('Failed to edit product item!', { variant: 'error' });
 		} finally {
 			setLoading(false);
 		}

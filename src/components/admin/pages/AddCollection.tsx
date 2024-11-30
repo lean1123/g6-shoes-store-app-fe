@@ -6,6 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom'; // Sử dụng usePar
 import brandApi from '../../../api/brandApi';
 import { CircularProgress } from '@mui/material';
 import collectionApi from '../../../api/collectionApi';
+import { enqueueSnackbar } from 'notistack';
 
 // Xác thực với Yup
 const validationSchema = Yup.object({
@@ -52,11 +53,12 @@ function AddCollection() {
 				brandId: id,
 			});
 			console.log(response);
-			alert('Collection added successfully!');
-			// navigation(-1); // Điều hướng quay lại trang trước
+			if (response.status === 200) {
+				enqueueSnackbar('Collection added successfully!', { variant: 'success' });
+			}
 		} catch (error) {
 			console.error('Failed to add collection:', error);
-			alert('Failed to add collection!');
+			enqueueSnackbar('Failed to add collection!', { variant: 'error' });
 		} finally {
 			setLoading(false);
 		}

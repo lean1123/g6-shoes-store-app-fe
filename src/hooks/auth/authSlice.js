@@ -10,8 +10,10 @@ export const login = createAsyncThunk(
 			if (response.status.valueOf() !== 200) return rejectWithValue(response.data);
 
 			const accessToken = response.data.token;
+			const userId = response.data.userId;
 
 			localStorage.setItem('accessToken', accessToken);
+			localStorage.setItem('userId', userId);
 
 			return response.data;
 		} catch (error) {

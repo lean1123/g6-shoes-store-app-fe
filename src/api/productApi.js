@@ -31,6 +31,10 @@ const productApi = {
 			params: { keyword },
 		});
 	},
+	delete: (id) => {
+		const url = `/products/${id}`;
+		return AdminAxiosClient.delete(url);
+	},
 };
 
 export default productApi;

@@ -9,6 +9,7 @@ import productApi from '../../../api/productApi';
 import brandApi from '../../../api/brandApi';
 import collectionApi from '../../../api/collectionApi';
 import { useNavigate } from 'react-router';
+import { enqueueSnackbar } from 'notistack';
 
 interface Product {
 	id?: string;
@@ -101,6 +102,20 @@ const TableProduct = () => {
 			setProductData(productsWithBrand);
 		} catch (error) {
 			console.error('Failed to fetch product:', error);
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const handleDelete = async (id) => {
+		setLoading(true);
+		try {
+			await productApi.delete(id);
+			fetchProduct();
+			enqueueSnackbar('Delete product successfully', { variant: 'success' });
+		} catch (error) {
+			console.error('Failed to fetch product:', error);
+			enqueueSnackbar('Delete product failed', { variant: 'error' });
 		} finally {
 			setLoading(false);
 		}
@@ -244,7 +259,10 @@ const TableProduct = () => {
 
 										{/* Delete button */}
 										<div className='relative group'>
-											<button className='hover:text-red-500'>
+											<button
+												className='hover:text-red-500'
+												onClick={() => handleDelete(productItem.id)}
+											>
 												<DeleteForeverOutlined className='w-5 h-5' />
 											</button>
 											<span className='absolute opacity-0 group-hover:opacity-100 bg-black text-white text-xs rounded py-1 px-2 -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap'>

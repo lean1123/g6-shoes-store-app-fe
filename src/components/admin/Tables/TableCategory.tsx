@@ -4,6 +4,7 @@ import { Add, DeleteForeverOutlined } from '@mui/icons-material';
 import { EditOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router';
 import categoryApi from '../../../api/categoryApi';
+import { enqueueSnackbar } from 'notistack';
 
 interface Category {
 	id: number;
@@ -38,6 +39,24 @@ const TableCategory = () => {
 			setCategories(response.data);
 		} catch (error) {
 			console.error('Failed to fetch category:', error);
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const handleDelete = async (id) => {
+		setLoading(true);
+		try {
+			const response = await categoryApi.delete(id);
+			console.log(response);
+			if (response.status === 200) {
+				const newCategories = categories.filter((category) => category.id !== id);
+				setCategories(newCategories);
+				enqueueSnackbar('Category deleted successfully!', { variant: 'success' });
+			}
+		} catch (error) {
+			console.error('Failed to delete category:', error);
+			enqueueSnackbar('Failed to delete category!', { variant: 'error' });
 		} finally {
 			setLoading(false);
 		}
@@ -127,7 +146,10 @@ const TableCategory = () => {
 
 										{/* Delete button */}
 										<div className='relative group'>
-											<button className='hover:text-red-500'>
+											<button
+												className='hover:text-red-500'
+												onClick={() => handleDelete(categoryItem.id)}
+											>
 												<DeleteForeverOutlined className='w-5 h-5' />
 											</button>
 											<span className='absolute opacity-0 group-hover:opacity-100 bg-black text-white text-xs rounded py-1 px-2 -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap'>

@@ -5,6 +5,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate, useParams } from 'react-router';
 import productItemApi from '../../../api/productItemApi';
+import { enqueueSnackbar } from 'notistack';
 
 export default function AddProductItem() {
 	const [images, setImages] = useState<File[]>([]);
@@ -56,10 +57,12 @@ export default function AddProductItem() {
 
 			// Call API to add product item
 			const response = await productItemApi.addNewProductItem(formData);
-			console.log(response);
+			if (response.status === 200) {
+				enqueueSnackbar('Product item added successfully!', { variant: 'success' });
+			}
 		} catch (error) {
 			console.error('Failed to add product item:', error);
-			alert('Failed to add product item!');
+			enqueueSnackbar('Failed to add product item!', { variant: 'error' });
 		} finally {
 			setLoading(false);
 		}

@@ -9,6 +9,7 @@ import productApi from '../../../api/productApi';
 import productItemApi from '../../../api/productItemApi';
 import { CircularProgress } from '@mui/material';
 import brandApi from '../../../api/brandApi';
+import { enqueueSnackbar } from 'notistack';
 
 interface Product {
 	id?: string;
@@ -106,6 +107,20 @@ function TableProductItem() {
 		}
 	};
 
+	const handleDelete = async (id) => {
+		setLoading(true);
+		try {
+			await productItemApi.deleteProductItem(id);
+			fetchProductItem();
+			enqueueSnackbar('Delete product item successfully', { variant: 'success' });
+		} catch (error) {
+			console.error('Failed to fetch products:', error);
+			enqueueSnackbar('Delete product item failed', { variant: 'error' });
+		} finally {
+			setLoading(false);
+		}
+	};
+
 	useEffect(() => {
 		fetchProduct();
 	}, []);
@@ -198,7 +213,10 @@ function TableProductItem() {
 
 									{/* Delete button */}
 									<div className='relative group'>
-										<button className='hover:text-red-500'>
+										<button
+											className='hover:text-red-500'
+											onClick={() => handleDelete(item.id)}
+										>
 											<DeleteForeverOutlined className='w-5 h-5' />
 										</button>
 										<span className='absolute opacity-0 group-hover:opacity-100 bg-black text-white text-xs rounded py-1 px-2 -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap'>
