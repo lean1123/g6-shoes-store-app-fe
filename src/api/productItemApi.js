@@ -61,7 +61,7 @@ const productItemApi = {
 		});
 	},
 
-	search: (color, size, minPrice, maxPrice, productName) => {
+	search: ({ color, size, minPrice, maxPrice, productName }) => {
 		return AdminAxiosClient.get('/product-items/search', {
 			params: { color, size, minPrice, maxPrice, productName },
 		});

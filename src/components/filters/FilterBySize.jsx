@@ -9,7 +9,7 @@ function FilterBySize({ onChange }) {
 		<div>
 			<h2>Filter by Size</h2>
 			<select onChange={handleSizeChange}>
-				<option value=''>All</option>
+				<option value='All Size'>All</option>
 				<option value='35'>35</option>
 				<option value='36'>36</option>
 				<option value='41'>41</option>

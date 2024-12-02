@@ -33,7 +33,7 @@ const Cart = () => {
 	useEffect(() => {
 		dispatch(viewCart());
 		dispatch(fetchUser(userId));
-	}, [dispatch]);
+	}, [dispatch, userId]);
 
 	const handleQuantityChange = (item, newQuantity) => {
 		if (newQuantity < 0) {

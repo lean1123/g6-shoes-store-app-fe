@@ -1,64 +1,79 @@
-import { useEffect, useState } from 'react';
-import productItemApi from '../../api/productItemApi';
+import SearchSharpIcon from '@mui/icons-material/SearchSharp';
+import { Input } from '@mui/material';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+	onSearch,
+	setColor,
+	setMaxPrice,
+	setMinPrice,
+	setProductName,
+	setSize,
+} from '../../hooks/filter/filterSlice';
 import FilterByColor from '../filters/FilterByColor';
 import FilterByPrice from '../filters/FilterByPrice';
 import FilterBySize from '../filters/FilterBySize';
 import ListProduct from './ListProduct';
-import { Input } from '@mui/material';
-import SearchSharpIcon from '@mui/icons-material/SearchSharp';
-
-const filterObject = {
-	color: '',
-	size: '',
-	minPrice: 0,
-	maxPrice: 0,
-	productName: '',
-};
 
 function ListAllProducts() {
-	const [filter, setFilter] = useState(filterObject);
-	const [productItems, setProductItems] = useState([]);
-	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState(null);
+	const dispatch = useDispatch();
+
+	const {
+		color,
+		size,
+		minPrice,
+		maxPrice,
+		productName,
+		returnProducts,
+		error,
+		loading,
+	} = useSelector((state) => state.persistedReducer.filter);
 
 	useEffect(() => {
 		const fetchProductItemsByFilter = async () => {
-			setLoading(true);
-			setError(null);
-			try {
-				const response = await productItemApi.search(
-					filter.color,
-					filter.size,
-					filter.minPrice,
-					filter.maxPrice,
-					filter.productName,
-				);
-
-				if (response.status !== 200) {
-					console.error('Failed to fetch product items by filter:', response.data);
-					setError('Failed to fetch product items by filter');
-					return;
-				}
-
-				setProductItems(response.data?.data || []);
-			} catch (error) {
-				console.error('Failed to fetch product items by filter:', error);
-				setError('Failed to fetch product items by filter');
-			} finally {
-				setLoading(false);
-			}
+			await dispatch(onSearch({ color, size, minPrice, maxPrice, productName }));
 		};
-
 		fetchProductItemsByFilter();
-	}, [filter]);
+	}, [dispatch, color, size, minPrice, maxPrice, productName]);
 
-	const handleFilterChange = (newFilter) => {
-		console.log(filter);
+	const handleProductNameChange = (newName) => {
+		if (newName.target.value) {
+			const productName = newName.target.value;
 
-		setFilter((prevFilter) => ({
-			...prevFilter,
-			...newFilter,
-		}));
+			dispatch(setProductName(productName.length > 0 ? productName : null));
+		}
+	};
+
+	const handleSizeChange = (newSize) => {
+		if (newSize.size) {
+			if (newSize.size === 'All Size') {
+				console.log('newSize', newSize.size);
+
+				dispatch(setSize(null));
+				return;
+			}
+
+			dispatch(setSize(newSize.size));
+		}
+	};
+
+	const handleColorChange = (newColor) => {
+		if (newColor.color) {
+			if (newColor.color === 'All Color') {
+				dispatch(setColor(null));
+				return;
+			}
+
+			dispatch(setColor(newColor.color));
+		}
+	};
+
+	const handlePriceChange = (newPrice) => {
+		if (newPrice.minPrice) {
+			dispatch(setMinPrice(newPrice.minPrice));
+		} else {
+			dispatch(setMaxPrice(newPrice.maxPrice));
+		}
 	};
 
 	return (
@@ -70,24 +85,19 @@ function ListAllProducts() {
 				<SearchSharpIcon />
 				<Input
 					placeholder='Tìm kiếm theo tên sản phẩm...'
-					value={filter.productName}
-					onChange={(e) => handleFilterChange({ productName: e.target.value })}
+					onChange={handleProductNameChange}
 				/>
 			</div>
 			<div className='flex mt-4'>
-				<div className='w-1/5 bg-gray-200 bg-white ml-5'>
-					<FilterBySize onChange={(size) => handleFilterChange({ size })} />
-					<FilterByColor onChange={(color) => handleFilterChange({ color })} />
-					<FilterByPrice
-						onChange={(minPrice, maxPrice) =>
-							handleFilterChange({ minPrice, maxPrice })
-						}
-					/>
+				<div className='w-1/5 bg-white ml-5'>
+					<FilterBySize onChange={handleSizeChange} />
+					<FilterByColor onChange={handleColorChange} />
+					<FilterByPrice onChange={handlePriceChange} />
 				</div>
 				<div className='w-4/5'>
 					{loading && <p>Loading...</p>}
 					{error && <p>{error}</p>}
-					<ListProduct items={productItems} />
+					<ListProduct items={returnProducts} />
 				</div>
 			</div>
 		</div>

@@ -9,7 +9,7 @@ function FilterByColor({ onChange }) {
 		<div>
 			<h2>Filter by Color</h2>
 			<select onChange={handleColorChange}>
-				<option value=''>All</option>
+				<option value='All Color'>All</option>
 				<option value='RED'>Red</option>
 				<option value='BLUE'>Blue</option>
 				<option value='GREEN'>Green</option>
