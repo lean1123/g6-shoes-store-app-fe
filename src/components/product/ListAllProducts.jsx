@@ -82,19 +82,23 @@ function ListAllProducts() {
 				<h1 className='text-4xl font-bold'>Giày Sneaker</h1>
 			</div>
 			<div className='flex justify-center items-center mt-5'>
-				<SearchSharpIcon />
-				<Input
-					placeholder='Tìm kiếm theo tên sản phẩm...'
-					onChange={handleProductNameChange}
-				/>
+				<div className='p-2 border rounded-md border-slate-800'>
+					<SearchSharpIcon />
+					<Input
+						sx={{ paddingX: '10px' }}
+						placeholder='Nhập tên sản phẩm'
+						onChange={handleProductNameChange}
+						disableUnderline={true}
+					/>
+				</div>
 			</div>
 			<div className='flex mt-4'>
-				<div className='w-1/5 bg-white ml-5'>
+				<div className='w-1/5 bg-white ml-5 items-center text-base font-calibri font-semibold'>
 					<FilterBySize onChange={handleSizeChange} />
 					<FilterByColor onChange={handleColorChange} />
 					<FilterByPrice onChange={handlePriceChange} />
 				</div>
-				<div className='w-4/5'>
+				<div className='w-4/5 mb-4'>
 					{loading && <p>Loading...</p>}
 					{error && <p>{error}</p>}
 					<ListProduct items={returnProducts} />

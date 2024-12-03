@@ -1,49 +1,28 @@
-import { useEffect, useState } from 'react';
+import { Link } from '@mui/material';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import orderApi from '../../api/orderApi';
-import { fetchUser } from '../../hooks/user/userSlice';
+import { fetchOrderByUserId, fetchUser } from '../../hooks/user/userSlice';
 
 function Profile() {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
-	const [orders, setOrders] = useState([]);
 
 	const { userId } = useSelector((state) => state.persistedReducer.user);
-	const { user, error: userError } = useSelector(
+	const { user, orders } = useSelector(
 		(state) => state.persistedReducer.userInfo,
 	);
-	console.log(
-		'Redux state (user):',
-		useSelector((state) => state.persistedReducer.user),
-	);
-	console.log(
-		'Redux state (userInfo):',
-		useSelector((state) => state.persistedReducer.userInfo),
-	);
 
-	// Fetch user info and orders
 	useEffect(() => {
-		if (userId) {
-			dispatch(fetchUser(userId));
-			fetchOrders(userId);
-		}
-	}, [dispatch, userId]);
-	console.log('userId:', userId);
-
-	const fetchOrders = async () => {
-		try {
-			console.log('Fetching orders for userId:', userId);
-			const response = await orderApi.getOrdersByUserId(userId);
-			console.log('API response:', response); // Log response từ API
-			if (response.status !== 200) {
-				throw new Error('Failed to fetch orders. Invalid response status');
+		const fetchUserInfo = async () => {
+			if (userId) {
+				await dispatch(fetchUser(userId));
+				await dispatch(fetchOrderByUserId(userId));
 			}
-			setOrders(response.data);
-		} catch (error) {
-			console.error('Failed to fetch orders:', error.message || error);
-		}
-	};
+		};
+
+		fetchUserInfo();
+	}, [dispatch, userId]);
 
 	const handleUpdateProfile = () => navigate('/updateProfile');
 	const handleBackAddress = () => navigate('/address');
@@ -71,7 +50,7 @@ function Profile() {
 					</li>
 					<li className='text-blue-500'>
 						<i className='fa fa-list-alt' aria-hidden='true'></i>
-						<a href='#'>Quản lý đơn hàng</a>
+						<Link href='#'>Quản lý đơn hàng</Link>
 					</li>
 					<li className='text-blue-500'>
 						<i className='fa fa-map-marker' aria-hidden='true'></i>
@@ -91,24 +70,17 @@ function Profile() {
 				{/* Account Information */}
 				<div className='mb-5'>
 					<h2 className='text-2xl font-bold text-gray-800'>THÔNG TIN TÀI KHOẢN</h2>
-					{userError ? (
-						<p className='text-red-500'>
-							Không thể tải thông tin người dùng: {userError}
-						</p>
-					) : user ? (
+					{user && (
 						<>
 							<p>
 								<span>Họ và tên: </span>
-								{user.fullName}
+								{user?.firstName} {user?.lastName}
 							</p>
 							<p>
 								<span>Email: </span>
 								{user.email}
 							</p>
-							<p>
-								<span>Địa chỉ: </span>
-								{user.address}
-							</p>
+
 							<p>
 								<span>Ngày sinh: </span>
 								{user.dateOfBirth}
@@ -126,21 +98,9 @@ function Profile() {
 								</button>
 							</div>
 						</>
-					) : (
-						<p>Đang tải thông tin...</p>
 					)}
 				</div>
-				{/* Membership Level */}
-				<div className='bg-blue-100 p-4 rounded mb-5 text-sm text-gray-700'>
-					<p>
-						<b>Hạng thẻ tiếp theo Silver - chiết khấu 3% membership</b>
-					</p>
-					<a href='#' className='text-blue-500 underline'>
-						Xem thêm chính sách khách hàng thân thiết.
-					</a>
-				</div>
 
-				{/* Order History */}
 				<div>
 					<h2 className='text-2xl font-bold text-gray-800'>
 						DANH SÁCH ĐƠN HÀNG GẦN ĐÂY
@@ -152,20 +112,20 @@ function Profile() {
 									<th className='p-2 text-left'>Mã đơn hàng</th>
 									<th className='p-2 text-left'>Ngày đặt</th>
 									<th className='p-2 text-left'>Thành tiền</th>
-									<th className='p-2 text-left'>Trạng thái thanh toán</th>
+									<th className='p-2 text-left'>Phương thức thanh toán</th>
 									<th className='p-2 text-left'>Vận chuyển</th>
 								</tr>
 							</thead>
 							<tbody>
 								{orders.map((order) => (
-									<tr key={order.id} className='border-b'>
-										<td className='p-2'>#{order.id}</td>
+									<tr key={order?.id} className='border-b'>
+										<td className='p-2'># {order?.id}</td>
 										<td className='p-2'>
-											{new Date(order.orderDate).toLocaleDateString()}
+											{new Date(order?.createdDate).toLocaleDateString()}
 										</td>
-										<td className='p-2'>{order.totalAmount.toLocaleString()} đ</td>
-										<td className='p-2'>{order.paymentStatus}</td>
-										<td className='p-2'>{order.shippingStatus}</td>
+										<td className='p-2'>{order?.totalPrice} đ</td>
+										<td className='p-2'>{order?.paymentMethod}</td>
+										<td className='p-2'>{order?.orderStatus}</td>
 									</tr>
 								))}
 							</tbody>

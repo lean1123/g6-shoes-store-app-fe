@@ -13,13 +13,15 @@ function FilterByPrice({ onChange }) {
 		<div>
 			<h2>Filter by Price</h2>
 			<input
+				className='px-4 py-2 border rounded-md text-black mb-1'
 				type='number'
-				placeholder='Min Price'
+				placeholder='Giá từ...'
 				onChange={handleMinPriceChange}
 			/>
 			<input
+				className='px-4 py-2 border rounded-md text-black'
 				type='number'
-				placeholder='Max Price'
+				placeholder='Giá đến...'
 				onChange={handleMaxPriceChange}
 			/>
 		</div>

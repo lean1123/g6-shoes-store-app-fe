@@ -6,13 +6,19 @@ function FilterByColor({ onChange }) {
 	};
 
 	return (
-		<div>
-			<h2>Filter by Color</h2>
-			<select onChange={handleColorChange}>
-				<option value='All Color'>All</option>
-				<option value='RED'>Red</option>
-				<option value='BLUE'>Blue</option>
-				<option value='GREEN'>Green</option>
+		<div className='mb-1'>
+			<h2 className='mb-1'>Lọc theo màu sắc:</h2>
+			<select className='px-4 py-2 border rounded-md' onChange={handleColorChange}>
+				<option value='All Color'>Tất Cả</option>
+				<option className='bg-red-400' value='RED'>
+					Đỏ
+				</option>
+				<option className='bg-sky-500' value='BLUE'>
+					Xanh Dương
+				</option>
+				<option className='bg-green-500' value='GREEN'>
+					Xanh Lá
+				</option>
 				{/* Add more colors as needed */}
 			</select>
 		</div>

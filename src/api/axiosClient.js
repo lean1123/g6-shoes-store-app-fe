@@ -15,19 +15,6 @@ const getToken = () => {
 
 AdminAxiosClient.interceptors.request.use(
 	async (config) => {
-		// const publicEndpoints = [
-		// 	/auth\/login/,
-		// 	/auth\/register/,
-		// 	/auth\/refreshToken/,
-		// 	/products/,
-		// 	/product-items/,
-		// 	/cart/,
-		// ];
-
-		// const isPublicEndpoint = publicEndpoints.some((pattern) =>
-		// 	pattern.test(config.url),
-		// );
-
 		const publicEndpoints = [
 			{ urlPattern: /\/auth\/login/, methods: ['POST'] },
 			{ urlPattern: /\/auth\/signUp/, methods: ['POST'] },
