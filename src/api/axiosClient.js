@@ -1,5 +1,5 @@
 import axios from 'axios';
-import AuthAPI from './AuthApi';
+import AuthAPI from './authApi';
 
 const AdminAxiosClient = axios.create({
 	baseURL: 'http://13.231.221.177:8080/api',
