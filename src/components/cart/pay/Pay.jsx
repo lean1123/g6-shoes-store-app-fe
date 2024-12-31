@@ -113,9 +113,11 @@ const Pay = () => {
 				return;
 			}
 			enqueueSnackbar('Đặt hàng thất bại', { variant: 'error' });
+			navigation('/orderFail');
 		} catch (error) {
 			console.error('Error creating order:', error);
 			enqueueSnackbar('Đặt hàng thất bại', { variant: 'error' });
+			navigation('/orderFail');
 		}
 	};
 

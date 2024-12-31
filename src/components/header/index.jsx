@@ -14,6 +14,7 @@ function Header() {
 	const [isOpendDiv, setIsOpenDiv] = useState(false);
 	const [name, setName] = useState('TRẢ HÀNG DỄ DÀNG');
 	const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+	const { user } = useSelector((state) => state.persistedReducer.userInfo);
 
 	const token = useSelector(
 		(state) => state.persistedReducer?.user?.accessToken,
@@ -333,6 +334,17 @@ function Header() {
 									>
 										Thông Tin Của Tôi
 									</a>
+									{user?.role === 'ADMIN' && (
+										<a
+											className='block px-4 py-2 text-sm text-gray-700 hover:cursor-pointer hover:bg-gray-300'
+											role='menuitem'
+											tabIndex={-1}
+											id='user-menu-item-1'
+											onClick={() => navigate('/admin')}
+										>
+											Chuyển trang quản lý
+										</a>
+									)}
 									<a
 										className='block px-4 py-2 text-sm text-gray-700 hover:cursor-pointer hover:bg-gray-300'
 										role='menuitem'

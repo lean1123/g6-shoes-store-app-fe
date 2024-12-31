@@ -1,8 +1,11 @@
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Link } from '@mui/material';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { fetchOrderByUserId, fetchUser } from '../../hooks/user/userSlice';
+import CancelIcon from '@mui/icons-material/Cancel';
+import { convertTimestampToDateTime } from '../../utils/dateFormat';
 
 function Profile() {
 	const navigate = useNavigate();
@@ -114,6 +117,7 @@ function Profile() {
 									<th className='p-2 text-left'>Thành tiền</th>
 									<th className='p-2 text-left'>Phương thức thanh toán</th>
 									<th className='p-2 text-left'>Vận chuyển</th>
+									<th className='p-2 text-left'>Hành động</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -121,11 +125,27 @@ function Profile() {
 									<tr key={order?.id} className='border-b'>
 										<td className='p-2'># {order?.id}</td>
 										<td className='p-2'>
-											{new Date(order?.createdDate).toLocaleDateString()}
+											{convertTimestampToDateTime(order?.createdDate)}
 										</td>
 										<td className='p-2'>{order?.totalPrice} đ</td>
 										<td className='p-2'>{order?.paymentMethod}</td>
 										<td className='p-2'>{order?.orderStatus}</td>
+										<td colSpan={2} className='p-2 text-center'>
+											<button
+												className='text-gray-600'
+												onClick={() => navigate(`/order/${order?.id}`)}
+											>
+												<VisibilityIcon />
+											</button>
+											{order?.orderStatus === 'PENDING' && (
+												<button
+													className='text-red-600'
+													onClick={() => navigate(`/order/${order?.id}`)}
+												>
+													<CancelIcon />
+												</button>
+											)}
+										</td>
 									</tr>
 								))}
 							</tbody>

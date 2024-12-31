@@ -45,6 +45,7 @@ const orderSlice = createSlice({
 	name: 'order',
 	initialState: {
 		orders: [],
+		current: {},
 		error: null,
 	},
 	reducers: {},
@@ -55,9 +56,11 @@ const orderSlice = createSlice({
 			})
 			.addCase(createOrder.fulfilled, (state, action) => {
 				state.orders.push(action.payload);
+				state.current = action.payload;
 			})
 			.addCase(createOrder.rejected, (state, action) => {
 				state.error = action.payload;
+				state.current = {};
 			})
 			.addCase(fetchOrderByUserId.fulfilled, (state, action) => {
 				state.orders = action.payload;

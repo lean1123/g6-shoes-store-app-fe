@@ -22,6 +22,8 @@ import ListTopSaleProducts from './components/product/topSale/ListTopSaleProduct
 import Address from './components/profile/Address';
 import Profile from './components/profile/Profile';
 import UpdateProfile from './components/profile/UpdateProfile';
+import SuccessfullyPayment from './components/cart/pay/SuccessfullyPayment';
+import OrderDetails from './components/order/OrderDetails';
 
 function App() {
 	const location = useLocation();
@@ -54,10 +56,12 @@ function App() {
 							<Route path='returnPolicy' element={<ReturnPolicy />} />
 						</Route>
 					</Route>
+					<Route path='order/:orderId' element={<OrderDetails />} />
 					{(role === 'admin' || role === 'customer') && (
 						<Route path='pay' element={<Pay />} />
 					)}
-					<Route path='/orderSuccess' element={<h1>Your order is complete!</h1>} />
+					<Route path='/orderSuccess' element={<SuccessfullyPayment />} />
+					<Route path='/orderFail' element={<SuccessfullyPayment />} />
 					<Route path='post' element={<h1>Post</h1>} />
 					<Route path='*' element={<h1>404 Not Found</h1>} />
 				</Route>

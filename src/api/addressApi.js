@@ -1,4 +1,4 @@
-import AdminAxiosClient from './AxiosClient';
+import AdminAxiosClient from './axiosClient';
 
 const addressApi = {
 	getAddress: (userId) => {
