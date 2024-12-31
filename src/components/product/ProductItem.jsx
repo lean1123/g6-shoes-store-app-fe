@@ -3,36 +3,6 @@ import PropTypes from 'prop-types';
 import { HeartOutlined } from '@ant-design/icons';
 import { Link } from '@mui/material';
 
-// {
-//   "id": "bcabc1f8-8091-44ef-8076-304728a32ca3",
-//   "price": 100000.0,
-//   "quantity": 10,
-//   "listDetailImages": [
-//       "http://res.cloudinary.com/dr7uxdi9o/image/upload/v1732706775/ShoesShopApp/Product-Item/null_f327f540.webp"
-//   ],
-//   "color": "BLACK",
-//   "size": "XXL",
-//   "product": {
-//       "id": "e1738e3e-21cb-4fae-a6c0-36665b28f2c2",
-//       "name": "Product 2",
-//       "description": "Demo",
-//       "warrantyInformation": null,
-//       "returnInformation": null,
-//       "avatar": "http://res.cloudinary.com/dr7uxdi9o/image/upload/v1732519798/ShoesShopApp/Product/Product%202.webp",
-//       "shippingInformation": null,
-//       "rating": 0.0,
-//       "createdDate": "2024-12-11T17:00:00.000+00:00",
-//       "gender": null,
-//       "collection": null,
-//       "category": {
-//           "id": "1",
-//           "name": "cate 1",
-//           "description": null
-//       }
-//   },
-//   "status": "INSTOCK"
-// }
-
 function ProductItem({ item }) {
 	const [isHeart, setIsHeart] = React.useState(false);
 

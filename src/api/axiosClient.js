@@ -2,7 +2,8 @@ import axios from 'axios';
 import AuthAPI from './AuthApi';
 
 const AdminAxiosClient = axios.create({
-	baseURL: 'http://localhost:8080/api',
+	baseURL: 'http://13.231.221.177:8080/api',
+	// baseURL: 'http://localhost:8080/api',
 	headers: {
 		'Content-Type': 'application/json',
 	},
@@ -15,19 +16,6 @@ const getToken = () => {
 
 AdminAxiosClient.interceptors.request.use(
 	async (config) => {
-		// const publicEndpoints = [
-		// 	/auth\/login/,
-		// 	/auth\/register/,
-		// 	/auth\/refreshToken/,
-		// 	/products/,
-		// 	/product-items/,
-		// 	/cart/,
-		// ];
-
-		// const isPublicEndpoint = publicEndpoints.some((pattern) =>
-		// 	pattern.test(config.url),
-		// );
-
 		const publicEndpoints = [
 			{ urlPattern: /\/auth\/login/, methods: ['POST'] },
 			{ urlPattern: /\/auth\/signUp/, methods: ['POST'] },

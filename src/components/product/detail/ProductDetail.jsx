@@ -25,8 +25,8 @@ function ProductDetail() {
 		dispatch(fetchProductItem(params.id));
 	}, [params.id, dispatch]);
 
-	const [selectedSize, setSelectedSize] = useState('');
-	const [selectedColor, setSelectedColor] = useState('');
+	const [selectedSize, setSelectedSize] = useState(productItem?.size);
+	const [selectedColor, setSelectedColor] = useState(productItem?.color);
 
 	const handleColorSelect = (color) => {
 		setSelectedColor(color);

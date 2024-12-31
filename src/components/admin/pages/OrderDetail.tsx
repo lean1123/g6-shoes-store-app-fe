@@ -68,7 +68,7 @@ const OrderDetail = ({ isEdit }: { isEdit: boolean }) => {
 			setData(response.data.data);
 			const orderDetailsResponse = await orderDetailApi.getOrderDetail(id);
 
-			orderDetailsResponse.data.data.forEach((detail) => {
+			orderDetailsResponse.data.data.forEach((detail: any) => {
 				detail.image = detail.productItem.listDetailImages[0];
 				detail.productName = detail.productItem.product.name;
 			});
